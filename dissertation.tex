@@ -34,8 +34,6 @@
                 % the year of submission
                       year={2016} ]{dissertation}
 
-\usepackage{hyperref}
-
 \begin{document}
 
 % =============================================================================
@@ -316,9 +314,9 @@ More specifically, the concrete aims are:
 {\bf A compulsory chapter,     of roughly $10$ pages}
 \vspace{1cm}
 
-\subsection{Algorithmic Background}
+\section{Algorithmic Background}
 
-\subsubsection{Dijkstra's Algorithm}
+\subsection{Dijkstra's Algorithm}
 
 Dijkstra's Algorithm~\cite{dijkstra}, originally designed in 1956, forms the
 foundation of most modern routing algorithms.
@@ -328,12 +326,45 @@ edges. Each edge has a weight - this could be the length of the road in a real
 world map. Given two nodes $S$ and $D$, the goal is to return a list of edges that
 represents the shortest path between the nodes.
 
+At its core, the algorithm picks the edge with the next shortest distance
+from the source node and updates the distance value for that node. It repeats
+this process until it finds the source node connected to an edge, then works
+backwards to construct the shortest path between the two nodes.
+
+\textbf{Add more in depth english explanation of how/why it works k?}
+
+\ref{dij-alg} shows how the algorithm operates in real life in pseudocode.
+
+\begin{algorithm}[H]
+\SetKwProg{Fn}{Function}{}{}
+\DontPrintSemicolon
+\SetAlgoLined
+
+    \Fn{\textsc{Dijkstra}(G,S,D)}{
+        $Q \leftarrow \emptyset$ \;
+        \For{vertex $v \in G$}{
+            $dist[v] = \infty$ \;
+            $prev[v] = undefined$ \;
+            $Q \leftarrow Q \cup \{v\}$ \;
+        }
+    }
+
+\caption{Dijkstra's Algorithm}\label{dij-alg}
+\end{algorithm}
+
+\subsubsection{A* Algorithm}
+
 
 \subsubsection{Contraction Heirarchies}
 
-\subsection{Implementation Background}
+\subsection{Nagel-Schreckenberg Model}
 
-\subsubsection{GraphHopper Routing Engine}
+The Nagel-Schreckenberg Model~\cite{nagel} is a cellular automaton model for the flow of
+traffic on roads.
+
+\section{Implementation Background}
+
+\subsection{GraphHopper Routing Engine}
 
 % -----------------------------------------------------------------------------
 
@@ -343,13 +374,13 @@ represents the shortest path between the nodes.
 {\bf A topic-specific chapter, of roughly $15$ pages}
 \vspace{1cm}
 
-\subsection{Project Setup and Modularisation}
+\section{Project Setup and Modularisation}
 
-\subsection{Initial Client Server setup}
+\section{Initial Client Server setup}
 
-\subsection{Cell Automata Model}
+\section{Cell Automata Model}
 
-\subsection{Performance Improvements}
+\section{Performance Improvements}
 
 \noindent
 This chapter is intended to describe what you did: the goal is to explain
