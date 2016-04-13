@@ -34,6 +34,8 @@
                 % the year of submission
                       year={2016} ]{dissertation}
 
+\setlength{\parskip}{1em}
+
 \begin{document}
 
 % =============================================================================
@@ -311,8 +313,7 @@ More specifically, the concrete aims are:
 \chapter{Technical Background}
 \label{chap:technical}
 
-{\bf A compulsory chapter,     of roughly $10$ pages}
-\vspace{1cm}
+%\textbf{A compulsory chapter, of roughly $10$ pages}
 
 \section{Algorithmic Background}
 
@@ -333,19 +334,35 @@ backwards to construct the shortest path between the two nodes.
 
 \textbf{Add more in depth english explanation of how/why it works k?}
 
-\ref{dij-alg} shows how the algorithm operates in real life in pseudocode.
+\ref{dij-alg} shows how the algorithm operates in pseudocode.
 
-\begin{algorithm}[H]
+\begin{algorithm}[t]
 \SetKwProg{Fn}{Function}{}{}
 \DontPrintSemicolon
 \SetAlgoLined
 
-    \Fn{\textsc{Dijkstra}(G,S,D)}{
-        $Q \leftarrow \emptyset$ \;
+    \Fn{\textsc{Dijkstra}(G,s,d)}{
+        $Q \leftarrow \textrm{new Priority Queue}$ \;
+        $dist[S] \leftarrow 0$ \;
         \For{vertex $v \in G$}{
             $dist[v] = \infty$ \;
             $prev[v] = undefined$ \;
-            $Q \leftarrow Q \cup \{v\}$ \;
+            $Q.\textrm{add}(v, dist[v])$ \;
+        }
+
+        \While{$Q \neq \emptyset$}{
+            $u \leftarrow Q.\textrm{extract\_min}()$ \;
+            \If{$u = d$}{
+                $\textbf{Return BuildPath(u)}$
+            }
+            \For{neighbour $v$ of $u$}{
+                $d \leftarrow dist[u] + \textrm{distance}(u,v)$ \;
+                \If{$d < dist[v]$}{
+                    $dist[v] \leftarrow d$ \;
+                    $prev[v] \leftarrow u$ \;
+                    $Q.\textrm{decrease\_priority}(v, d)$ \;
+                }
+            }
         }
     }
 
@@ -354,13 +371,32 @@ backwards to construct the shortest path between the two nodes.
 
 \subsubsection{A* Algorithm}
 
-
 \subsubsection{Contraction Heirarchies}
 
 \subsection{Nagel-Schreckenberg Model}
 
 The Nagel-Schreckenberg Model~\cite{nagel} is a cellular automaton model for the flow of
 traffic on roads.
+
+The model splits roads into discrete cells, with each car taking up a single
+cell at a time. The vehicles then follow 4 rules, in parallel to simulate the
+flow of traffic. Each car has a fixed 'velocity' $v$ for that step, which
+represents the number of cells the vehicle will move forward in the final rule.
+The model does not allow for overtaking, and as a result exhibits realistic
+behaviour for traffic jams and flow.
+
+Each cell is meant to approximately represent the size of vehicles
+
+\begin{enumerate}
+    \item \textbf{Acceleration} - if the vehicle is not at the max speed and
+        there is enough space ahead, increase the velocity by 1.
+    \item \textbf{Slowing down} - if there is a vehicle nearer than the current
+        velocity, reduce velocity to one cell less than the distance to the
+        vehicle in front.
+    \item \textbf{Randomization} - reduce the velocity by 1 with probability $p$
+    \item \textbf{Car movement} -
+\end{enumerate}
+
 
 \section{Implementation Background}
 
@@ -379,6 +415,8 @@ traffic on roads.
 \section{Initial Client Server setup}
 
 \section{Cell Automata Model}
+
+\subsection{Vehicle and Cell Iterators}
 
 \section{Performance Improvements}
 
