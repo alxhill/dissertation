@@ -19,14 +19,16 @@
 % - year              should be formatted as a 4-digit year of submission
 %   (so 2014 rather than the accademic year, say 2013/14 say).
 
-\documentclass[ % the name of the author
+\documentclass[ draft,
+                % the name of the author
                     author={Alexander Hill},
                 % the name of the supervisor
                 supervisor={Dr. Benjamin Sach},
                 % the degree programme
                     degree={MEng},
                 % the dissertation    title (which cannot be blank)
-                     title={MARMOSET: Multi Agent Routing for Managing Online Smart-cities for Efficient Transportation},
+                     title={MARMOSET: Multi Agent Real-time Multi-core Online
+                     Simulation for Efficient Transportation},
                 % the dissertation subtitle (which can    be blank)
                   subtitle={},
                 % the dissertation     type
@@ -35,6 +37,10 @@
                       year={2016} ]{dissertation}
 
 \setlength{\parskip}{1em}
+\usepackage{tikz}
+\usetikzlibrary{matrix,arrows,positioning}
+
+\graphicspath{ {images/} }
 
 \begin{document}
 
@@ -134,6 +140,8 @@ visualisation part running in the browser using JavaScript.
 \begin{quote}
 \noindent
 \begin{itemize}
+    \item OpenStreetMaps (OSM)~\cite{osm} is used for the raw mapping data. Specific sections of
+        the maps can be downloaded from Geofabrik.
     \item The Open Source routing engine GraphHopper~\cite{graphhopper} was
         used for performing basic routing requests and handling storage and
         processing of the OpenStreetMaps data.
@@ -141,8 +149,6 @@ visualisation part running in the browser using JavaScript.
         provide HTML, CSS and images to the front end.
     \item Java WebSocket~\cite{javawebsocket} was used for communication
         between the front and back end.
-    \item OpenStreetMaps~\cite{osm} is used for the raw mapping data. Specific sections of
-        the maps can be downloaded from Geofabrik.
 \end{itemize}
 \end{quote}
 
@@ -181,12 +187,7 @@ as follows:
 \begin{quote}
 \noindent
 \begin{tabular}{lcl}
-AES                 &:     & Advanced Encryption Standard                                         \\
-DES                 &:     & Data Encryption Standard                                             \\
-                    &\vdots&                                                                      \\
-${\mathcal H}( x )$ &:     & the Hamming weight of $x$                                            \\
-${\mathbb  F}_q$    &:     & a finite field with $q$ elements                                     \\
-$x_i$               &:     & the $i$-th bit of some binary sequence $x$, st. $x_i \in \{ 0, 1 \}$ \\
+OSM                 &:     & OpenStreetMap \\
 \end{tabular}
 \end{quote}
 
@@ -196,6 +197,8 @@ $x_i$               &:     & the $i$-th bit of some binary sequence $x$, st. $x_
 
 {\bf An optional section, of at most $1$ page}
 \vspace{1cm}
+
+% Thank Ben, Peter Karich, Pie Mapping
 
 \noindent
 It is common practice (although totally optional) to acknowledge any
@@ -228,9 +231,48 @@ advice or time), and so on.
 \vspace{1cm}
 
 \noindent
+
+\section{Routing in the 21st Century} % retitled introduction?
+
 When MapQuest first launched in 1996, most drivers found their way to new
 locations using physical paper maps as well as knowledge gained through
-experience. With the advent of Google Maps and the proliferation of mobile
+experience. MapQuest was the first online service to change that - instead of
+figuring out a route yourself, you could enter your location and destination and
+have a route provided to you. Unfortunately, using these routes meant printing
+out or writing down the instructions yourself - the route was fixed from when it
+was calculated.
+
+In 2005, the first online version of Google Maps was released. Unlike its
+predecessors, Google Maps used real-time traffic analysis to improve the routes
+it offered to its users. However, with the exception of high-end vehicles with
+GPS navigation, these were still usually printed for use.
+
+It took the release of the iPhone in 2007 to take full
+advantage of the new information available - suddenly, people were able to plan
+routes and modify them whilst travelling, whilst Google could use this
+information to improve their data on congestion.
+
+\section{Self-Driving Vehicles}
+
+This technology has now been integrated into almost every modern vehicle
+available to purchase today. GPS based navigation, with traffic information and
+turn by turn routing instructions are standard features in many car models.
+Furthermore, we are seeing some further intelligence being added to cars, from
+two perspectives.
+
+The first is modifying existing cars - adding features such as
+cruise control, automatic braking systems, reading of road signs, lane following
+on highways, and so on until eventually the car will need minimal or no human
+intervention. This approach is being taken by Tesla, who have released multiple
+software updates to their car software that enables further automation by the
+car itself. The second approach is from companies like Google, who have been
+building a self-driving vehicle `from scratch', creating a vehicle that has no
+steering wheel and requires no human intervention to drive from one location to
+another.
+
+\section{Congestion}
+
+With the advent of Google Maps and the proliferation of mobile
 devices, many drivers are now provided with directions that can incorporate
 large amounts of additional information - including current traffic conditions
 and road closures. This is particularly important in cities, where the levels of
@@ -268,52 +310,98 @@ it is not possible to provide definitive answers, simulation provides a
 technique for evaluating how future transportation will look and the impact it
 may have.
 
-\textbf{original description bit\\}
-This chapter should describe the project context, and motivate each of
-the proposed aims and objectives.  Ideally, it is written at a fairly
-high-level, and easily understood by a reader who is technically
-competent but not an expert in the topic itself.
+\section{Simulation}
 
-In short, the goal is to answer three questions for the reader.  First,
-what is the project topic, or problem being investigated?  Second, why
-is the topic important, or rather why should the reader care about it?
-For example, why there is a need for this project (e.g., lack of similar
-software or deficiency in existing software), who will benefit from the
-project and in what way (e.g., end-users, or software developers) what
-work does the project build on and why is the selected approach either
-important and/or interesting (e.g., fills a gap in literature, applies
-results from another field to a new problem).  Finally, what are the
-central challenges involved and why are they significant?
+One way of finding answers to these questions is simulation - modelling and
+making assumptions about future behaviours and analysing the results. Vehicles
+simulation can be used in a number of ways:
 
-The chapter should conclude with a concise bullet point list that
-summarises the aims and objectives.  For example:
+\begin{itemize}
+    \item Simulating current vehicle behaviour and traffic conditions to
+        identify improvements to the road network.
+    \item Modifying the road and transport networks (e.g busses, taxis) in the
+        simulation to identify the impact changes would have.
+    \item Designing and running novel algorithms for simulating self-driving
+        vehicles, modelling their behaviour in response to both human drivers
+        and other self-driving vehicles.
+\end{itemize}
+
+Existing tools are cumbersome, slow, non-interactive and designed to be used
+for any type of multi-agent problem - from routing air traffic to planning for
+evacuation in crisis situations. This project aims to create a system designed
+exclusively for one goal - road based simulations for vehicles and traffic.
+By focussing on a specific use case, a tool can be easier to use, faster to
+setup and provide specialised functionalities for our use case.
+
+Additionally, existing tools tend to focus on simulation then visualisation,
+without combining the two. Simultaneous simulation and visualisation allows a
+much tighter loop of testing and iterating on simulations.
 
 \begin{quote}
 \noindent
-The high-level objective of this project is to reduce the performance
-gap between hardware and software implementations of modular arithmetic.
-More specifically, the concrete aims are:
+The high-level objective of this project is to build an easier and faster way of
+simulating the behaviour of vehicles, primarily in cities. The concrete aims
+are:
 
 \begin{enumerate}
-\item Research and survey literature on public-key cryptography and
-      identify the state of the art in exponentiation algorithms.
-\item Improve the state of the art algorithm so that it can be used
-      in an effective and flexible way on constrained devices.
-\item Implement a framework for describing exponentiation algorithms
-      and populate it with suitable examples from the literature on
-      an ARM7 platform.
-\item Use the framework to perform a study of algorithm performance
-      in terms of time and space, and show the proposed improvements
-      are worthwhile.
+    \item Research existing algorithms and simulation tools to identify the
+            strengths and weaknesses of current approaches.
+    \item Design a simulation architecture that allows for fast experimentation,
+        easy integration with real world information and full implementation
+        flexibility.
+    \item Build and optimise the simulation engine on top of existing open
+        source tools.
+    \item Demonstrate the power and flexibility of the engine by experimentally
+        creating a novel multi-vehicle routing algorithm.
 \end{enumerate}
+
 \end{quote}
+
+%This chapter should describe the project context, and motivate each of
+%the proposed aims and objectives.  Ideally, it is written at a fairly
+%high-level, and easily understood by a reader who is technically
+%competent but not an expert in the topic itself.
+
+%In short, the goal is to answer three questions for the reader.  First,
+%what is the project topic, or problem being investigated?  Second, why
+%is the topic important, or rather why should the reader care about it?
+%For example, why there is a need for this project (e.g., lack of similar
+%software or deficiency in existing software), who will benefit from the
+%project and in what way (e.g., end-users, or software developers) what
+%work does the project build on and why is the selected approach either
+%important and/or interesting (e.g., fills a gap in literature, applies
+%results from another field to a new problem).  Finally, what are the
+%central challenges involved and why are they significant?
+
+%The chapter should conclude with a concise bullet point list that
+%summarises the aims and objectives.  For example:
+
+%\begin{quote}
+%\noindent
+%The high-level objective of this project is to reduce the performance
+%gap between hardware and software implementations of modular arithmetic.
+%More specifically, the concrete aims are:
+
+%\begin{enumerate}
+%\item Research and survey literature on public-key cryptography and
+      %identify the state of the art in exponentiation algorithms.
+%\item Improve the state of the art algorithm so that it can be used
+      %in an effective and flexible way on constrained devices.
+%\item Implement a framework for describing exponentiation algorithms
+      %and populate it with suitable examples from the literature on
+      %an ARM7 platform.
+%\item Use the framework to perform a study of algorithm performance
+      %in terms of time and space, and show the proposed improvements
+      %are worthwhile.
+%\end{enumerate}
+%\end{quote}
 
 % -----------------------------------------------------------------------------
 
 \chapter{Technical Background}
 \label{chap:technical}
 
-%\textbf{A compulsory chapter, of roughly $10$ pages}
+%%%%%% ======= 10 PAGES =======
 
 \section{Algorithmic Background}
 
@@ -322,21 +410,7 @@ More specifically, the concrete aims are:
 Dijkstra's Algorithm~\cite{dijkstra}, originally designed in 1956, forms the
 foundation of most modern routing algorithms.
 
-The algorithm operates on a graph consisting of nodes connected to each other by
-edges. Each edge has a weight - this could be the length of the road in a real
-world map. Given two nodes $S$ and $D$, the goal is to return a list of edges that
-represents the shortest path between the nodes.
-
-At its core, the algorithm picks the edge with the next shortest distance
-from the source node and updates the distance value for that node. It repeats
-this process until it finds the source node connected to an edge, then works
-backwards to construct the shortest path between the two nodes.
-
-\textbf{Add more in depth english explanation of how/why it works k?}
-
-\ref{dij-alg} shows how the algorithm operates in pseudocode.
-
-\begin{algorithm}[t]
+\begin{algorithm}[h]
 \SetKwProg{Fn}{Function}{}{}
 \DontPrintSemicolon
 \SetAlgoLined
@@ -369,7 +443,21 @@ backwards to construct the shortest path between the two nodes.
 \caption{Dijkstra's Algorithm}\label{dij-alg}
 \end{algorithm}
 
+The algorithm operates on a graph consisting of nodes connected to each other by
+edges. Each edge has a weight - this could be the length of the road in a real
+world map. Given two nodes $S$ and $D$, the goal is to return a list of edges that
+represents the shortest path between the nodes.
+
+At its core, the algorithm picks the edge with the next shortest distance
+from the source node and updates the distance value for that node. It repeats
+this process until it finds the source node connected to an edge, then works
+backwards to construct the shortest path between the two nodes.
+
+Algorithm \ref{dij-alg} shows how it works in pseudocode.
+
 \subsubsection{A* Algorithm}
+
+By itself, Dijkstra's algorithm is
 
 \subsubsection{Contraction Heirarchies}
 
@@ -380,12 +468,10 @@ traffic on roads.
 
 The model splits roads into discrete cells, with each car taking up a single
 cell at a time. The vehicles then follow 4 rules, in parallel to simulate the
-flow of traffic. Each car has a fixed 'velocity' $v$ for that step, which
+flow of traffic. Each car has a fixed velocity $v$ for that step, which
 represents the number of cells the vehicle will move forward in the final rule.
 The model does not allow for overtaking, and as a result exhibits realistic
 behaviour for traffic jams and flow.
-
-Each cell is meant to approximately represent the size of vehicles
 
 \begin{enumerate}
     \item \textbf{Acceleration} - if the vehicle is not at the max speed and
@@ -393,126 +479,307 @@ Each cell is meant to approximately represent the size of vehicles
     \item \textbf{Slowing down} - if there is a vehicle nearer than the current
         velocity, reduce velocity to one cell less than the distance to the
         vehicle in front.
-    \item \textbf{Randomization} - reduce the velocity by 1 with probability $p$
-    \item \textbf{Car movement} -
+    \item \textbf{Randomization} - reduce the velocity by 1 with probability
+        $p$.
+    \item \textbf{Car movement} - move each vehicle forward by its velocity $v$.
 \end{enumerate}
 
+Each cell is meant to approximately represent the size of a single vehicle,
+whilst each step (running through all four rules) represents a discrete amount
+of time.
+
+We'll now run through a brief example of the effects of each step. Our road will
+have 9 cells with two vehicles on them. Our max speed ($v_{max}$) will be 5.
+For this example, we will ignore the randomization step.
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
+    \draw[step=1cm,color=gray] (0,0) grid (9,1);
+    \node at (1.5,0.5) {\textbf{4}};
+    \node at (5.5,0.5) {\textbf{0}};
+\end{tikzpicture}
+\end{figure}
+
+We now perform the acceleration step for each vehicle. The second cell vehicle is
+currently at speed 4 - as the vehicle in front is only 3 cells away, it does not
+accelerate. The sixth cell vehicle increments its speed from 0 to 1.
+
+During the slow step, the second cell vehicle must reduce its speed from 4 to 3
+so it does not hit the sixth cell vehicle.
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}
+    \draw[step=1cm,color=gray] (0,0) grid (9,1);
+    \node at (4.5,0.5) {\textbf{3}};
+    \node at (6.5,0.5) {\textbf{1}};
+\end{tikzpicture}
+\end{figure}
+
+Finally, the vehicles move to their new destinations. This demonstration breifly
+shows the behaviour of two vehicles, but fails to demonstrate the creation and
+flow of traffic jams. In Figure \ref{nagel-demo}, we can see how traffic jams
+form and move in the Nagel-Schreckenberg model. This graph shows what happens
+when there is a density of 0.1 cars per cell.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[scale=0.4]{nagel}
+    \caption{Formation of traffic jams in the Nagel-Schreckenberg Model}\label{nagel-demo}
+\end{figure}
+
+%\textbf{Add info about n-lanes model if I decide to use that???}
 
 \section{Implementation Background}
 
+\subsection{OpenStreetMaps}
+
+In OpenStreetMaps, there are three main elements - nodes, ways, and
+relations. Each of these can have certain tags that describe the real-world
+object they represent. For example, a way could have tags describing it as a
+highway with 3 lanes, whilst a node could have tags identifying it as a
+park bench or phone booth.
+
+A standalone node is usually a single entity with a latitude and longitude as
+well as an ID. By themselves, they can be used to represent small features such
+as traffic lights, lampposts, or pylons. However, a way is also defined
+by an ordered list of nodes.
+
+Ways are the most flexible element in OpenStreetMaps. If a way starts and ends
+at two different nodes, it is called an `open' way. This is commonly used for
+sections of roads and paths. A way that starts and ends at the same node is
+called a `closed' way. Often this is used to represent an area - such as a park
+or the shape of a building - but can also be used for roundabouts and circular
+barriers. There are tags for identifying if a closed way is an area or not
+(primarly the \texttt{area=yes} tag, but many things are defined as areas even
+without this tag).
+
+Finally we have relations. These are the most complex type of element, holding
+an ordered list of ways, nodes and other relations and have tags for describing
+the relationship between them - for example, a bus route could be described as a
+list of ways and nodes. For the purposes of routing, it is only important to
+know that relations are used for turn restrictions - the rules that define which
+directions a vehicle may move from one road onto another. This is important for
+routing much more than mapping, as users would be frustrated to find that a
+route they had expected to travel on is illegal or unsafe in practice.
+
 \subsection{GraphHopper Routing Engine}
+
+GraphHopper has been built to be fast, flexible and powerful. It covers the full
+flow of creating a custom routing service - from parsing and importing
+OpenStreetMaps data, processing the graph for performance improvements,
+supporting multiple dijkstra and A* algorithms and running a web server for
+making requests. Additionally, it has built in support for car, truck,
+motorcycle, bicycle and other types of travel as well as the ability to create
+custom vehicle types.
+
+<FIGURE WHATEVER> shows the salient parts of the architecture for this project.
+Importantly, we are not going to be using the web or android modules, so no
+details regarding their functionality have been included. For the most part, the
+routing will be relatively high level - simply requesting and using standard
+routing information. However, the underlying engine also has a number of
+features that make it easy to customise.
+
+\subsubsection{OpenStreetMap Encoding}
+
+The first thing to understand is how GraphHopper converts the OpenStreetMap data
+into a graph that can be used for routing.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[scale=0.6]{osm-gh}
+    \caption{OpenStreetMap way representation compared to edges in GraphHopper}\label{osm-gh-img}
+\end{figure}
+
+For the purposes of routing, we are primarily concerned with ways that represent
+roads. However, a way does not represent the entirety of a given road - but is
+also not granular enough to allow routing. Figure \ref{osm-gh-img} shows the
+difference between ways, roads and edges. We can see that Holloway Road extends
+beyond the OSM way in red. However, if we used the way for routing we could not
+route from Hargrave Road to St John's Villas via Holloway Road. To perform
+routing, GraphHopper splits every way into multiple edges whenever there is a
+junction of any kind - these can be seen in orange. We can now perform the
+routing calculation mentioned before - there is now an edge along a subsection of
+Holloway Road that conncets Hargrave Road to St John's Villas.
+
+\subsubsection{Flag Encoders}
+
+Internally, GrahHopper uses a clever compression trick to efficiently store
+the road data. GraphHopper compresses the information about each edge into a
+single integer - so each edge takes up no more than 32 or 64 bits.
+
+The FlagEncoder interface (and the AbstractFlagEncoder class) define what
+operations have to be done to convert the edges into
+
+\subsubsection{Weightings}
 
 % -----------------------------------------------------------------------------
 
 \chapter{Project Execution}
 \label{chap:execution}
 
-{\bf A topic-specific chapter, of roughly $15$ pages}
-\vspace{1cm}
+%%%%%% ======= 15 PAGES ======= %%%%%%
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color
+  basicstyle=\footnotesize\ttfamily,        % size of fonts used for the code
+  breaklines=true,                 % automatic line breaking only at whitespace
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  keywordstyle=\color{blue},       % keyword style
+  stringstyle=\color{mymauve},     % string literal style
+  language=Java
+}
+
 
 \section{Project Setup and Modularisation}
 
-\section{Initial Client Server setup}
+When setting up the project, it was important to be able to use and modify the
+underlying GraphHopper routing engine. The GraphHopper project is setup with
+four existing modules - core, tools, web and android. Although it would have
+been ideal to use GraphHopper as an external library, it was necessary to make
+minor internal changes to the main engine. As such, I created a GitHub fork of
+the project and added a new module for the project, called marmoset.
+
+This allowed me to use GraphHopper as a library for the majority of tasks, but
+was still able to modify the visibility of certain methods that were necessary
+for the tasks I wanted to perform.
+
+GraphHopper uses the Maven dependency and build tool, with its own custom shell
+script for building, running and testing different versions of the engine. To
+keep separation from the core project, I created my own shell script for
+building and running the marmoset engine. It supports four main actions - clean,
+build, rebuild and run. It also allows multiple commands to be run in succession
+for convenience.
+
+Additionally, I wanted to create a modern codebase in spite of the core engine
+being written in Java. Although I briefly explored using Scala, much of my work
+would rely on extending and using the existing Java APIs in GraphHopper.
+Thankfully, Java 8 has introduced a number of key tools that allow
+functional-style code to be written. The code below shows the difference for
+performing a simple task - converting a list of objects into strings and joining
+them by commas.
+
+\noindent
+\begin{tabular}{c|c}
+
+\begin{lstlisting}[language=java]
+public String getVehicleData()
+{
+    StringBuilder sb = new StringBuilder();
+    for (VehicleController v : vehicles)
+    {
+        sb.append(v.getVehicle().toString());
+        sb.append(",");
+    }
+    // remove last comma
+    sb.deleteCharAt(sb.length() - 1);
+    return sb.toString();
+}
+\end{lstlisting} &
+\begin{lstlisting}[language=java,boxpos=b]
+public String getVehicleString()
+{
+    return vehicles.stream()
+        .map(Vehicle::toString)
+        .collect(Collectors.joining(","));
+}
+\end{lstlisting} \\ \vspace{1em}
+Java 7 Implementation & Java 8 Implementation \\
+\end{tabular}
+
+Here we can see how six lines of code can be condensed into a single, more
+readable line using the Java 8 Stream API.
+
+\section{Initial Client-Server setup}
+
+There are two key parts of the simulation engine - a front end visualisation and
+a back end simulation. The first thing to do was create a server and find an
+efficient way of sending simulation data to the front end.
+
+For the raw file server, I used the NanoHttd~\cite{nanohttpd} library, as it
+required minimal setup and is easy to run on a separate thread. For the
+client-server communication, I initially used the NanoHttpd WebSocket
+implementation, but it did not appear to be fully functional. As such, I
+switched to using the Java-Websocket library~\cite{javawebsocket}, extending the
+WebSocketServer class to implement my own protocol on top of WebSocket.
+
+\subsection{Initial API design}
+
+\subsection{Routing Behaviour}
+
+\subsection{Multi-Vehicle Support}
 
 \section{Cell Automata Model}
 
+Test
+
 \subsection{Vehicle and Cell Iterators}
+
+Test
 
 \section{Performance Improvements}
 
-\noindent
-This chapter is intended to describe what you did: the goal is to explain
-the main activity or activities, of any type, which constituted your work
-during the project.  The content is highly topic-specific, but for many
-projects it will make sense to split the chapter into two sections: one
-will discuss the design of something (e.g., some hardware or software, or
-an algorithm, or experiment), including any rationale or decisions made,
-and the other will discuss how this design was realised via some form of
-implementation.
+Test
 
-This is, of course, far from ideal for {\em many} project topics.  Some
-situations which clearly require a different approach include:
+\subsection{Binary vs String data}
 
-\begin{itemize}
-\item In a project where asymptotic analysis of some algorithm is the goal,
-      there is no real ``design and implementation'' in a traditional sense
-      even though the activity of analysis is clearly within the remit of
-      this chapter.
-\item In a project where analysis of some results is as major, or a more
-      major goal than the implementation that produced them, it might be
-      sensible to merge this chapter with the next one: the main activity
-      is such that discussion of the results cannot be viewed separately.
-\end{itemize}
+Test
 
-\noindent
-Note that it is common to include evidence of ``best practice'' project
-management (e.g., use of version control, choice of programming language
-and so on).  Rather than simply a rote list, make sure any such content
-is useful and/or informative in some way: for example, if there was a
-decision to be made then explain the trade-offs and implications
-involved.
+\subsection{Removing animations}
 
-\section{Example Section}
+Test
 
-This is an example section;
-the following content is auto-generated dummy text.
-\lipsum
+\subsection{Removing timelock}
 
-\subsection{Example Sub-section}
+Test
 
-\begin{figure}[t]
-\centering
-foo
-\caption{This is an example figure.}
-\label{fig}
-\end{figure}
+\subsection{DOM to Canvas}
 
-\begin{table}[t]
-\centering
-\begin{tabular}{|cc|c|}
-\hline
-foo      & bar      & baz      \\
-\hline
-$0     $ & $0     $ & $0     $ \\
-$1     $ & $1     $ & $1     $ \\
-$\vdots$ & $\vdots$ & $\vdots$ \\
-$9     $ & $9     $ & $9     $ \\
-\hline
-\end{tabular}
-\caption{This is an example table.}
-\label{tab}
-\end{table}
+Test
 
-\begin{algorithm}[t]
-\For{$i=0$ {\bf upto} $n$}{
-  $t_i \leftarrow 0$\;
-}
-\caption{This is an example algorithm.}
-\label{alg}
-\end{algorithm}
+\subsection{Parallel processing}
 
-\begin{lstlisting}[float={t},caption={This is an example listing.},label={lst},language=C]
-for( i = 0; i < n; i++ ) {
-  t[ i ] = 0;
-}
-\end{lstlisting}
+Test
 
-This is an example sub-section;
-the following content is auto-generated dummy text.
-Notice the examples in Figure~\ref{fig}, Table~\ref{tab}, Algorithm~\ref{alg}
-and Listing~\ref{lst}.
-\lipsum
+\subsection{Metric calculations}
 
-\subsubsection{Example Sub-sub-section}
+%This chapter is intended to describe what you did: the goal is to explain
+%the main activity or activities, of any type, which constituted your work
+%during the project.  The content is highly topic-specific, but for many
+%projects it will make sense to split the chapter into two sections: one
+%will discuss the design of something (e.g., some hardware or software, or
+%an algorithm, or experiment), including any rationale or decisions made,
+%and the other will discuss how this design was realised via some form of
+%implementation.
 
-This is an example sub-sub-section;
-the following content is auto-generated dummy text.
-\lipsum
+%This is, of course, far from ideal for {\em many} project topics.  Some
+%situations which clearly require a different approach include:
 
-\paragraph{Example paragraph.}
+%\begin{itemize}
+%\item In a project where asymptotic analysis of some algorithm is the goal,
+      %there is no real ``design and implementation'' in a traditional sense
+      %even though the activity of analysis is clearly within the remit of
+      %this chapter.
+%\item In a project where analysis of some results is as major, or a more
+      %major goal than the implementation that produced them, it might be
+      %sensible to merge this chapter with the next one: the main activity
+      %is such that discussion of the results cannot be viewed separately.
+%\end{itemize}
 
-This is an example paragraph; note the trailing full-stop in the title,
-which is intended to ensure it does not run into the text.
+%\noindent
+%Note that it is common to include evidence of ``best practice'' project
+%management (e.g., use of version control, choice of programming language
+%and so on).  Rather than simply a rote list, make sure any such content
+%is useful and/or informative in some way: for example, if there was a
+%decision to be made then explain the trade-offs and implications
+%involved.
 
 % -----------------------------------------------------------------------------
 
