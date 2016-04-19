@@ -54,7 +54,7 @@
 % http://www.ctan.org/tex-archive/macros/latex/contrib/datetime
 \RequirePackage{datetime}
 % http://www.ctan.org/tex-archive/macros/latex/contrib/algorithm2e
-\RequirePackage[algochapter]{algorithm2e}
+\RequirePackage[linesnumbered,algochapter]{algorithm2e}
 % http://www.ctan.org/tex-archive/macros/latex/contrib/listings
 \RequirePackage{listings}
 % http://www.ctan.org/tex-archive/macros/latex/contrib/xstring
@@ -76,7 +76,7 @@
 
 % configure hyperref
 
-\hypersetup{colorlinks=true,bookmarks=false,urlcolor=red}
+\hypersetup{colorlinks=true,bookmarks=false,urlcolor=red,linkcolor=blue,citecolor=black}
 
 % configure algorithm2e
 
