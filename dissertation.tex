@@ -19,8 +19,7 @@
 % - year              should be formatted as a 4-digit year of submission
 %   (so 2014 rather than the accademic year, say 2013/14 say).
 
-\documentclass[ draft,
-                % the name of the author
+\documentclass[ % the name of the author
                     author={Alexander Hill},
                 % the name of the supervisor
                 supervisor={Dr. Benjamin Sach},
@@ -39,6 +38,7 @@
 \setlength{\parskip}{1em}
 \usepackage{tikz}
 \usetikzlibrary{matrix,arrows,positioning}
+\usepackage{pdfpages}
 
 \graphicspath{ {images/} }
 
@@ -574,12 +574,20 @@ making requests. Additionally, it has built in support for car, truck,
 motorcycle, bicycle and other types of travel as well as the ability to create
 custom vehicle types.
 
-<FIGURE WHATEVER> shows the salient parts of the architecture for this project.
-Importantly, we are not going to be using the web or android modules, so no
-details regarding their functionality have been included. For the most part, the
-routing will be relatively high level - simply requesting and using standard
-routing information. However, the underlying engine also has a number of
-features that make it easy to customise.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5,page=1,clip,trim=0 8cm 4cm 0]{architecture}
+    \caption{An overview of the GraphHopper
+    Architecture}\label{fig:gh-arch}
+\end{figure}
+
+Figure \ref{fig:gh-arch} shows the salient parts of the architecture for this project.
+Note that we are not using the web or android modules, so no
+details regarding their functionality has been included. For the most part, the
+use of routing will be relatively high level - simply requesting a list of edges
+between two points. However, the underlying engine also has a number of
+features that make it easy to customise, which will be used for more complex
+situations.
 
 \subsubsection{OpenStreetMap Encoding}
 
@@ -589,12 +597,13 @@ into a graph that can be used for routing.
 \begin{figure}[t]
     \centering
     \includegraphics[scale=0.6]{osm-gh}
-    \caption{OpenStreetMap way representation compared to edges in GraphHopper}\label{osm-gh-img}
+    \caption{OpenStreetMap way representation compared to edges in
+    GraphHopper}\label{fig:osm-gh}
 \end{figure}
 
 For the purposes of routing, we are primarily concerned with ways that represent
 roads. However, a way does not represent the entirety of a given road - but is
-also not granular enough to allow routing. Figure \ref{osm-gh-img} shows the
+also not granular enough to allow routing. Figure \ref{fig:osm-gh} shows the
 difference between ways, roads and edges. We can see that Holloway Road extends
 beyond the OSM way in red. However, if we used the way for routing we could not
 route from Hargrave Road to St John's Villas via Holloway Road. To perform
@@ -609,10 +618,27 @@ Internally, GrahHopper uses a clever compression trick to efficiently store
 the road data. GraphHopper compresses the information about each edge into a
 single integer - so each edge takes up no more than 32 or 64 bits.
 
-The FlagEncoder interface (and the AbstractFlagEncoder class) define what
-operations have to be done to convert the edges into
+The \texttt{FlagEncoder} interface (and the \texttt{AbstractFlagEncoder} class) define what
+operations have to be done to convert a section of a way into an edge. Edges
+store a few key pieces of information - by default, GraphHopper stores the
+length, speed and ID of an edge, with additional information optionally stored
+by the flag encoder itself.
+
+For example, the \texttt{CarFlagEncoder} uses the type of road to calculate the
+correct maximum speed of the vehicle and then sets the speed for the edge, using
+5 bits. The \texttt{MotorcycleFlagEncoder} can do the same thing, but with
+different speed values for each type of road. The concept can be extended to
+storing even more information at each edge - for example, 3D graph data can be
+stored for bike and walking routes, whilst a FlagEncoder for trucks could store
+height, weight, width and length restrictions to ensure safe travel.
 
 \subsubsection{Weightings}
+
+Flag Encoders are used to define what information can be used whilst routing -
+but this data is fixed and static. A weighting defines how the data stored at
+the edges is used. For example, one can search for the shortest route, the
+fastest route, or a custom weighting that incorporates other information stored
+in the edge.
 
 % -----------------------------------------------------------------------------
 
