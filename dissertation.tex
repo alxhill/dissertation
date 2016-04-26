@@ -197,7 +197,7 @@ OSM                 &:     & OpenStreetMap \\
 {\bf An optional section, of at most $1$ page}
 \vspace{1cm}
 
-% Thank Ben, Peter Karich, Pie Mapping
+% Thank Ben, Peter Karich, Pie Mapping, all my friendzzz
 
 %\noindent
 %It is common practice (although totally optional) to acknowledge any
@@ -347,13 +347,12 @@ Additionally, existing tools tend to focus on simulation then visualisation,
 without combining the two. Simultaneous simulation and visualisation allows a
 much tighter loop of testing and iterating on algorithm design and analysis.
 
-
-
 \begin{quote}
 \noindent
 The high-level objective of this project is to build an easier, faster way of
-simulating the behaviour of vehicles, primarily in cities. The concrete aims
-are:
+simulating the behaviour of vehicles, primarily in cities. We will use this
+simulation engine to design and improve a potential algorithm for multi-vehicle
+routing. The concrete aims are:
 
 \begin{enumerate}
     \item Research existing algorithms and simulation tools to identify the
@@ -519,7 +518,7 @@ huge impact on query times. For routing from Moscow to Madrid, any dijkstra base
 takes at least 10 seconds, compared to less than 0.05s for a processed graph.
 \textbf{Cite: https://graphhopper.com/public/slides/2014-locationtech.pdf}
 
-\subsection{Nagel-Schreckenberg Model}
+\subsection{Nagel-Schreckenberg Model} \label{sec:nagel}
 
 The Nagel-Schreckenberg Model~\cite{nagel} is a cellular automaton model for the flow of
 traffic on roads.
@@ -721,23 +720,65 @@ information stored in the edge.
   language=Java
 }
 
+\section{Overview}
 
-\section{Project Setup and Modularisation}
+The execution of this project was split into 4 stages, each with its own goal.
+
+\begin{enumerate}
+    \item \textbf{Initial Implementation} - create the inital client and
+        server with vehicles moving on a map.
+    \item \textbf{Realistic Simulation} - implement the Nagel-Schreckenberg
+        model to make the vehicle behaviour more realistic.
+    \item \textbf{Performance and Architecture Improvement} - make the
+        simulation engine fast and flexible enough to deal with the challenges
+        of algorithm design.
+    \item \textbf{Algorithm Design and Implementation} - creating and improving
+        a novel approach to the multi-vehicle routing problem using the
+        simulation engine.
+\end{enumerate}
+
+\section{Initial Implementation}
+
+The initial implementation had a few key goals, with the primary objective of
+having basic vehicles moving on a map. This stage was essentially a way of
+setting up the basic archictecture of the project, without finalising the
+details of how routing algorithms would be implemented.
+
+\subsection{Architecture Design}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5,page=2,clip,trim=0 17cm 3cm 0]{architecture}
+    \caption{The initial architecture for the simulation engine}\label{fig:init-arch}
+\end{figure}
+
+Figure \ref{fig:init-arch} shows a simple architecture diagram for the initial
+implementation of the engine. Once the client has made a request to the engine,
+it sets up and starts routing the vehicles. Each vehicle is responsible for
+storing and updating its own position on each timestep. This data is converted
+into a string and sent to the client, which then moves each vehicle on the map.
+
+One of the goals of this project was to make it possible to visualise and
+simulate at the same time. This naturally lends itself to a client-server
+architecture, and with the rate of improvement of modern web browsers it seemed
+like a wise choice to use a browser for the visualisation component.
+
+This also means that the server can be run remotely with no additional setup -
+more computationally expensive algorithms could be run on high-powered servers
+with the results still visible locally for the user.
+
+\subsection{Project Setup and Modularisation}
 
 When setting up the project, it was important to be able to use and modify the
 underlying GraphHopper routing engine. The GraphHopper project is setup with
 four existing modules - core, tools, web and android. Although it would have
 been ideal to use GraphHopper as an external library, it was necessary to make
 minor internal changes to the main engine. As such, I created a GitHub fork of
-the project and added a new module for the project, called marmoset.
-
-This allowed me to use GraphHopper as a library for the majority of tasks, but
-was still able to modify the visibility of certain methods that were necessary
-for the tasks I wanted to perform.
+the project and added marmoset as a fifth module in the project.
 
 GraphHopper uses the Maven dependency and build tool, with its own custom shell
 script for building, running and testing different versions of the engine. To
-keep separation from the core project, I created my own shell script for
+keep Marmoset separated from the core project, I created my own shell script for
 building and running the marmoset engine. It supports four main actions - clean,
 build, rebuild and run. It also allows multiple commands to be run in succession
 for convenience.
@@ -781,58 +822,321 @@ Java 7 Implementation & Java 8 Implementation \\
 Here we can see how six lines of code can be condensed into a single, more
 readable line using the Java 8 Stream API.
 
-\section{Initial Client-Server setup}
-
-There are two key parts of the simulation engine - a front end visualisation and
-a back end simulation. The first thing to do was create a server and find an
-efficient way of sending simulation data to the front end.
+\subsection{Server Implementation}
 
 For the raw file server, I used the NanoHttd~\cite{nanohttpd} library, as it
-required minimal setup and is easy to run on a separate thread. For the
+requires minimal setup and is easy to run on a separate thread. For the
 client-server communication, I initially used the NanoHttpd WebSocket
 implementation, but it did not appear to be fully functional. As such, I
 switched to using the Java-Websocket library~\cite{javawebsocket}, extending the
-WebSocketServer class to implement my own protocol on top of WebSocket.
+WebSocketServer class to create the MarmosetSocketServer class.
 
-\subsection{Initial API design}
+In the architecture diagram (Figure \ref{fig:init-arch}), we see four main
+classes on the backend.
 
-\subsection{Routing Behaviour}
+The \texttt{MarmosetSocketServer} class handles the connection between server and client.
+It keeps track of each of the connected clients and offers a simple command to
+distribute vehicle position data to each of them.
 
-\subsection{Multi-Vehicle Support}
+The \texttt{Marmoset} class is a static class that is the main entry point for the
+program. It initialises the file server and WebSocket server, and creates a new
+thread for running the MarmosetHopper timesteps. It also handles passing data from
+MarmosetHopper to the socket server.
 
-\section{Cell Automata Model}
+In most types of simulation, time must be split into discrete steps that
+represent a fixed time interval in the real world. Looking at Figure
+\ref{fig:init-arch}, we can see that it is the Marmoset class that triggers each
+timestep. At this stage of the project, I had not established how well the front
+or back end would perform. As a way of simplifying the data flow and processing,
+Marmoset simply waits one second between each call of the timestep function.
+As both front end and back end take significantly less time than a second to
+perform their tasks, this was an appropriate simplification for this stage
+of development.
 
-Test
+The \texttt{MarmosetHopper} class holds the list of vehicles and and creates an instance
+of the GraphHopper routing engine. It initialises all the vehicles, instructs
+them to update on each timestep and gathers their position information together
+to be sent to the clients.
+
+When initialising the vehicles, the starting location and destination are chosen
+as random latitude and longitude co-ordinates within London.
+
+Finally, the \texttt{Vehicle} class represents a single physical vehicle on the
+map. Each vehicle holds its location and the route it plans to take. The routing
+information is obtained by requesting a route from GraphHopper. The route is
+returned in a number of ways, including as a list of points that can be used to
+draw the route. This does not include the speed of each road travelled, so
+cannot be used for realistic simulation. However, for this initial
+implementation the location is updated on each timestep by simply moving to the
+next point in the list. This is very innacurate, but it does allow us to verify
+the functionality of all parts of the system without touching the details of
+routing. The vehicles return their location as a string containing their id,
+latitude and longitude.
+
+\subsection{Client Implementation}
+
+When loading the web page, a map is created and centered on the correct location.
+The client then connects to the WebSocket back end and listens for data. When it
+receives the vehicle data, it creates or updates the position of each vehicle marker.
+
+The Leaflet.js~\cite{leaflet} library is used for both map and marker creation.
+A simple \texttt{Car} class has been created to keep track of the location of each
+marker. It stores a reference to the Leaflet.js Marker object and provides a method to
+move the marker to a new location. The Leaflet.AnimatedMarker~\cite{animarker}
+library handles smoothly moving the points to their next location, making the
+cars look like they're driving around the map in real time.
+
+Meanwhile, A single \texttt{CarSet} object connects to the WebSocket server and stores the
+Car objects. When data is recieved, it creates new Cars or updates the
+position of existing vehicles using their \texttt{moveTo} method.
+
+\subsection{Results and Improvements}
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}[b]{0.4\textwidth}
+    \centering
+    \includegraphics[height=15em]{init-start}
+    \caption{10th Iteration}\label{fig:init-start}
+\end{subfigure}
+\hspace{2em}
+\begin{subfigure}[b]{0.4\textwidth}
+    \centering
+    \includegraphics[height=15em]{init-200}
+    \caption{200th Iteration}\label{fig:init-200}
+\end{subfigure}
+\caption{Vehicle positions at different iterations}
+\end{figure}
+
+At the end of this section of the project, the engine was capable of performing
+its core task of simulating and visualising vehicles. In spite of many of the
+simplifications in the system, it provides quite realistic results -
+\ref{fig:init-200} shows that even after a small number of iterations certain roads
+become more congested than others. This matches the reality of driving on London
+roads - the M25 and North Circular suffer frequent delays due to a high volume
+of vehicles driving on them.
+
+However, there are many core features missing from the engine at this point.
+
+\begin{itemize}
+    \item The engine simulates a fixed number of vehicles (1000) - no more can
+        be added or removed.
+    \item Vehicles do not move realistically. As they simply jump to the next
+        point on their route, a curved path would take much longer to travel
+        than a straight one.
+    \item Vehicles are independent. Vehicles travel on their own with no sense
+        of traffic or congestion.
+    \item The timestep is fixed to one second, even though the actual processing
+        takes substantially less time for both front and back end.
+    \item Metrics are not tracked. Other than watching the simulation, there is
+        no further understanding that can be gained from simulating.
+    \item The simulation cannot be paused without terminating it and starting
+        again.
+\end{itemize}
+
+For the next stage of development, I focussed on improving the realism of the
+vehicle simulation.
+
+\section{Realistic Simulation}
+
+In section \ref{sec:nagel} we introduced the Nagel-Schreckenberg Model for
+traffic flow simulation. This section discusses the implementation of this model
+on top of the existing simulation engine described above.
+
+The original model is designed for a single road, either in a loop or an extended
+straight stretch. Implementing this on a road network introduces some additional
+challenges, particularly when dealing with the integration with GraphHopper and
+OpenStreetMaps.
+
+The two main concerns are how the cells should be stored and how the cells
+should be used in conjunction with the routes created by GraphHopper.
+
+\subsection{Cell Storage}
+
+A number of techniques for storing the cells were considered. Firstly, we must
+consider how we create edges. We have the option of using either GraphHopper
+edges - which are small, but do not have junctions - or OSM ways, which can be
+larger but would allow for more usable metrics and would make the system less
+dependent on GraphHopper.
+
+Ultimately, I chose to use GraphHopper's edges as the base unit for cells. This
+is primarily due to the fact that GraphHopper does not have an internal mapping
+from its edges to OSM Ways, and does not return which Ways are used as part of a
+routing response. Additionally, GraphHopper provides an
+\texttt{AllEdgesIterator} that returns both the maximum edge ID as well as the
+data for every edge in the graph.
+
+The next decision is how and where to store the cells. In the original paper,
+we saw that each vehicle was represented by its velocity stored as an integer in
+the cell array. As we are storing a much larger amount of information about each
+vehicle in the Vehicle class, this is not a viable option. If vehicles store
+their own velocity and keep track of the current edge and cell they are on, the
+cells only need to know if any vehicle is present in a cell. As such, each cell
+is simply a boolean value in an array. The cell is set to \texttt{true} if a
+vehicle is in the cell and \texttt{false} if the cell is empty.
+
+In terms of physical storage, the are a number of options. At its core, we need
+a mapping from edge IDs to cell arrays. In Java, this would usually be
+represented as a Map of Lists (\texttt{Map<Integer, List<Boolean>>}). However,
+the edge IDs in GraphHopper have been designed to be sequential starting from 0,
+with the highest ID accessible from the AllEdgesIterator. This means that we can
+instead use a list of lists (\texttt{List<List<Boolean>>}). This has the
+advantage of allowing the lists to grow in size dynamically, but may have
+performance issues. In Java, Lists must store other Object types rather than
+primative types. As objects in Java are all pointers, each Boolean will require
+a pointer to a separate memory location that holds the true or false values.
+This is likely to harm cache performance, something particularly important given
+the frequency that the cells will be accessed.
+
+Instead, we can simply allocate a two-dimensional array of booleans for each
+edge as a raw array. This avoids the issues with pointers and is consistent with
+the way GraphHopper stores edges.
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \includegraphics[height=12em]{gh-edge-problem}
+    \caption{The problem with GraphHopper edges}\label{fig:gh-edge-problem}
+
+    \vspace{0.6em}
+    In the diagram above, we see two nodes (with ID 1 and 2) joined by an edge
+    (with ID 3). Imagine we've performed two routing requests, one in red and
+    one in green. Both routes go through edge 3, but in opposite directions.
+    However, both edges will return true from the \texttt{isForward} method of
+    EdgeIteratorState, despite going in opposite directions. Although
+    GraphHopper knows that one of these is in reverse, the data is hidden from
+    us.
+    \vspace{-2em}
+\end{wrapfigure}
+
+However, there is another challenge with regards to storing the data. When
+parsing the ways, GraphHopper identifies the direction of the edge - each edge
+can support moving either forward or reversed. When a route is provided by the
+routing engine, it is in the form of a list of EdgeIteratorStates. The
+EdgeIteratorState class has been designed to hide the `true' direction of the
+edge, instead switching which node is the base node and which is the adjacent
+depending on the direction the vehicle is travelling in. The end result of this
+is that every edge appears to be a forward edge when received from the engine.
+For the cell model, we need to have two separate directions for the roads, or
+vehicles going in opposite directions will crash into each other and block the
+roads.
+
+In Figure \ref{fig:gh-edge-problem}, we can see why this may be an issue. When
+moving through the edges, we are unable to tell if we are travelling forwards or
+backwards based on the EdgeIteratorState by itself - the ID is the same and the
+\texttt{isForward} method returns true in both directions. Initially, I had
+thought a more complex solution than the boolean arrays would be required -
+perhapes some kind of 2D mapping from pairs of node IDs (or a base node and
+edge node) to the cell array. However, it is important to note that we don't
+actually need to know if GraphHopper internally stores an edge as forward or
+reverse so long as we are able to distinguish between the two cases shown above.
+
+The technique I came up with to solve this uses the fact that the base node and
+adjacent node returned by the edge changes depending on direction. As such, we
+can define edges where the base node is greater than the adjacent node as
+`forward' and edges where the base node is less than the adjacent node as
+`backwards'. This allows us to reliably differentiate between the forward and
+backwards cases, and save the vehicles from crashing into each other.
+
+The \texttt{CellGraph} class handles the storage for the cells, providing
+convenient getters and setters for edges at specific cells. It also
+transparently handles the forward and reverse edges, storing two boolean arrays
+(\texttt{boolean[][] cells} and \texttt{boolean[][] reverseCells})
+ and uses whichever one is appropriate for the current EdgeIteratorState.
 
 \subsection{Vehicle and Cell Iterators}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5,page=5,clip,trim=0 15cm 15cm 0]{architecture}
+    \caption{The Nagel-Schreckenberg Model across edge boundaries.}\label{fig:nagel-multi}
+\end{figure}
+
+As we saw in Section \ref{sec:nagel}, one of the key parts of the
+Nagel-Schreckenberg model requires vehicles to know how far they are from the
+next vehicle. In \ref{fig:nagel-multi}, we see three vehicles - A, B and C.
+Vehicle A is 2 cells from B and 3 cells from C. However, A is soon to turn left
+onto the edge with C, meaning it should not consider B as ahead of it.
+
+However, each of these paths consists of multiple edges. We need a way of treating
+lists of edges as a single continuous array of cells. This is a good use case
+for the iterator pattern, providing us with an abstraction over the underlying
+arrays.
+
+The \texttt{VehicleIterator} class is responsible for storing and moving through
+the vehicle's route. It stores the list of EdgeIteratorState objects and moves
+to the next element each time its \texttt{next} method is called. It implements
+the EdgeIteratorState API for full compatibility with GraphHopper. In addition
+to the usual EdgeIteratorState methods, it can return the road speed of an edge.
+
+The \texttt{CellIterator} class stores the cell ID and the VehicleIterator,
+meaning it can traverse across edge boundaries by calling the VehicleIterator's
+\texttt{next} method.
+
+%When routing, GraphHopper starts by finding the nearest edge to the start
+%and end locations. It then creates `virtual edges' from the start location to
+%the first edge and from the last edge to the
+
+\subsection{Vehicle Class}
+
+The Vehicle class now has five core methods that are used for running the
+simulation, rather than the single \texttt{calculateStep} function used before.
+The \texttt{accelerationStep}, \texttt{slowStep}, \texttt{randomStep} and
+\texttt{moveStep} all correspond to the four steps of the Nagel-Schreckenberg
+algorithm, whilst the \texttt{updateLocation} method interpolates the cell
+location into the edge geometry to find the vehicle's location.
+
+Each of the first four methods make heavy use of the CellIterator.
+
+\section{Performance and Architecture Improvements}
+
 Test
 
-\section{Performance Improvements}
+\subsection{Front-end Performance}
 
 Test
 
-\subsection{Binary vs String data}
+\subsubsection{Binary vs String data}
 
 Test
 
-\subsection{Removing animations}
+\subsubsection{Removing animations}
 
 Test
 
-\subsection{Removing timelock}
+\subsubsection{Marker rendering}
 
 Test
 
-\subsection{DOM to Canvas}
+\subsection{Back-end Performance}
 
 Test
 
-\subsection{Parallel processing}
+\subsubsection{Removing timelock}
+
+Test
+
+\subsubsection{Exploiting Parallelism}
+
+Test
+
+\subsubsection{Offline Simulation}
+
+Test
+
+\subsection{Architecture Improvments}
+
+Test
+
+\subsubsection{Vehicle Refactoring}
 
 Test
 
 \subsection{Metric calculations}
+
+Test
+
+\section{Algorithm Design and Implementation}
+
+Test
 
 %This chapter is intended to describe what you did: the goal is to explain
 %the main activity or activities, of any type, which constituted your work
