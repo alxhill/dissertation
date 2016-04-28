@@ -171,7 +171,7 @@ visualisation part running in the browser using JavaScript.
 \noindent
 \begin{itemize}
     \item The map interface on the front end uses the JavaScript library
-        Leaflet.js~\cite{leaflet} for the map and marker APIs.
+    Leaflet.js~\cite{leaflet} for the map and marker APIs.
     \item Mapbox is used for the image tiles to display the underlying map.
 \end{itemize}
 \end{quote}
@@ -266,10 +266,10 @@ predecessors, Google Maps used real-time traffic analysis to improve the routes
 it offered to its users. However, with the exception of high-end vehicles with
 GPS navigation, these were still usually printed for use.
 
-It took the release of the iPhone in 2007 to take full
-advantage of the new information available - suddenly, people were able to plan
-routes and modify them whilst travelling, whilst Google could use this
-information to improve their data on congestion.
+It took the release of the iPhone in 2007 to take full advantage of the new
+information available - suddenly, people were able to plan routes and modify
+them whilst travelling, whilst Google could use this information to improve
+their data on congestion.
 
 \section{Self-Driving Vehicles}
 
@@ -279,23 +279,22 @@ turn by turn routing instructions are standard features in many car models.
 Furthermore, we are seeing some further intelligence being added to cars, from
 two perspectives.
 
-The first is modifying existing cars - adding features such as
-cruise control, automatic braking systems, reading of road signs, lane following
-on highways, and so on until eventually the car will need minimal or no human
-intervention. This approach is being taken by Tesla, who have released multiple
-software updates to their car software that enables further automation by the
-car itself. The second approach is from companies like Google, who have been
-building a self-driving vehicle `from scratch', creating a vehicle that has no
-steering wheel and requires no human intervention to drive from one location to
-another.
+The first is modifying existing cars - adding features such as cruise control,
+automatic braking systems, reading of road signs, lane following on highways,
+and so on until eventually the car will need minimal or no human intervention.
+This approach is being taken by Tesla, who have released multiple software
+updates to their car software that enables further automation by the car itself.
+The second approach is from companies like Google, who have been building a
+self-driving vehicle `from scratch', creating a vehicle that has no steering
+wheel and requires no human intervention to drive from one location to another.
 
 \section{Congestion}
 
-With the advent of Google Maps and the proliferation of mobile
-devices, many drivers are now provided with directions that can incorporate
-large amounts of additional information - including current traffic conditions
-and road closures. This is particularly important in cities, where the levels of
-congestion during `rush hour' can have a drastic impact on travel time.
+With the advent of Google Maps and the proliferation of mobile devices, many
+drivers are now provided with directions that can incorporate large amounts of
+additional information - including current traffic conditions and road closures.
+This is particularly important in cities, where the levels of congestion during
+`rush hour' can have a drastic impact on travel time.
 
 Looking forwards, we can see two trends that suggest that congestion will become
 more of an issue in future. Firstly, more and more people are living in cities -
@@ -356,12 +355,12 @@ is MATSim~\cite{matsim}, and the second is SUMO~\cite{sumo}.
 
 \subsection{SUMO}
 
-Existing tools are cumbersome, slow, non-interactive and designed to be used
-for any type of multi-agent problem - from routing air traffic to planning for
+Existing tools are cumbersome, slow, non-interactive and designed to be used for
+any type of multi-agent problem - from routing air traffic to planning for
 evacuation in crisis situations. This project aims to create a system designed
-exclusively for one goal - road based simulations for vehicles and traffic.
-By focussing on a specific use case, a tool can be easier to use, faster to
-setup and provide specialised functionalities for our use case.
+exclusively for one goal - road based simulations for vehicles and traffic.  By
+focussing on a specific use case, a tool can be easier to use, faster to setup
+and provide specialised functionalities for our use case.
 
 Additionally, existing tools tend to focus on simulation then visualisation,
 without combining the two. Simultaneous simulation and visualisation allows a
@@ -475,12 +474,12 @@ foundation of most modern routing algorithms.
 
 The algorithm operates on a graph consisting of nodes connected to each other by
 edges. Each edge has a weight - this could be the length of the road in a real
-world map. Given two nodes $S$ and $D$, the goal is to return a list of edges that
-represents the shortest path between the nodes.
+world map. Given two nodes $S$ and $D$, the goal is to return a list of edges
+that represents the shortest path between the nodes.
 
-At its core, the algorithm picks the edge with the next shortest distance
-from the source node and updates the distance value for that node. It repeats
-this process until it finds the source node connected to an edge, then works
+At its core, the algorithm picks the edge with the next shortest distance from
+the source node and updates the distance value for that node. It repeats this
+process until it finds the source node connected to an edge, then works
 backwards to construct the shortest path between the two nodes.
 
 Algorithm \ref{dij-alg} shows how it works in pseudocode. The implementation for
@@ -534,8 +533,9 @@ uses a modified version of bidirectional Dijkstra's algorithm that only uses
 shortcuts higher than the current one to route between two points.
 
 Although they double memory usage, in practice Contraction Heirarchies have a
-huge impact on query times. For routing from Moscow to Madrid, any dijkstra based algorithm
-takes at least 10 seconds, compared to less than 0.05s for a processed graph.
+huge impact on query times. For routing from Moscow to Madrid, any dijkstra
+based algorithm takes at least 10 seconds, compared to less than 0.05s for a
+processed graph.
 \textbf{Cite: https://graphhopper.com/public/slides/2014-locationtech.pdf}
 
 \subsection{Multi-Vehicle Routing Algorithms}
@@ -571,11 +571,20 @@ created.
 Modern simulation engines are often designed to support both V2V and V2I
 algorithms - these engines are known as V2X engines.
 
+\subsubsection{BeeJamA}
+
+The BeeJamA algorithm is a V2I approach for multi-vehicle routing. It is based
+off an algorithm originally created for routing in packet switching networks
+that has been adapted for use on road networks. Its behaviour is inspired by the
+behaviour of bees, which are able to effectively search and scavange for food in
+a large area surrounding their hive.
+
+
 
 \subsection{Nagel-Schreckenberg Model} \label{sec:nagel}
 
-The Nagel-Schreckenberg Model~\cite{nagel} is a cellular automaton model for the flow of
-traffic on roads.
+The Nagel-Schreckenberg Model~\cite{nagel} is a cellular automaton model for the
+flow of traffic on roads.
 
 The model splits roads into discrete cells, with each car taking up a single
 cell at a time. The vehicles then follow 4 rules, in parallel to simulate the
@@ -612,9 +621,9 @@ For this example, we will ignore the randomization step.
 \end{tikzpicture}
 \end{figure}
 
-We now perform the acceleration step for each vehicle. The second cell vehicle is
-currently at speed 4 - as the vehicle in front is only 3 cells away, it does not
-accelerate. The sixth cell vehicle increments its speed from 0 to 1.
+We now perform the acceleration step for each vehicle. The second cell vehicle
+is currently at speed 4 - as the vehicle in front is only 3 cells away, it does
+not accelerate. The sixth cell vehicle increments its speed from 0 to 1.
 
 During the slow step, the second cell vehicle must reduce its speed from 4 to 3
 so it does not hit the sixth cell vehicle.
@@ -644,16 +653,16 @@ when there is a density of 0.1 cars per cell.
 
 \subsection{OpenStreetMaps}
 
-In OpenStreetMaps, there are three main elements - nodes, ways, and
-relations. Each of these can have certain tags that describe the real-world
-object they represent. For example, a way could have tags describing it as a
-highway with 3 lanes, whilst a node could have tags identifying it as a
-park bench or phone booth.
+In OpenStreetMaps, there are three main elements - nodes, ways, and relations.
+Each of these can have certain tags that describe the real-world object they
+represent. For example, a way could have tags describing it as a highway with 3
+lanes, whilst a node could have tags identifying it as a park bench or phone
+booth.
 
 A standalone node is usually a single entity with a latitude and longitude as
 well as an ID. By themselves, they can be used to represent small features such
-as traffic lights, lampposts, or pylons. However, a way is also defined
-by an ordered list of nodes.
+as traffic lights, lampposts, or pylons. However, a way is also defined by an
+ordered list of nodes.
 
 Ways are the most flexible element in OpenStreetMaps. If a way starts and ends
 at two different nodes, it is called an `open' way. This is commonly used for
@@ -679,9 +688,9 @@ GraphHopper has been built to be fast, flexible and powerful. It covers the full
 flow of creating a custom routing service - from parsing and importing
 OpenStreetMaps data, processing the network for performance improvements,
 routing using multiple dijkstra and A* algorithms and running a web server for
-making requests. Additionally, it has built in support for car,
-bicycle, pedestrian and other types of travel as well as the ability to create
-custom vehicle types.
+making requests. Additionally, it has built in support for car, bicycle,
+pedestrian and other types of travel as well as the ability to create custom
+vehicle types.
 
 \begin{figure}[p]
     \centering
@@ -689,17 +698,16 @@ custom vehicle types.
     \caption{An overview of the GraphHopper Architecture}\label{fig:gh-arch}
 \end{figure}
 
-Figure \ref{fig:gh-arch} shows the salient parts of the architecture for this project.
-Note that we are not using the web or android modules, so no
-details regarding their functionality has been included. For the most part, the
-use of routing will be relatively high level - simply requesting a list of edges
-between two points. However, the underlying engine also has a number of
-features that make it easy to customise, which will be used for more complex
-situations.
+Figure \ref{fig:gh-arch} shows the salient parts of the architecture for this
+project.  Note that we are not using the web or android modules, so no details
+regarding their functionality has been included. For the most part, the use of
+routing will be relatively high level - simply requesting a list of edges
+between two points. However, the underlying engine also has a number of features
+that make it easy to customise, which will be used for more complex situations.
 
-It is important to note that the conversion from OSM data to GraphHopper data
-is done only once (as it is a time consuming process) and stores its results
-on disk.
+It is important to note that the conversion from OSM data to GraphHopper data is
+done only once (as it is a time consuming process) and stores its results on
+disk.
 
 \subsubsection{OpenStreetMap Encoding}
 
@@ -710,28 +718,28 @@ on disk.
 \end{figure}
 
 The first thing to understand is how GraphHopper converts the OpenStreetMap data
-into a graph that can be used for routing.
-For the purposes of routing, we are primarily concerned with ways that represent
-roads. However, a way does not represent the entirety of a given road - but is
-also not granular enough to allow routing. Figure \ref{fig:osm-gh} shows the
-difference between ways, roads and edges. We can see that the physical Holloway Road extends
-beyond the OSM way (red). However, if we used the way for routing we could not
-route from Hargrave Road to St John's Villas via Holloway Road. To perform
-routing, GraphHopper splits every way into an edge whenever there is a
-junction. GraphHopper's edges can be seen in orange. These can be used to perform the
-routing calculation mentioned above - there is now an edge along a subsection of
-Holloway Road that conncets Hargrave Road to St John's Villas.
+into a graph that can be used for routing.  For the purposes of routing, we are
+primarily concerned with ways that represent roads. However, a way does not
+represent the entirety of a given road - but is also not granular enough to
+allow routing. Figure \ref{fig:osm-gh} shows the difference between ways, roads
+and edges. We can see that the physical Holloway Road extends beyond the OSM way
+(red). However, if we used the way for routing we could not route from Hargrave
+Road to St John's Villas via Holloway Road. To perform routing, GraphHopper
+splits every way into an edge whenever there is a junction. GraphHopper's edges
+can be seen in orange. These can be used to perform the routing calculation
+mentioned above - there is now an edge along a subsection of Holloway Road that
+conncets Hargrave Road to St John's Villas.
 
 \subsubsection{Flag Encoders}
 
-Internally, GraphHopper compresses the information about each edge into a
-single integer - so each edge takes up no more than 32 or 64 bits.
+Internally, GraphHopper compresses the information about each edge into a single
+integer - so each edge takes up no more than 32 or 64 bits.
 
-The \texttt{FlagEncoder} interface (and the \texttt{AbstractFlagEncoder} class) define what
-operations have to be done to convert a section of a way into an edge. Edges
-store a few key pieces of information - by default, GraphHopper stores the
-length, speed and ID of an edge, with additional information optionally stored
-by the flag encoder itself.
+The \texttt{FlagEncoder} interface (and the \texttt{AbstractFlagEncoder} class)
+define what operations have to be done to convert a section of a way into an
+edge. Edges store a few key pieces of information - by default, GraphHopper
+stores the length, speed and ID of an edge, with additional information
+optionally stored by the flag encoder itself.
 
 For example, the \texttt{CarFlagEncoder} uses the type of road to calculate the
 correct maximum speed of the vehicle and then sets the speed for the edge, using
@@ -763,21 +771,21 @@ GHResponse ghResponse = graphHopper.route(ghRequest);
 
 \end{lstlisting}
 
-The \texttt{GHRequest} class stores all the information required to make a routing
-request, including the weighting and algorithm to use. An example of its use
-can be seen in Listing \ref{lst:gh-route}.
+The \texttt{GHRequest} class stores all the information required to make a
+routing request, including the weighting and algorithm to use. An example of its
+use can be seen in Listing \ref{lst:gh-route}.
 
-The response is returned in a \texttt{GHResponse} class, which holds information about
-the route in a number of different ways. The user is also responsible for
-checking the \texttt{hasErrors} method before requesting the route itself.
-Once this has been done, the route itself can be read.
+The response is returned in a \texttt{GHResponse} class, which holds information
+about the route in a number of different ways. The user is also responsible for
+checking the \texttt{hasErrors} method before requesting the route itself.  Once
+this has been done, the route itself can be read.
 
 As GraphHopper supports the use of an alternative routes algorithm (meaning a
 single request can respond with more than one route), the GHResponse class has
 both a \texttt{getAll} and \texttt{getBest} method, which return a list of
 \texttt{PathWrapper}s and a single PathWrapper respectively. The PathWrapper
-holds the route itself as well as some metadata. The route can be accessed as
-a list of instructions or as the raw list of points for visual display.
+holds the route itself as well as some metadata. The route can be accessed as a
+list of instructions or as the raw list of points for visual display.
 Additionally, the total distance and time of the route are recorded.
 
 However, GraphHopper does not provide a list of edges or of OSM Ways that are
@@ -916,29 +924,29 @@ WebSocketServer class to create the MarmosetSocketServer class.
 In the architecture diagram (Figure \ref{fig:init-arch}), we see four main
 classes on the backend.
 
-The \texttt{MarmosetSocketServer} class handles the connection between server and client.
-It keeps track of each of the connected clients and offers a simple command to
-distribute vehicle position data to each of them.
+The \texttt{MarmosetSocketServer} class handles the connection between server
+and client.  It keeps track of each of the connected clients and offers a simple
+command to distribute vehicle position data to each of them.
 
-The \texttt{Marmoset} class is a static class that is the main entry point for the
-program. It initialises the file server and WebSocket server, and creates a new
-thread for running the MarmosetHopper timesteps. It also handles passing data from
-MarmosetHopper to the socket server.
+The \texttt{Marmoset} class is a static class that is the main entry point for
+the program. It initialises the file server and WebSocket server, and creates a
+new thread for running the MarmosetHopper timesteps. It also handles passing
+data from MarmosetHopper to the socket server.
 
 In most types of simulation, time must be split into discrete steps that
 represent a fixed time interval in the real world. Looking at Figure
 \ref{fig:init-arch}, we can see that it is the Marmoset class that triggers each
 timestep. At this stage of the project, I had not established how well the front
 or back end would perform. As a way of simplifying the data flow and processing,
-Marmoset simply waits one second between each call of the timestep function.
-As both front end and back end take significantly less time than a second to
-perform their tasks, this was an appropriate simplification for this stage
-of development.
+Marmoset simply waits one second between each call of the timestep function.  As
+both front end and back end take significantly less time than a second to
+perform their tasks, this was an appropriate simplification for this stage of
+development.
 
-The \texttt{MarmosetHopper} class holds the list of vehicles and and creates an instance
-of the GraphHopper routing engine. It initialises all the vehicles, instructs
-them to update on each timestep and gathers their position information together
-to be sent to the clients.
+The \texttt{MarmosetHopper} class holds the list of vehicles and and creates an
+instance of the GraphHopper routing engine. It initialises all the vehicles,
+instructs them to update on each timestep and gathers their position information
+together to be sent to the clients.
 
 When initialising the vehicles, the starting location and destination are chosen
 as random latitude and longitude co-ordinates within London.
@@ -957,20 +965,22 @@ latitude and longitude.
 
 \subsection{Client Implementation}
 
-When loading the web page, a map is created and centered on the correct location.
-The client then connects to the WebSocket back end and listens for data. When it
-receives the vehicle data, it creates or updates the position of each vehicle marker.
+When loading the web page, a map is created and centered on the correct
+location.  The client then connects to the WebSocket back end and listens for
+data. When it receives the vehicle data, it creates or updates the position of
+each vehicle marker.
 
 The Leaflet.js~\cite{leaflet} library is used for both map and marker creation.
-A simple \texttt{Car} class has been created to keep track of the location of each
-marker. It stores a reference to the Leaflet.js Marker object and provides a method to
-move the marker to a new location. The Leaflet.AnimatedMarker~\cite{animarker}
-library handles smoothly moving the points to their next location, making the
-cars look like they're driving around the map in real time.
+A simple \texttt{Car} class has been created to keep track of the location of
+each marker. It stores a reference to the Leaflet.js Marker object and provides
+a method to move the marker to a new location. The
+Leaflet.AnimatedMarker~\cite{animarker} library handles smoothly moving the
+points to their next location, making the cars look like they're driving around
+the map in real time.
 
-Meanwhile, A single \texttt{CarSet} object connects to the WebSocket server and stores the
-Car objects. When data is recieved, it creates new Cars or updates the
-position of existing vehicles using their \texttt{moveTo} method.
+Meanwhile, A single \texttt{CarSet} object connects to the WebSocket server and
+stores the Car objects. When data is recieved, it creates new Cars or updates
+the position of existing vehicles using their \texttt{moveTo} method.
 
 \subsection{Results and Improvements}
 
@@ -993,10 +1003,10 @@ position of existing vehicles using their \texttt{moveTo} method.
 At the end of this section of the project, the engine was capable of performing
 its core task of simulating and visualising vehicles. In spite of many of the
 simplifications in the system, it provides quite realistic results -
-\ref{fig:init-200} shows that even after a small number of iterations certain roads
-become more congested than others. This matches the reality of driving on London
-roads - the M25 and North Circular suffer frequent delays due to a high volume
-of vehicles driving on them.
+\ref{fig:init-200} shows that even after a small number of iterations certain
+roads become more congested than others. This matches the reality of driving on
+London roads - the M25 and North Circular suffer frequent delays due to a high
+volume of vehicles driving on them.
 
 However, there are many core features missing from the engine at this point.
 
@@ -1025,10 +1035,10 @@ In section \ref{sec:nagel} we introduced the Nagel-Schreckenberg Model for
 traffic flow simulation. This section discusses the implementation of this model
 on top of the existing simulation engine described above.
 
-The original model is designed for a single road, either in a loop or an extended
-straight stretch. Implementing this on a road network introduces some additional
-challenges, particularly when dealing with the integration with GraphHopper and
-OpenStreetMaps.
+The original model is designed for a single road, either in a loop or an
+extended straight stretch. Implementing this on a road network introduces some
+additional challenges, particularly when dealing with the integration with
+GraphHopper and OpenStreetMaps.
 
 The two main concerns are how the cells should be stored and how the cells
 should be used in conjunction with the routes created by GraphHopper.
@@ -1048,8 +1058,8 @@ routing response. Additionally, GraphHopper provides an
 \texttt{AllEdgesIterator} that returns both the maximum edge ID as well as the
 data for every edge in the graph.
 
-The next decision is how and where to store the cells. In the original paper,
-we saw that each vehicle was represented by its velocity stored as an integer in
+The next decision is how and where to store the cells. In the original paper, we
+saw that each vehicle was represented by its velocity stored as an integer in
 the cell array. As we are storing a much larger amount of information about each
 vehicle in the Vehicle class, this is not a viable option. If vehicles store
 their own velocity and keep track of the current edge and cell they are on, the
@@ -1106,10 +1116,10 @@ moving through the edges, we are unable to tell if we are travelling forwards or
 backwards based on the EdgeIteratorState by itself - the ID is the same and the
 \texttt{isForward} method returns true in both directions. Initially, I had
 thought a more complex solution than the boolean arrays would be required -
-perhapes some kind of 2D mapping from pairs of node IDs (or a base node and
-edge node) to the cell array. However, it is important to note that we don't
-actually need to know if GraphHopper internally stores an edge as forward or
-reverse so long as we are able to distinguish between the two cases shown above.
+perhapes some kind of 2D mapping from pairs of node IDs (or a base node and edge
+node) to the cell array. However, it is important to note that we don't actually
+need to know if GraphHopper internally stores an edge as forward or reverse so
+long as we are able to distinguish between the two cases shown above.
 
 The technique I came up with to solve this uses the fact that the base node and
 adjacent node returned by the edge changes depending on direction. As such, we
@@ -1121,8 +1131,8 @@ backwards cases, and save the vehicles from crashing into each other.
 The \texttt{CellGraph} class handles the storage for the cells, providing
 convenient getters and setters for edges at specific cells. It also
 transparently handles the forward and reverse edges, storing two boolean arrays
-(\texttt{boolean[][] cells} and \texttt{boolean[][] reverseCells})
- and uses whichever one is appropriate for the current EdgeIteratorState.
+(\texttt{boolean[][] cells} and \texttt{boolean[][] reverseCells}) and uses
+whichever one is appropriate for the current EdgeIteratorState.
 
 \subsection{Vehicle and Cell Iterators}
 
@@ -1138,10 +1148,10 @@ next vehicle. In \ref{fig:nagel-multi}, we see three vehicles - A, B and C.
 Vehicle A is 2 cells from B and 3 cells from C. However, A is soon to turn left
 onto the edge with C, meaning it should not consider B as ahead of it.
 
-However, each of these paths consists of multiple edges. We need a way of treating
-lists of edges as a single continuous array of cells. This is a good use case
-for the iterator pattern, providing us with an abstraction over the underlying
-arrays.
+However, each of these paths consists of multiple edges. We need a way of
+treating lists of edges as a single continuous array of cells. This is a good
+use case for the iterator pattern, providing us with an abstraction over the
+underlying arrays.
 
 The \texttt{VehicleIterator} class is responsible for storing and moving through
 the vehicle's route. It stores the list of EdgeIteratorState objects and moves
@@ -1154,9 +1164,9 @@ meaning it can traverse across edge boundaries by calling the VehicleIterator's
 \texttt{next} method. It also has a reference to the CellGraph so that it can
 return weather there is a vehicle in the current cell.
 
-%When routing, GraphHopper starts by finding the nearest edge to the start
-%and end locations. It then creates `virtual edges' from the start location to
-%the first edge and from the last edge to the
+%When routing, GraphHopper starts by finding the nearest edge to the start and
+%end locations. It then creates `virtual edges' from the start location to the
+%first edge and from the last edge to the
 
 \subsection{Vehicle Class}
 
@@ -1169,10 +1179,11 @@ location into the edge geometry to find the vehicle's location.
 
 The vehicle class stores two core things that make the implementation possible.
 The first is a VehicleIterator (named \texttt{route}) containing the list of
-edges each vehicle will take, as well as its current edge. The second is
-the current cell ID the vehicle is on. By duplicating the VehicleIterator and
+edges each vehicle will take, as well as its current edge. The second is the
+current cell ID the vehicle is on. By duplicating the VehicleIterator and
 passing it to a new CellIterator, the vehicle can find out if it is able to
-accelerate or must slow down - even if the vehicle in front is multiple edges ahead.
+accelerate or must slow down - even if the vehicle in front is multiple edges
+ahead.
 
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[caption={The \texttt{slowStep} implementation making use of the CellIterator},
@@ -1194,19 +1205,19 @@ public void slowStep()
 Listing \ref{lst:slowStep} shows how the CellIterator and VehicleIterator work
 in conjunction to implement the the slow step of the Nagel-Schreckenberg method.
 The variable \texttt{j} represents the distance to the next vehicle, whilst
-\texttt{v} is the vehicle's current velocity. Line 4 shows the initialisation
-of the CellIterator - note that \texttt{route} is a VehicleIterator being
-created with a copy constructor, meaning that the current location of the
-vehicle will not be changed from this CellIterator.
+\texttt{v} is the vehicle's current velocity. Line 4 shows the initialisation of
+the CellIterator - note that \texttt{route} is a VehicleIterator being created
+with a copy constructor, meaning that the current location of the vehicle will
+not be changed from this CellIterator.
 
 \subsection{Results and Evaluation}
 
 <CREATE ARCHITECTURE DIAGRAM YAH>
 
-At this point, the system was capable of simulating any number of
-vehicles with realistic traffic flow behaviour. However, there were still many
-key performance improvements that needed to occurr before the system would be
-ready for algorithm development.
+At this point, the system was capable of simulating any number of vehicles with
+realistic traffic flow behaviour. However, there were still many key performance
+improvements that needed to occurr before the system would be ready for
+algorithm development.
 
 \begin{itemize}
     \item The back end still waits one second per iteration.
@@ -1260,9 +1271,8 @@ though the vehicles are driving around the map in real time. However, this had a
 huge performance cost, and as such had to be disabled.
 
 Additionally, the vehicle image I used was reasonably large and in colour. I
-created a much smaller vehicle image (from 15KB to 1KB.), which
-did improve performance a little, but did not raise the 16,000 vehicle
-limitation.
+created a much smaller vehicle image (from 15KB to 1KB.), which did improve
+performance a little, but did not raise the 16,000 vehicle limitation.
 
 One of the core issues with the existing implementation was the use of
 \texttt{img} tags for displaying the vehicles. As each HTML tag is a full blown
@@ -1301,14 +1311,14 @@ replaced with a \texttt{CircleMarker}, which used the same API as the Animated
 and normal image markers but instead shows a circle with customisable radius and
 colour.
 
-SVG combined the performance of Canvas (rendering 64,000 vehicles
-whilst remaining responsive) and the interactivity of img tags (panning around
-the map worked flawlessly, and popups worked with no additional work). The only
-downside was that a circle is shown instead of a vehicle icon, meaning it is
-not possible to rotate the shape to indicate which direction the vehicles are
-travelling. This is a minor price to pay for the performance improvements, so
-the decision was made to use SVG for the front end moving forwards - the result
-can be seen in Figure \ref{fig:orange-markers}.
+SVG combined the performance of Canvas (rendering 64,000 vehicles whilst
+remaining responsive) and the interactivity of img tags (panning around the map
+worked flawlessly, and popups worked with no additional work). The only downside
+was that a circle is shown instead of a vehicle icon, meaning it is not possible
+to rotate the shape to indicate which direction the vehicles are travelling.
+This is a minor price to pay for the performance improvements, so the decision
+was made to use SVG for the front end moving forwards - the result can be seen
+in Figure \ref{fig:orange-markers}.
 
 \subsubsection{WebSocket Data Format}
 
@@ -1322,11 +1332,10 @@ time to convert the data into a string only to parse it back into numerical
 values on both the front end and back end.
 
 The string data required for updating the locations of 1000 vehicles takes 33Kb.
-Encoding this as raw binary data requires
-4 bytes for the vehicle id and speed each and 8 bytes for each of the latitude and
-longitude, requiring 24 bytes per vehicle and hence 24Kb for the total transfer.
-This is not only smaller, but also comes with a performance and accuracy
-improvement as well.
+Encoding this as raw binary data requires 4 bytes for the vehicle id and speed
+each and 8 bytes for each of the latitude and longitude, requiring 24 bytes per
+vehicle and hence 24Kb for the total transfer.  This is not only smaller, but
+also comes with a performance and accuracy improvement as well.
 
 Thankfully, the WebSocket protocol supports the sending of binary data, which
 can then be efficiently processed by the front end using the DataView APIs. On
@@ -1412,15 +1421,14 @@ the architecture of the system.
     \caption{The Vehicle and VehicleIterator class structure}\label{fig:veh-arch}
 \end{figure}
 
-Following the refactor, the Vehicle and VehicleIterator have been
-changed into interfaces with the public methods originally implemented in the
-Vehicles class. \texttt{BaseVehicle} and
-\texttt{BaseVehicleIterator} are abstract classes that implement most of the
-boilderplate functionality. BaseVehicle holds the implementation of the
-Nagel-Schreckenberg model, with routing behaviour
-defined by the VehicleIterator. A subclass of BaseVehicle must implement only a
-single method - \texttt{getVehicleIterator()}, which creates a VehicleIterator
-of the correct type and with the right routing information.
+Following the refactor, the Vehicle and VehicleIterator have been changed into
+interfaces with the public methods originally implemented in the Vehicles class.
+\texttt{BaseVehicle} and \texttt{BaseVehicleIterator} are abstract classes that
+implement most of the boilderplate functionality. BaseVehicle holds the
+implementation of the Nagel-Schreckenberg model, with routing behaviour defined
+by the VehicleIterator. A subclass of BaseVehicle must implement only a single
+method - \texttt{getVehicleIterator()}, which creates a VehicleIterator of the
+correct type and with the right routing information.
 
 For the standard routing algorithm, new \texttt{DijkstraVehicle} and
 \texttt{DijkstraVehicleIterator} classes have been created. As a way of
@@ -1442,13 +1450,13 @@ metric - vehicle, route and network metrics.
 \subsubsection{Vehicle Metrics}
 
 As their name suggests, vehicle metrics provide information about the state of
-one or more vehicles. They can be calculated at any time, so can be recorded
-and stored on each iteration. Vehicle metrics are the easiest way of getting a
-sense of the overall behaviour of the system at any point in time.
+one or more vehicles. They can be calculated at any time, so can be recorded and
+stored on each iteration. Vehicle metrics are the easiest way of getting a sense
+of the overall behaviour of the system at any point in time.
 
 With the goal of understanding the levels of congestion, I tracked two main
-vehicle metrics: the number vehicles not moving at the maximum road speed, and the
-number of vehicles that slowed down due to a vehicle in front of them.
+vehicle metrics: the number vehicles not moving at the maximum road speed, and
+the number of vehicles that slowed down due to a vehicle in front of them.
 
 A new inner \texttt{Metric} class was added to MarmosetHopper, with simple data
 properties storing the average values for the two metrics mentioned above, as
@@ -1470,8 +1478,8 @@ vehicle behaviours.
 Route metrics can only be recorded once the vehicle has reached its destination
 rather than whilst it's travelling. As such, I added a \texttt{printMetrics}
 function to BaseVehicle and provided implementations in DijkstraVehicle, which
-prints the expected time from GraphHopper and the actual number of iterations the
-vehicle took to reach its destination.
+prints the expected time from GraphHopper and the actual number of iterations
+the vehicle took to reach its destination.
 
 These metrics are output into a file that holds the id of the vehicle in
 question - each vehicle has its own file, meaning there is no need for
@@ -1487,9 +1495,9 @@ positions and speed every 1000 iterations.
 
 The code previously used to convert the Vehicle objects into strings was
 repurposed and instead placed into an iteration file, meaning the data is human
-readable and easy to parse. Adding a simple input box with basic parsing code allows the data to be
-explored interactively after the simulation has finished, as can be seen in
-Figure \ref{fig:offline-network}.
+readable and easy to parse. Adding a simple input box with basic parsing code
+allows the data to be explored interactively after the simulation has finished,
+as can be seen in Figure \ref{fig:offline-network}.
 
 \begin{wrapfigure}{r}{0.4\textwidth}
     \vspace{-2em}
@@ -1546,7 +1554,7 @@ the location and planned destination of every vehicle in a city was assumed. The
 algorithm would then provide routes for each vehicle in the system.
 
 A number of potential tehniques were explored before settling on the final
-choice. Initially, I had
+choice. The BeeJamA algorithm \cite{sec:beejama}
 
 \subsection{Implementation}
 
