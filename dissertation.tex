@@ -26,10 +26,9 @@
                 % the degree programme
                     degree={MEng},
                 % the dissertation    title (which cannot be blank)
-                     title={MARMOSET: Multi Agent Real-time Multi-core Online
-                     Simulation for Efficient Transportation},
+                     title={MARMOSET},
                 % the dissertation subtitle (which can    be blank)
-                  subtitle={},
+                  subtitle={Multi-Agent Route Management using Online Simulation for Efficient Transportation},
                 % the dissertation     type
                       type={research},
                 % the year of submission
@@ -43,6 +42,22 @@
 \usepackage{subcaption}
 
 \graphicspath{ {images/} }
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color
+  basicstyle=\footnotesize\ttfamily,        % size of fonts used for the code
+  breaklines=true,                 % automatic line breaking only at whitespace
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  keywordstyle=\color{blue},       % keyword style
+  stringstyle=\color{mymauve},     % string literal style
+  language=Java
+}
 
 \begin{document}
 
@@ -72,8 +87,8 @@
 
 \tableofcontents
 \listoffigures
-\listoftables
-\listofalgorithms
+%\listoftables
+%\listofalgorithms
 \lstlistoflistings
 
 % The following sections are part of the front matter, but are not generated
@@ -135,7 +150,7 @@
 This project has two parts - a back end engine written in Java, and a front end
 visualisation part running in the browser using JavaScript.
 
-\subsection*{Back End}
+\section*{Back End}
 \begin{quote}
 \noindent
 \begin{itemize}
@@ -151,7 +166,7 @@ visualisation part running in the browser using JavaScript.
 \end{itemize}
 \end{quote}
 
-\subsection*{Front End}
+\section*{Front End}
 \begin{quote}
 \noindent
 \begin{itemize}
@@ -187,6 +202,11 @@ visualisation part running in the browser using JavaScript.
 \noindent
 \begin{tabular}{lcl}
 OSM                 &:     & OpenStreetMap \\
+GraphHopper         &:     & Open Source Routing Engine, used for location to
+    location routing requests \\
+VANET               &:     & Vehicular-AdHoc NETwork \\
+V2V                 &:     & Vehicle to Vehicle \\
+V2I                 &:     & Vehicle to Vehicle \\
 \end{tabular}
 \end{quote}
 
@@ -518,6 +538,40 @@ huge impact on query times. For routing from Moscow to Madrid, any dijkstra base
 takes at least 10 seconds, compared to less than 0.05s for a processed graph.
 \textbf{Cite: https://graphhopper.com/public/slides/2014-locationtech.pdf}
 
+\subsection{Multi-Vehicle Routing Algorithms}
+
+Dealing with the routing for a single vehicle is now essentially a solved
+problem, with various implementations used in many commercial products for
+consumers and businesses. However, the problem of routing multiple vehicles
+simultaneously is a problem with many solutions, but no accepted `best practice'
+technique.
+
+Multi-Vehicle routing algorithms come in various forms, depending on the
+author's expectations for future vehicle connectivity. Some algorithms are
+designed to have a large scale overview of where each vehicle is on the road,
+and will dispatch routing information to the vehicles centrally. On the other
+end, algorithms may assume no central information and instead rely upon vehicle
+to vehicle connections for passing information.
+
+The two types of algorithm are generally referred to as \textbf{V2V} (Vehicle to
+Vehicle) or \textbf{V2I} (Vehicle to Infrastructure).
+
+\subsubsection{VANET}
+
+A VANET (Vehicular-AdHoc NETwork) is a high-level use of V2V communication.
+Although primarily theoretical at the moment, wireless networking protocols and
+algorithms have been designed to support the creation and ues of a VANET. VANETs
+have a number of potential use cases - allowing vehicles to follow one another
+with no driver intervention, realtime calculation and distribution of traffic
+information and so on.
+
+Algorithms for multi-vehicle routing making use of VANETs have also been
+created.
+
+Modern simulation engines are often designed to support both V2V and V2I
+algorithms - these engines are known as V2X engines.
+
+
 \subsection{Nagel-Schreckenberg Model} \label{sec:nagel}
 
 The Nagel-Schreckenberg Model~\cite{nagel} is a cellular automaton model for the flow of
@@ -585,8 +639,6 @@ when there is a density of 0.1 cars per cell.
     \includegraphics[scale=0.4]{nagel}
     \caption{Formation of traffic jams in the Nagel-Schreckenberg Model}\label{nagel-demo}
 \end{figure}
-
-%\textbf{Add info about n-lanes model if I decide to use that???}
 
 \section{Implementation Background}
 
@@ -662,12 +714,12 @@ into a graph that can be used for routing.
 For the purposes of routing, we are primarily concerned with ways that represent
 roads. However, a way does not represent the entirety of a given road - but is
 also not granular enough to allow routing. Figure \ref{fig:osm-gh} shows the
-difference between ways, roads and edges. We can see that Holloway Road extends
-beyond the OSM way in red. However, if we used the way for routing we could not
+difference between ways, roads and edges. We can see that the physical Holloway Road extends
+beyond the OSM way (red). However, if we used the way for routing we could not
 route from Hargrave Road to St John's Villas via Holloway Road. To perform
-routing, GraphHopper splits every way into multiple edges whenever there is a
-junction of any kind - these can be seen in orange. We can now perform the
-routing calculation mentioned before - there is now an edge along a subsection of
+routing, GraphHopper splits every way into an edge whenever there is a
+junction. GraphHopper's edges can be seen in orange. These can be used to perform the
+routing calculation mentioned above - there is now an edge along a subsection of
 Holloway Road that conncets Hargrave Road to St John's Villas.
 
 \subsubsection{Flag Encoders}
@@ -697,28 +749,58 @@ how the data stored at the edges is used. For example, one can search for the
 shortest route, the fastest route, or a custom weighting that incorporates other
 information stored in the edge.
 
+\subsubsection{Routing Requests}
+
+As it is primarily designed to work with its web module, GraphHopper uses a
+request-response pattern for requesting and receiving routes.
+
+\begin{lstlisting}[label=lst:gh-route,caption={GraphHopper request and response}]
+
+GHRequest ghRequest = new GHRequest(startLat, startLon, endLat, endLon);
+ghRequest.setWeighting("fastest");
+ghRequest.setAlgorithm("dijkstrabi");
+GHResponse ghResponse = graphHopper.route(ghRequest);
+
+\end{lstlisting}
+
+The \texttt{GHRequest} class stores all the information required to make a routing
+request, including the weighting and algorithm to use. An example of its use
+can be seen in Listing \ref{lst:gh-route}.
+
+The response is returned in a \texttt{GHResponse} class, which holds information about
+the route in a number of different ways. The user is also responsible for
+checking the \texttt{hasErrors} method before requesting the route itself.
+Once this has been done, the route itself can be read.
+
+As GraphHopper supports the use of an alternative routes algorithm (meaning a
+single request can respond with more than one route), the GHResponse class has
+both a \texttt{getAll} and \texttt{getBest} method, which return a list of
+\texttt{PathWrapper}s and a single PathWrapper respectively. The PathWrapper
+holds the route itself as well as some metadata. The route can be accessed as
+a list of instructions or as the raw list of points for visual display.
+Additionally, the total distance and time of the route are recorded.
+
+However, GraphHopper does not provide a list of edges or of OSM Ways that are
+included in the route. Internally, the list of edges is calculated with the
+\texttt{calcPaths} function, which returns a list of \texttt{EdgeIteratorState}
+objects. These objects are fundamental to the way the graph is stored an
+accessed in GraphHopper.
+
+GraphHopper uses the flywheel pattern for efficient access to graph data. The
+EdgeIterator and EdgeIteratorState class are the primary way of interacting
+directly with the edge data. EdgeIteratorState is an interface containing
+getters and setters for the edge ID, its geometry, the flags stored by the
+FlagEncoder, and the name of the road the edge is a part of. It also allows
+access to the nodes at either end of this edge. The node at the start of the
+edge is called the Base Node, whilst the node at the end of the edge is the
+Adjacent Node.
+
 % -----------------------------------------------------------------------------
 
 \chapter{Project Execution}
 \label{chap:execution}
 
 %%%%%% ======= 15 PAGES ======= %%%%%%
-
-\definecolor{mygreen}{rgb}{0,0.6,0}
-\definecolor{mygray}{rgb}{0.5,0.5,0.5}
-\definecolor{mymauve}{rgb}{0.58,0,0.82}
-
-\lstset{ %
-  backgroundcolor=\color{white},   % choose the background color
-  basicstyle=\footnotesize\ttfamily,        % size of fonts used for the code
-  breaklines=true,                 % automatic line breaking only at whitespace
-  captionpos=b,                    % sets the caption-position to bottom
-  commentstyle=\color{mygreen},    % comment style
-  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
-  keywordstyle=\color{blue},       % keyword style
-  stringstyle=\color{mymauve},     % string literal style
-  language=Java
-}
 
 \section{Overview}
 
@@ -1069,7 +1151,8 @@ to the usual EdgeIteratorState methods, it can return the road speed of an edge.
 
 The \texttt{CellIterator} class stores the cell ID and the VehicleIterator,
 meaning it can traverse across edge boundaries by calling the VehicleIterator's
-\texttt{next} method.
+\texttt{next} method. It also has a reference to the CellGraph so that it can
+return weather there is a vehicle in the current cell.
 
 %When routing, GraphHopper starts by finding the nearest edge to the start
 %and end locations. It then creates `virtual edges' from the start location to
@@ -1084,59 +1167,390 @@ The \texttt{accelerationStep}, \texttt{slowStep}, \texttt{randomStep} and
 algorithm, whilst the \texttt{updateLocation} method interpolates the cell
 location into the edge geometry to find the vehicle's location.
 
-Each of the first four methods make heavy use of the CellIterator.
+The vehicle class stores two core things that make the implementation possible.
+The first is a VehicleIterator (named \texttt{route}) containing the list of
+edges each vehicle will take, as well as its current edge. The second is
+the current cell ID the vehicle is on. By duplicating the VehicleIterator and
+passing it to a new CellIterator, the vehicle can find out if it is able to
+accelerate or must slow down - even if the vehicle in front is multiple edges ahead.
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={The \texttt{slowStep} implementation making use of the CellIterator},
+                    label=lst:slowStep, numbers=left]
+public void slowStep()
+{
+    int j = 0;
+    CellIterator c = new CellIterator(new VehicleIterator(route), cg, cellId);
+
+    while (!c.next() && j <= v)
+        j++;
+
+    if (j <= v)
+        v = j;
+}
+\end{lstlisting}
+\end{minipage}
+
+Listing \ref{lst:slowStep} shows how the CellIterator and VehicleIterator work
+in conjunction to implement the the slow step of the Nagel-Schreckenberg method.
+The variable \texttt{j} represents the distance to the next vehicle, whilst
+\texttt{v} is the vehicle's current velocity. Line 4 shows the initialisation
+of the CellIterator - note that \texttt{route} is a VehicleIterator being
+created with a copy constructor, meaning that the current location of the
+vehicle will not be changed from this CellIterator.
+
+\subsection{Results and Evaluation}
+
+<CREATE ARCHITECTURE DIAGRAM YAH>
+
+At this point, the system was capable of simulating any number of
+vehicles with realistic traffic flow behaviour. However, there were still many
+key performance improvements that needed to occurr before the system would be
+ready for algorithm development.
+
+\begin{itemize}
+    \item The back end still waits one second per iteration.
+    \item The back end archictecture does not allow for vehicles with different
+        behaviour.
+    \item The back end does not make optimal use of the multiple threads and
+        cores that modern computers have available to them.
+    \item The front end has graphical glitches and poor performance when
+        showing more than 16,000 vehicles.
+    \item Metrics for later data analysis are not recorded.
+    \item Additional vehicles could not be added to the simulation once it had
+        started.
+    \item The simulation cannot be paused or resumed.
+\end{itemize}
 
 \section{Performance and Architecture Improvements}
 
-Test
+There were two core goals for the system at this stage. Firstly, improve
+performance such that at least 64,000 vehicles can be simulated and secondly,
+modify the architecture of the system to support multiple vehicle types,
+preferably with the ability to have different vehicle types running side by
+side.
 
 \subsection{Front-end Performance}
 
-Test
+Before this stage of the project, the front end had many performance issues.
+With enough vehicles, the entire page would become slow to respond and update.
+Even with the one second delay, it would sometimes fail to update before
+recieving the next set of data.
 
-\subsubsection{Binary vs String data}
+\begin{figure}[h]
+\centering
+\begin{subfigure}[b]{0.4\textwidth}
+    \centering
+    \includegraphics[height=9em]{glitches-car}
+    \caption{Vehicles showing up as black squares rather than image icons.}\label{fig:glitches-car}
+\end{subfigure}
+\hspace{3em}
+\begin{subfigure}[b]{0.4\textwidth}
+    \centering
+    \includegraphics[height=9em]{glitches-chrome}
+    \caption{Large black blocks showing over parts of the screen.}\label{fig:glitches-chrome}
+\end{subfigure}
+\caption{Graphical glitches caused by displaying more than 16,000 images.}
+\end{figure}
 
-Test
+\subsubsection{Marker Rendering}
 
-\subsubsection{Removing animations}
+I had initially used the Leaflet.AnimatedMarker library to make it appear as
+though the vehicles are driving around the map in real time. However, this had a
+huge performance cost, and as such had to be disabled.
 
-Test
+Additionally, the vehicle image I used was reasonably large and in colour. I
+created a much smaller vehicle image (from 15KB to 1KB.), which
+did improve performance a little, but did not raise the 16,000 vehicle
+limitation.
 
-\subsubsection{Marker rendering}
+One of the core issues with the existing implementation was the use of
+\texttt{img} tags for displaying the vehicles. As each HTML tag is a full blown
+element in the DOM, there is a reasonably high performance cost associated with
+their use. There are two main alternatives for showing graphics in the browser -
+SVG and the HTML5 Canvas API.
 
-Test
+Unlike the img tag, the Canvas API is designed for drawing and other graphical
+purposes. Instead of one tag per vehicle, A single \texttt{<canvas>} element
+would be able to render every vehicle. I had been concerned that there would be
+major challenges in extending the Leaflet Marker class to use an entirely
+different way of showing markers, but thankfully Leaflet provided the location
+to display the markers in pixels to marker subclasses. Using Canvas offered
+drastically improved performance with seemingly no upper limit on how many
+vehicles the front end could display with no glitches.
+
+However, there were a few downsides to using Canvas. Firstly, the map correctly
+re-rendered all the markers when zooming in and out, but not update the markers
+when panning the map. Attempts at fixing this issue were unsuccessful.
+Additionally, the img tags were able to support a popup when mousing over a
+vehicle that showed its current speed and ID, which was useful for debugging.
+This would have to be implemented by hand to be supported with Canvas - manually
+detecting the current mouse position, checking which vehicle it was hovering
+over and then drawing a custom popup on top of the view.
+
+\begin{wrapfigure}{l}{0.3\textwidth}
+    \centering
+    \includegraphics[height=10em]{orange-markers}
+    \caption{SVG Rendered orange markers showing 30,000 vehicles}\label{fig:orange-markers}
+\end{wrapfigure}
+
+Instead, I decided to experiment with SVG (Scalable Vector Graphics), an XML
+based web API. One key advantage is that Leaflet has built in support for
+drawing certain types of SVG elements. The static image marker could simply be
+replaced with a \texttt{CircleMarker}, which used the same API as the Animated
+and normal image markers but instead shows a circle with customisable radius and
+colour.
+
+SVG combined the performance of Canvas (rendering 64,000 vehicles
+whilst remaining responsive) and the interactivity of img tags (panning around
+the map worked flawlessly, and popups worked with no additional work). The only
+downside was that a circle is shown instead of a vehicle icon, meaning it is
+not possible to rotate the shape to indicate which direction the vehicles are
+travelling. This is a minor price to pay for the performance improvements, so
+the decision was made to use SVG for the front end moving forwards - the result
+can be seen in Figure \ref{fig:orange-markers}.
+
+\subsubsection{WebSocket Data Format}
+
+The backend initially just sent down data in string format - for example,
+\textit{10067|51.5306611887|0.1609468558|1} for vehicle with id 10067. This
+format has a number of issuses. Firstly, there is limited precision for the
+values, as they must be truncated to a certain number of decimal places.
+Secondly, the format is text based, meaning there is a much larger overhead of
+space compared to storing the values numerically. Finally, it takes additional
+time to convert the data into a string only to parse it back into numerical
+values on both the front end and back end.
+
+The string data required for updating the locations of 1000 vehicles takes 33Kb.
+Encoding this as raw binary data requires
+4 bytes for the vehicle id and speed each and 8 bytes for each of the latitude and
+longitude, requiring 24 bytes per vehicle and hence 24Kb for the total transfer.
+This is not only smaller, but also comes with a performance and accuracy
+improvement as well.
+
+Thankfully, the WebSocket protocol supports the sending of binary data, which
+can then be efficiently processed by the front end using the DataView APIs. On
+the back end, we create a single reusable BinaryBuffer object and pass it to the
+Vehicles, which add their data into a specific offset. This is significantly
+more efficient than the string based method, although the change is primarily
+for improving network and front end performance.
 
 \subsection{Back-end Performance}
 
-Test
-
 \subsubsection{Removing timelock}
 
-Test
+The most necessary change was removing the added delay for the timestep from the
+Marmoset class. Instead of sending the data every second, the socket server
+waits for a `next' message from the front end to start processing the next
+timestep. It then sends the data and continues to wait for the command to
+continue.
+
+This drastically improved the speed of the system. For low numbers of vehicles,
+each timestep takes little more than a few milliseconds on both the front and
+back end. 1000 iterations with 1000 vehicles used to take at least 16 minutes -
+after making this change it took just 50 seconds.
+
+Additionally, this allowed much larger numbers of vehicles to be simulated and
+visualised at the same time - the back end will only send data to the front end
+once it has rendered the previous set of changes.
+
+This also made it easier to add the ability to pause the simulation - by simply
+ceasing to send the \texttt{next} message, the back end does no further work,
+leaving the user able to explore the current state of the simulation in the
+browser.
 
 \subsubsection{Exploiting Parallelism}
 
-Test
+Initial version of the system simply did all their work on a single thread.
+There were a number of places were task level parallelism made it easy to add
+more threads and cores to the system to improve performance.
 
-\subsubsection{Offline Simulation}
+\begin{lstlisting}[caption={The single-threaded \texttt{timestep} function},
+    label=lst:timestep]
+public void timestep()
+{
+    vehicles.stream().forEach(Vehicle::accelerationStep);
+    vehicles.stream().forEach(Vehicle::slowStep);
+    vehicles.stream().forEach(Vehicle::randomStep);
+    vehicles.stream().forEach(Vehicle::moveStep);
+    vehicles.stream().forEach(Vehicle::updateLocation);
 
-Test
+    vehicles.stream().filter(v -> !v.isFinished()).collect(Collectors.toList());
+}
+\end{lstlisting}
+
+In Listing \ref{lst:timestep} we can see the use of the Java 8 Stream API to run
+the Nagel-Schreckenberg functions on each vehicle. However, one of the core
+features of the API is built-in support for concurrency. By replacing the calls
+to \texttt{stream()} with \texttt{parallelStream()}, Java will automatically
+split the computation over multiple threads, whilst ensuring that all processes
+have completed when the next line is executed. Minor changes were made to ensure
+that the filter step for removing finished vehicles from the collection was
+still thread-safe.
+
+When adding new vehicles to the simulation, their initialisation uses
+GraphHopper to find the route to their destination. This takes orders of
+magnitude longer than the timesteps themselves, and as GraphHopper is
+thread-safe for making routing requests is an easy way to further improve
+performance.
+
+EXPLAIN THIS BIT FURTHER MAYBE???
 
 \subsection{Architecture Improvments}
 
-Test
+One of the issues with the existing system is the lack of support for multiple
+vehicle types - although there is a Vehicle class that could be subclassed, it
+is not easy to modify its behaviour without having to rewrite much of the code.
+As such, I decided a refactor of this part of the system was required to improve
+the architecture of the system.
 
 \subsubsection{Vehicle Refactoring}
 
-Test
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.6,page=6,clip,trim=0 11cm 8cm 0]{architecture}
+    \caption{The Vehicle and VehicleIterator class structure}\label{fig:veh-arch}
+\end{figure}
+
+Following the refactor, the Vehicle and VehicleIterator have been
+changed into interfaces with the public methods originally implemented in the
+Vehicles class. \texttt{BaseVehicle} and
+\texttt{BaseVehicleIterator} are abstract classes that implement most of the
+boilderplate functionality. BaseVehicle holds the implementation of the
+Nagel-Schreckenberg model, with routing behaviour
+defined by the VehicleIterator. A subclass of BaseVehicle must implement only a
+single method - \texttt{getVehicleIterator()}, which creates a VehicleIterator
+of the correct type and with the right routing information.
+
+For the standard routing algorithm, new \texttt{DijkstraVehicle} and
+\texttt{DijkstraVehicleIterator} classes have been created. As a way of
+verifying that multiple vehicle types are possible, I also created a
+\texttt{RandomVehicle} and corresponding \texttt{RandomVehicleIterator} that
+simply drive around at random with no overarching behaviour.
 
 \subsection{Metric calculations}
 
-Test
+The initial engine only allowed for viewing the results of an algorithm by
+looking at the visualisation - it is also important to be able to perform
+offline analysis of the data.
+
+Brief calculations showed that storing the full movement of 64,000 vehicles
+could take up to 10GB of storage, suggesting that it was better to calculate
+metrics at each timestep and store those instead. There are three main types of
+metric - vehicle, route and network metrics.
+
+\subsubsection{Vehicle Metrics}
+
+As their name suggests, vehicle metrics provide information about the state of
+one or more vehicles. They can be calculated at any time, so can be recorded
+and stored on each iteration. Vehicle metrics are the easiest way of getting a
+sense of the overall behaviour of the system at any point in time.
+
+With the goal of understanding the levels of congestion, I tracked two main
+vehicle metrics: the number vehicles not moving at the maximum road speed, and the
+number of vehicles that slowed down due to a vehicle in front of them.
+
+A new inner \texttt{Metric} class was added to MarmosetHopper, with simple data
+properties storing the average values for the two metrics mentioned above, as
+well as the total number of vehicles and the average speed (in cells per second)
+of the vehicles. The \texttt{toString} method has also been overridden to print
+the data in CSV format, whilst a static method returns the header for the CSV
+file to output.
+
+\subsubsection{Route Metrics}
+
+We can also better understand congestion by looking at how long a journey should
+take compared to how long it did take. The GraphHopper \texttt{GHResponse} class
+stores the length of time a route is expected to take. Although it does not
+include a realistic model of vehicle behaviour (so does not truly represent the
+correct time a journey would take, even on empty roads), the difference between
+expected and actual time is another metric that can be used to compare different
+vehicle behaviours.
+
+Route metrics can only be recorded once the vehicle has reached its destination
+rather than whilst it's travelling. As such, I added a \texttt{printMetrics}
+function to BaseVehicle and provided implementations in DijkstraVehicle, which
+prints the expected time from GraphHopper and the actual number of iterations the
+vehicle took to reach its destination.
+
+These metrics are output into a file that holds the id of the vehicle in
+question - each vehicle has its own file, meaning there is no need for
+centralised management of writing to disk.
+
+\subsubsection{Network Metrics}
+
+Network Metrics provide information about the roads themselves and how congested
+or occupied they are. Instead of providing numerical data for every edge (which
+provides very little information given how few cells/vehicles the average edge
+has), a visual approach was used, simply retaining the full set of vehicle
+positions and speed every 1000 iterations.
+
+The code previously used to convert the Vehicle objects into strings was
+repurposed and instead placed into an iteration file, meaning the data is human
+readable and easy to parse. Adding a simple input box with basic parsing code allows the data to be
+explored interactively after the simulation has finished, as can be seen in
+Figure \ref{fig:offline-network}.
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \vspace{-2em}
+    \centering
+    \includegraphics[width=0.35\textwidth]{dijkstra-15k-wide}
+    \caption{Post-simulation analysis of the 9,000th iteration of 15,000 vehicles}\label{fig:offline-network}
+    \vspace{-3em}
+\end{wrapfigure}
+
+\subsection{Offline Simulation}
+
+With the addition of metrics, it became clear that it would be useful to be able
+to run a simulation in the background and analyse the data later. One use case
+would be understanding how long it takes all vehicles to reach their
+destinations - another is for analysing very high density networks where it may
+not be desirable to view the data on screen.
+
+A command line flag (\texttt{--file}) was added representing the number of
+vehicles to be simulated. The simulation creates a folder for the metrics
+including the number of vehicles and a Unix timestamp, allowing it to be
+uniquely identified.
+
+However, the offline simulation appeared to be running slower than I had hoped
+given it was not constrained by the browser rendering. The VisualVM Java
+profiler was used to identify potential performance improvements whilst
+simulating. Interestingly, far more time was spent in the
+\texttt{updateLocation} step than I had expected - and given that the physical
+location is only used for display and not internal routing, a flag was added to
+disable the location updates for every timestep. Instead, the location is only
+updated when required (e.g for outputting the locations every 1000 iterations).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth,clip,trim=0 7cm 0 0]{visualvm-profile}
+    \caption{VisualVM Profile of the most time consuming functions}\label{fig:visualvm}
+\end{figure}
+
+Removing the location updates had a drastic improvement to offline performance,
+meaning simulations with large numbers of vehicles could be simulated to
+completion in a reasonably short amount of time.
 
 \section{Algorithm Design and Implementation}
 
-Test
+As a way of exploring the capaiblity of the simulation engine, a multi-vehicle
+routing algorithm was designed, implemented and tested.
+
+\subsection{Design}
+
+I chose to design a V2I algorithm, as there would be a substantial amount of
+additional code required to simulate realistic V2V communication. V2I simulation
+can apply to both high and low density situations as it is not limited by the
+distance to the nearest vehicle. Instead, access to a central system that knew
+the location and planned destination of every vehicle in a city was assumed. The
+algorithm would then provide routes for each vehicle in the system.
+
+A number of potential tehniques were explored before settling on the final
+choice. Initially, I had
+
+\subsection{Implementation}
+
+\subsection{Testing}
 
 %This chapter is intended to describe what you did: the goal is to explain
 %the main activity or activities, of any type, which constituted your work
