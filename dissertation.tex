@@ -40,9 +40,29 @@
 \usepackage{wrapfig}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{adjustbox}
+\usepackage[T1]{fontenc}
+
+\captionsetup{%
+    justification=raggedright
+}
+
+% nice pretty box for wrapfig
+\definecolor{light-grey}{gray}{0.95}
+\newenvironment{greybox}{%
+    \noindent
+    \adjustbox{innerenv={varwidth}{\dimexpr\linewidth-2\fboxsep-0.45cm\relax},
+        margin=\fboxsep+.25cm \fboxsep+.2cm,bgcolor=light-grey,center}\bgroup
+}{%
+
+    \egroup
+
+}
 
 \graphicspath{ {images/} }
 
+
+% setup for listings
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
@@ -257,14 +277,16 @@ When MapQuest first launched in 1996, most drivers found their way to new
 locations using physical paper maps as well as knowledge gained through
 experience. MapQuest was the first online service to change that - instead of
 figuring out a route yourself, you could enter your location and destination and
-have a route provided to you. Unfortunately, using these routes meant printing
-out or writing down the instructions yourself - the route was fixed from when it
-was calculated.
+have a route provided to you. Using these routes required printing
+out or writing down the instructions yourself, meaning changes to the driving
+environment (such as traffic or roadworks) could not be anticipated.
 
 In 2005, the first online version of Google Maps was released. Unlike its
 predecessors, Google Maps used real-time traffic analysis to improve the routes
-it offered to its users. However, with the exception of high-end vehicles with
-GPS navigation, these were still usually printed for use.
+it offered to its users. Initially, Google Maps lagged behind MapQuest, but with
+improvements to both their interface and their map and route quality they soon
+took the lead. However, for a time most routes were still printed - even
+vehicles with GPS navigation rarely used non-static mapping information.
 
 It took the release of the iPhone in 2007 to take full advantage of the new
 information available - suddenly, people were able to plan routes and modify
@@ -553,8 +575,10 @@ and will dispatch routing information to the vehicles centrally. On the other
 end, algorithms may assume no central information and instead rely upon vehicle
 to vehicle connections for passing information.
 
-The two types of algorithm are generally referred to as \textbf{V2V} (Vehicle to
-Vehicle) or \textbf{V2I} (Vehicle to Infrastructure).
+Multi-vehicle routing algorithms rely on some kind of network for optimised
+routes to be created. These networks are referred to as \textbf{V2V} (Vehicle to
+Vehicle) or \textbf{V2I} (Vehicle to Infrastructure) networks, and an algorithm
+that relies on one or the other is known as a V2V or V2I algorithm.
 
 \subsubsection{VANET}
 
@@ -571,7 +595,7 @@ created.
 Modern simulation engines are often designed to support both V2V and V2I
 algorithms - these engines are known as V2X engines.
 
-\subsubsection{BeeJamA}
+\subsubsection{BeeJamA}\label{sec:beejama}
 
 The BeeJamA algorithm is a V2I approach for multi-vehicle routing. It is based
 off an algorithm originally created for routing in packet switching networks
@@ -579,7 +603,31 @@ that has been adapted for use on road networks. Its behaviour is inspired by the
 behaviour of bees, which are able to effectively search and scavange for food in
 a large area surrounding their hive.
 
+\noindent
+\begin{wrapfigure}{l}{0.5\textwidth}
+    \begin{greybox}
+        \centering
+        \includegraphics[width=\textwidth]{beejama}
+        \caption{A comparison of BeeJamA to Dijkstra's Algorithm in terms of travel time.}\label{fig:bjam-dijkstra}
+    \end{greybox}
+    \vspace{-2em}
+\end{wrapfigure}
 
+The BeeJamA algorithm uses a quality rating function to determine a probablity
+that a vehicle will be sent down a specific road. The map is split into regions
+called Foraging Regions. Each region stores two types of table - an
+Intra-Foraging Region routing table and an Inter-Foraging Region routing table.
+These store the cost from the quality rating function of using a particular
+route to reach the destination. The tables are kept up to date by sending
+virtual vehicles between regions, which record how long their journey took and
+inform the region they have entered.
+
+Whilst routing, each vehicle consults the routing table and probablistically
+picks its next step. This is a key part of the algorithm that helps keep routes
+uncongested - if every vehicle took the optimal path, it would no longer be
+optimal as it would have high levels of congestion. Results from a custom-built
+simulation engine have shown that the algorithm can perform better than using
+Dijkstra's algorithm with delayed traffic information.
 
 \subsection{Nagel-Schreckenberg Model} \label{sec:nagel}
 
@@ -1084,8 +1132,11 @@ Instead, we can simply allocate a two-dimensional array of booleans for each
 edge as a raw array. This avoids the issues with pointers and is consistent with
 the way GraphHopper stores edges.
 
-\begin{wrapfigure}{r}{0.4\textwidth}
-    \includegraphics[height=12em]{gh-edge-problem}
+\begin{wrapfigure}{r}{0.45\textwidth}
+    \begin{greybox}
+    \begin{center}
+        \includegraphics[width=\textwidth]{gh-edge-problem}
+    \end{center}
     \caption{The problem with GraphHopper edges}\label{fig:gh-edge-problem}
 
     \vspace{0.6em}
@@ -1096,6 +1147,7 @@ the way GraphHopper stores edges.
     EdgeIteratorState, despite going in opposite directions. Although
     GraphHopper knows that one of these is in reverse, the data is hidden from
     us.
+    \end{greybox}
     \vspace{-2em}
 \end{wrapfigure}
 
@@ -1297,11 +1349,13 @@ vehicle that showed its current speed and ID, which was useful for debugging.
 This would have to be implemented by hand to be supported with Canvas - manually
 detecting the current mouse position, checking which vehicle it was hovering
 over and then drawing a custom popup on top of the view.
-
-\begin{wrapfigure}{l}{0.3\textwidth}
-    \centering
-    \includegraphics[height=10em]{orange-markers}
-    \caption{SVG Rendered orange markers showing 30,000 vehicles}\label{fig:orange-markers}
+\begin{wrapfigure}{l}{0.35\textwidth}
+    \begin{greybox}
+        \centering
+        \includegraphics[width=\textwidth]{orange-markers}
+        \caption{SVG Rendered orange markers showing 30,000 vehicles}\label{fig:orange-markers}
+    \end{greybox}
+    \vspace{-2em}
 \end{wrapfigure}
 
 Instead, I decided to experiment with SVG (Scalable Vector Graphics), an XML
@@ -1407,11 +1461,11 @@ EXPLAIN THIS BIT FURTHER MAYBE???
 
 \subsection{Architecture Improvments}
 
-One of the issues with the existing system is the lack of support for multiple
-vehicle types - although there is a Vehicle class that could be subclassed, it
-is not easy to modify its behaviour without having to rewrite much of the code.
-As such, I decided a refactor of this part of the system was required to improve
-the architecture of the system.
+One of the issues with the system at this point was the lack of support for
+multiple vehicle types - although there is a Vehicle class that could have been
+be subclassed, it was not easy to modify its behaviour without having to rewrite
+large portions of the code.  As such, I decided a refactor of this part of the
+system was required to improve the architecture of the system.
 
 \subsubsection{Vehicle Refactoring}
 
@@ -1500,12 +1554,29 @@ allows the data to be explored interactively after the simulation has finished,
 as can be seen in Figure \ref{fig:offline-network}.
 
 \begin{wrapfigure}{r}{0.4\textwidth}
+    \vspace{-1em}
+    \begin{greybox}
+        \centering
+        \includegraphics[width=\textwidth]{dijkstra-15k-wide}
+        \caption{Post-simulation analysis of the 9,000th iteration of 15,000 vehicles}\label{fig:offline-network}
+    \end{greybox}
     \vspace{-2em}
-    \centering
-    \includegraphics[width=0.35\textwidth]{dijkstra-15k-wide}
-    \caption{Post-simulation analysis of the 9,000th iteration of 15,000 vehicles}\label{fig:offline-network}
-    \vspace{-3em}
 \end{wrapfigure}
+
+\subsection{Event System}
+
+Although the refactors mentioned above do allow for a large amount of
+flexibility, using new vehicle classes (or adding new behaviour during existing
+parts fo the process) required modifying the source of the engine directly.
+Using a simple events system enables users of the engine to add code and
+functionality during key points of the programs execution without directly
+modifying the engine. Instead, users can call a \texttt{listenTo} method with a
+callback function that is executed when the event is triggered.
+
+Event triggers were added in key locations so that this features would be
+useful. For example, an event is triggered at the start and end of each
+timestep, at the beginning and end of initialisation and when a new vehicle is
+added.
 
 \subsection{Offline Simulation}
 
@@ -1544,19 +1615,70 @@ completion in a reasonably short amount of time.
 As a way of exploring the capaiblity of the simulation engine, a multi-vehicle
 routing algorithm was designed, implemented and tested.
 
-\subsection{Design}
+\subsection{Algorithm Design}
 
 I chose to design a V2I algorithm, as there would be a substantial amount of
-additional code required to simulate realistic V2V communication. V2I simulation
-can apply to both high and low density situations as it is not limited by the
-distance to the nearest vehicle. Instead, access to a central system that knew
-the location and planned destination of every vehicle in a city was assumed. The
-algorithm would then provide routes for each vehicle in the system.
+additional code required to simulate realistic V2V communication. It is also
+beneficial that V2I simulation can apply to both high and low density situations
+as it is not limited by the distance to the nearest vehicle. Instead, access to
+a central system that knew the location and planned destination of every vehicle
+in a city was assumed. The algorithm would then provide routes for each vehicle
+in the system.
 
-A number of potential tehniques were explored before settling on the final
-choice. The BeeJamA algorithm \cite{sec:beejama}
+The initial implementation of the Marmoset algorithm is described below. It is
+important to note that this is not the final algorithm - the goal was to find a
+potentially effective and then optimise and improve it using the simulation
+engine. We will describe the behaviour of individual vehicles and the central
+system separately.
+
+\subsubsection{Vehicle Behaviour}
+
+Individual vehicles make their current route and position available to
+the central system at all times. The vehicles request routes from the system and
+then follow them directly. A vehicle requests a new route after a random
+interval (based on a predetermined parameter).
+
+\subsubsection{Central System Behaviour}
+
+The central system stores the number of vehicles that have been told to route
+along each edge, called the Expected Map. It is initialised with zero values for
+all edges on startup.
+
+At a fixed interval, the system updates the expected map by multiplying every
+edge by a damping factor that is less than 1. It then adds the edges in each
+vehicle's current route to the expected map.
+
+When a route is requested, the data from the expected map is used in conjunction
+with a congestion function to modify the weight of edges based on their expected
+density. This will return a route that avoids high-congestion roads, which will
+be reflected in the expected map upon its next update.
+
+A congestion function was chosen that was similar to the data found by
+<RESEARCHERS/CONGESTION FUNCTION STUFF HERE>
+
+\subsubsection{Design Justification}
+
+The goal of the expected map is to help vehicles avoid roads that are likely to
+have high levels of traffic. However, a naive approach to this would result in
+oscillatory behaviour between optimal and suboptimal routes, as can be seen in
+Figure \ref{fig:bjam-dijkstra} in Section \ref{sec:beejama}. As such, the expected map
+is retained for further requests. Updating the expected map results first
+multiplies each value by the damping factor. The goal of this is to stop the
+system from having too much of a memory (and hence overpenalising roads that
+will have many vehicles on them). This factor can be adjusted to define how much memory
+the system will have of the vehicle's locations.
+
+Furthermore, the system can handle the expectation that most routes will
+change at some point whilst the vehicle is on the road. The random rerouting was
+chosen partly for improved performance of the simulation and partly to ensure
+that the busy areas will not be avoided entierly by all vehicles once the
+expected map has shown that they will be busy. If every vehicle was rerouted
+simultaneously, the vehicles would completely avoid the busy roads and hence
+fail to use the network capacity available to them.
 
 \subsection{Implementation}
+
+The implement
 
 \subsection{Testing}
 
