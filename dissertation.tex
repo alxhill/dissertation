@@ -562,18 +562,19 @@ processed graph.
 
 \subsection{Multi-Vehicle Routing Algorithms}
 
-Dealing with the routing for a single vehicle is now essentially a solved
-problem, with various implementations used in many commercial products for
+Providing viable routes for a single vehicle is now essentially a solved
+problem, with various implementations used in many commercial products for both
 consumers and businesses. However, the problem of routing multiple vehicles
-simultaneously is a problem with many solutions, but no accepted `best practice'
+simultaneously has many solutions~\cite{beejama,rt:compstudy,rt:decentralized,
+rt:guidance,rt:congestion,rt:car,rt:unexpected}, but no accepted `best practice'
 technique.
 
 Multi-Vehicle routing algorithms come in various forms, depending on the
-author's expectations for future vehicle connectivity. Some algorithms are
-designed to have a large scale overview of where each vehicle is on the road,
-and will dispatch routing information to the vehicles centrally. On the other
-end, algorithms may assume no central information and instead rely upon vehicle
-to vehicle connections for passing information.
+author's goals and expectations for future vehicle connectivity. Some algorithms
+are designed to have a large scale overview of where each vehicle is on the
+road, and will dispatch routing information to the vehicles centrally. On the
+other end, algorithms may assume no central information and instead rely upon
+vehicle to vehicle connections for passing information.
 
 Multi-vehicle routing algorithms rely on some kind of network for optimised
 routes to be created. These networks are referred to as \textbf{V2V} (Vehicle to
@@ -597,7 +598,7 @@ algorithms - these engines are known as V2X engines.
 
 \subsubsection{BeeJamA}\label{sec:beejama}
 
-The BeeJamA algorithm is a V2I approach for multi-vehicle routing. It is based
+The BeeJamA~\cite{beejama} algorithm is a V2I approach for multi-vehicle routing. It is based
 off an algorithm originally created for routing in packet switching networks
 that has been adapted for use on road networks. Its behaviour is inspired by the
 behaviour of bees, which are able to effectively search and scavange for food in
@@ -1586,7 +1587,7 @@ would be understanding how long it takes all vehicles to reach their
 destinations - another is for analysing very high density networks where it may
 not be desirable to view the data on screen.
 
-A command line flag (\texttt{--file}) was added representing the number of
+A command line flag (\texttt{-{}-file}) was added representing the number of
 vehicles to be simulated. The simulation creates a folder for the metrics
 including the number of vehicles and a Unix timestamp, allowing it to be
 uniquely identified.
