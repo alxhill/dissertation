@@ -43,6 +43,8 @@
 \usepackage{adjustbox}
 \usepackage[T1]{fontenc}
 
+\raggedbottom
+
 \captionsetup{%
     justification=raggedright
 }
@@ -72,10 +74,10 @@
   basicstyle=\footnotesize\ttfamily,        % size of fonts used for the code
   breaklines=true,                 % automatic line breaking only at whitespace
   captionpos=b,                    % sets the caption-position to bottom
-  commentstyle=\color{mygreen},    % comment style
+  commentstyle=\color{gray},    % comment style
   escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
   keywordstyle=\color{blue},       % keyword style
-  stringstyle=\color{mymauve},     % string literal style
+  stringstyle=\color{mygreen},     % string literal style
   language=Java
 }
 
@@ -1423,6 +1425,7 @@ Initial version of the system simply did all their work on a single thread.
 There were a number of places were task level parallelism made it easy to add
 more threads and cores to the system to improve performance.
 
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[caption={The single-threaded \texttt{timestep} function},
     label=lst:timestep]
 public void timestep()
@@ -1436,6 +1439,7 @@ public void timestep()
     vehicles.stream().filter(v -> !v.isFinished()).collect(Collectors.toList());
 }
 \end{lstlisting}
+\end{minipage}
 
 In Listing \ref{lst:timestep} we can see the use of the Java 8 Stream API to run
 the Nagel-Schreckenberg functions on each vehicle. However, one of the core
@@ -1701,6 +1705,11 @@ a list of all SelfDrivingVehicles. It subscribes to the ``vehicle:add'' event
 to create its own list of vehicles, as well as the ``timestep:end'' event for
 triggering its rerouting and expected map recalculation functionalities.
 
+The MultiSDVController was also optimised to exploit parallelism for the
+re-routing operations. As it was not a use case suited to the parallel Stream
+API, an \texttt{ExecutorService} is used to manage and shutdown the threads for
+routing as required.
+
 \subsection{Testing}
 
 \subsubsection{Algorithmic Adjustments}
@@ -1756,6 +1765,9 @@ general parameters of the simulation engine itself.
         'tail', etc.
     \item \textbf{Progress function} - can be modified to decrease or increase
         values on nodes further away.
+    \item \textbf{Re-routing percentage} - intially set to re-route 0.1\% of
+        vehicles each iteration, can be modified to change how quickly the
+        vehicles react to high-congestion areas.
     \item \textbf{Cell size} - can increase or decrease number of vehicles each
     road can have, also affects max speed of roads.
     \item \textbf{Vehicle density} - overall number of vehicles can be adjusted
@@ -1767,7 +1779,50 @@ general parameters of the simulation engine itself.
     \item \textbf{Vehicle destinations} - start and end location of vehicles can
         be adjusted to better model/understand traffic flow under different
         conditions.
+    \item \textbf{Slow probability} - modifying the probablity a vehicle slows
+        down (as described by the Nagel-Schreckenberg algorithm) can be adjusted
+        to simulated different types of driving behaviour.
 \end{itemize}
+
+As part of the evaluation of the algorithm, each of these parameters was
+adjusted and a comparison was made between the outcome using DijkstraVehicles or
+SelfDrivingVehicles exclusively.
+
+\subsubsection{Evaluation}
+
+This section will discuss testing methodology, with the results of the algorithm
+and the overall performance of simulation engine discussed in Chapter
+\ref{chap:evaluation} below.
+
+Evaluating how two different routing algorithms would behave in any situation is
+a challenging task with a near unlimited scope, particularly with complex
+algorithms relying on the interactions between tens or even hundreds of
+thousands of separate entities. As such, the scope of the evaluation has been
+limited one key scenario in a particular location. London has been chosen for
+the location, due to the author's familiarity with its roads and expected
+congestion. The tests will be a simple simulation of rush hour, when 64,000
+vehicles~\cite{tfl} travel into the city centre.  Congestion during this period
+of time is often at its worse, in spite of attempts by TfL to reduce travel at
+peak times.
+
+Tests will focus on a single parameter at a time. The tests for different cell
+sizes and vehicle density will be run with both the Marmoset and Dijkstra
+algorithms, whilst the tests for the Marmoset progress and congenstion functions
+will only be compared to other Marmoset tests.
+
+Interestingly, when testing the rush hour simulation using Dijkstra's algorithm
+with more than around 30,000 vehicles found a strange bug - namely, the
+simulation would not terminate due to congestion in a closed loop around
+Elephant \& Castle roundabout. All vehicles would slow to a halt along a fixed
+number of fully congested roads, as can be seen in Figure \ref{fig:dijkstra-wtf}.
+
+As such, new termination conditions were added. If every vehicle has slowed,
+is not at the road's maximum speed and the average speed of the vehicles is less
+than 0.01, the simulation terminates early. For 60,000 vehicles, early terminaton
+happens after approximately 21,000 iterations - with 30,000 vehicles this state
+is reached in around 12,000 iterations, whilst 20,000 vehicles terminates
+completely (with 0 vehicles yet to reach their destination) in a little over
+9,000 iterations.
 
 %This chapter is intended to describe what you did: the goal is to explain
 %the main activity or activities, of any type, which constituted your work
@@ -1792,18 +1847,160 @@ general parameters of the simulation engine itself.
       %is such that discussion of the results cannot be viewed separately.
 %\end{itemize}
 
-%\noindent
-%Note that it is common to include evidence of ``best practice'' project
-%management (e.g., use of version control, choice of programming language
-%and so on).  Rather than simply a rote list, make sure any such content
-%is useful and/or informative in some way: for example, if there was a
-%decision to be made then explain the trade-offs and implications
-%involved.
-
 % -----------------------------------------------------------------------------
 
 \chapter{Critical Evaluation}
 \label{chap:evaluation}
+
+\section{Marmoset Algorithm Evaluation}
+
+A simple model of rush hour was created for the purpose of evaluating the
+Marmoset algorithm. Each vehicle is given a random location and destination. The
+starting location is randomly distributed within the entirely of London, bounded
+by the M25. The destination is randomly distributed across the centre of London
+only, roughly covering Zone 1.
+
+\subsection{Vehicle Density Comparisons}
+
+The quantity of vehicles on the road clearly has the largest impact on
+congestion. Each algorithm was tested with 10,000 to 80,000 vehicles in
+increments of 10,000.
+
+\subsubsection{Dijkstra's Algorithm}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{dijkstra-speed}
+    \caption{Average speed at each iteration for vehicles routing with
+    Dijlkstra's Algorithm}\label{fig:dijkstra-speed}
+\end{figure}
+
+The graph in Figure \ref{fig:dijkstra-speed} shows two different cases for
+routing with Dijkstra's Algorithm. When simulating with 10,000 and 20,000
+vehicles, we see the behaviour of the algorithm when all vehicles reach their
+destination and terminate successfully. The remaining six simulations show the
+behaviour of the algorithm when it fails to terminate and the vehicles slow to a
+halt.
+\begin{wrapfigure}{l}{0.4\textwidth}
+    \begin{greybox}
+        \centering
+        \includegraphics[width=\textwidth]{20k-dij-speed}
+        \caption{Comparision of speed an remaining number of vehicles using
+        Dijkstra's algorithm with 20,000 vehicles.}\label{fig:20k-dij-speed}
+    \end{greybox}
+    \vspace{-3em}
+\end{wrapfigure}
+
+In the successful termination cases, we see three stages. The first exhibits a
+slow decline in average speed as we reach the congested state. We then see a
+stage where the speed remains fixed, whilst the vehicles slowly move towards
+their destinations. Finally, we see a period with increased speed volatility.
+This is due to the decreased volume of vehicles causing the average to change
+much faster, as can be seen in Figure \ref{fig:20k-dij-speed}.
+
+In the case of simulations that do not terminate normally, we see the same first
+two stages (pre-congestion and congestion respectively), but at a certain
+inflection point the average speed declines faster until it reaches zero. This
+is most notable for the 30,000 vehicle case, where the inflection point can be
+seen at around iteration 7,000, after which the average speed enters a steep
+decline.
+
+The cause of the simulation failure can be seen in Figure \ref{fig:dijkstra-wtf}
+- a roundabout in central London becomes completely congestion, stopping any
+vehicle attempting to use the roundabout. As the cars continue to pile up, more
+and more main roads become completely full until no vehicles are capable of any
+movement.
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}[b]{0.4\textwidth}
+    \centering
+    \includegraphics[height=13em]{dij-60k-blocked-wide}
+\end{subfigure}
+\hspace{1em}
+\begin{subfigure}[b]{0.4\textwidth}
+    \centering
+    \includegraphics[height=13em]{dij-60k-blocked-close}
+\end{subfigure}
+\caption{The system state shortly before termination}\label{fig:dijkstra-wtf}
+\end{figure}
+
+\subsubsection{Marmoset Algorithm}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.8\textwidth]{sdv-speed}
+    \caption{Average speed at each iteration for vehicles routing with the Marmoset Algorithm}\label{fig:sdv-speed}
+\end{figure}
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.9\textwidth]{i11k-sdv-comparison}
+    \caption{The 11,000th iteration of 50,000 and 80,000 vehicles respectively.}\label{fig:i11k-congestion}
+\end{figure}
+
+We now compare this to the Marmoset routing algorithm. The most notable
+difference is that the Marmoset algorithm successfully terminates even with
+80,000 vehicles attempting to enter the city centre (16,000 more than in rush
+hour).
+
+Figure \ref{fig:sdv-speed} shows that the Marmoset algorithm exhibits the same
+behaviour as Dijkstra's Algorithm on successful termination, but without the
+limitation on the number of vehicles that can be simulated. The simulation
+displays the three stage behaviour as before, with the congested stage
+elongating as the number of vehicles increases. We can also see a large
+difference in the amount of time it takes for the simulation to terminate,
+falling into three separate clusters - less than 40,000 vehicles, 50,000 to
+70,000 vehicles and 80,000 vehicles. The reason for this is not
+clear from this graph alone.
+
+Looking at the iteration data for the inflection point into the congested state
+in Figure \ref{fig:i11k-congestion},
+we can start to understand what the cause of this behaviour may be. At iteration
+11,000, we see similar patterns of behaviour for both sets of vehicles. For the
+50,000 vehicle simulation, we see three key areas of congestion (circle in
+green on both maps). For the lower density simulation, these three areas are
+distinct - once a vehicle has left the congested roads it enters an area of low
+congestion. In the 80,000 vehicle simulation, this is not the case - instead,
+the highly congested roads are joint together, requiring significantly longer to
+clear. Hence we can conclude that the clustering of total travel time is a
+proprety of the map and routes that have been chosen to run on it - as the
+number of vehicles on the road increases, areas prone to congestion increase in
+size and connect, causing sudden increases in completion time with only a small
+increase in the number of vehicles.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{sdv-dij-comp-10k}
+        \caption{10,000 vehicles}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{sdv-dij-comp-20k}
+        \caption{20,000 vehicles}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{sdv-dij-comp-50k}
+        \caption{50,000 vehicles}
+    \end{subfigure}
+    \caption{Comparison of average speed between Dijkstra's algorithm and the
+    Marmoset algorithm}\label{fig:sdv-dij-comp}
+\end{figure}
+
+Finally, we look at a direct comparision between the Marmoset algorithm and Dijkstra's
+algorithm at different vehicle densities. In Figure \ref{fig:sdv-dij-comp}, we see that
+when Dijkstra's algorithm does terminate, vehicles reach their destinations much
+faster than with the Marmoset algorith, despite a lower average speed. This is
+likely due to the `selfish' behaviour of Dijkstra's algorithm allowing certain
+vehicles to reach their destinations earlier. With lower vehicles densities,
+this frees up the roads and enables other vehicles to reach their destinations
+sooner. However, with more vehicles on the road the congestion level becomes too
+high, and hence the vehicles are blocked from reaching their destination.
+
+\section{Marmoset Simulation Engine Evaluation}
 
 %{\bf A topic-specific chapter, of roughly $15$ pages}
 %\vspace{1cm}
