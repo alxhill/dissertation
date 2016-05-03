@@ -1368,6 +1368,16 @@ element in the DOM, there is a reasonably high performance cost associated with
 their use. There are two main alternatives for showing graphics in the browser -
 SVG and the HTML5 Canvas API.
 
+\begin{wrapfigure}{l}{0.35\textwidth}
+    \vspace{-1em}
+    \begin{greybox}
+        \centering
+        \includegraphics[width=\textwidth]{orange-markers}
+        \caption{SVG Rendered orange markers showing 30,000 vehicles}\label{fig:orange-markers}
+    \end{greybox}
+    \vspace{-3em}
+\end{wrapfigure}
+
 Unlike the img tag, the Canvas API is designed for drawing and other graphical
 purposes. Instead of one tag per vehicle, A single \texttt{<canvas>} element
 would be able to render every vehicle. I had been concerned that there would be
@@ -1385,14 +1395,6 @@ vehicle that showed its current speed and ID, which was useful for debugging.
 This would have to be implemented by hand to be supported with Canvas - manually
 detecting the current mouse position, checking which vehicle it was hovering
 over and then drawing a custom popup on top of the view.
-\begin{wrapfigure}{l}{0.35\textwidth}
-    \begin{greybox}
-        \centering
-        \includegraphics[width=\textwidth]{orange-markers}
-        \caption{SVG Rendered orange markers showing 30,000 vehicles}\label{fig:orange-markers}
-    \end{greybox}
-    \vspace{-2em}
-\end{wrapfigure}
 
 Instead, I decided to experiment with SVG (Scalable Vector Graphics), an XML
 based web API. One key advantage is that Leaflet has built in support for
@@ -2107,12 +2109,34 @@ can analyse the effects of this behaviour by running both types of vehicle on
 the road at the same time and identify what percentage of vehicles have to be
 'misbehaving' for the algorithm to fail.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{ratio-av.pdf}
+    \caption{Average velocity simulating 50,000 vehicles using the Marmoset and Dijkstra's algorithm.}\label{fig:ratio-av}
+\end{figure}
+
 Simulating 50,000 vehicles with different vehicle densities showed how strong
 the impact even a small number of non-Marmoset vehicles could have on
-congestion. Even with 80\% of the vehicles using the Marmoset algorithm,
-the simulation failed to terminate.
+congestion. Surprisingly, even with 80\% of the vehicles using the Marmoset algorithm,
+the simulation failed to terminate. Figure \ref{fig:ratio-av} shows the average
+speed of the vehicles when using both algorithms simultaneously in various
+combinations. Although the vehicles fail to reach their destinations completely with 80\%
+Marmoset vehicles, we do see a change in the behaviour of the algorithm as the
+proportion of Marmoset vehicles increases. Notably, the time it takes for the
+average velocity to reach zero is drastically increased - it took 52,801
+iterations before the engine decided to terminate the simulation.
 
-\subsection{Marmoset Algorithm Optimisation}
+We also see changes in both average speed and total completion time with 90\%
+Marmoset vehicles, even though all vehicles reach their destinations. The lack
+of ability to operate effectively whilst routing with other types of vehicles
+is a flaw in the algorithm that suggests it may not be appropriate for real
+world use - any multi-vehicle routing algorithm would be rolled out slowly
+rather than all at once, meaning it should be able to handle different types of
+vehicles on the road. Interestingly, Figure \ref{fig:ratio-av} shows that average speed with 20\%
+Marmoset vehicles is significantly slower than when routing exclusively with
+Dijkstra's algorithm.
+
+\subsection{Conclusion}
 
 
 
