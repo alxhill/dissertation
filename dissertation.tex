@@ -626,17 +626,44 @@ optimal as it would have high levels of congestion. Results from a custom-built
 simulation engine have shown that the algorithm can perform better than using
 Dijkstra's algorithm with delayed traffic information.
 
+\subsubsection{Congestion Functions}
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \begin{greybox}
+        \centering
+        \includegraphics[width=\textwidth]{congestion-graph-1}
+        \caption{Empirically derived congestion function from~\cite{traffic-graphs}}\label{fig:congestion-graph}
+    \end{greybox}
+    \vspace{-1mm}
+    \begin{greybox}
+        \centering
+        \includegraphics[width=\textwidth]{congestion-graph-2}
+        \caption{Mathematical congestion functions for different types of road
+        from~\cite{beejama}}\label{fig:congestion-graph-2}
+    \end{greybox}
+    \vspace{-8em}
+\end{wrapfigure}
+
+Empirical analysis of real world data has been performed with the goal of
+creating a function from density of vehicles to velocity~\cite{traffic-graphs,
+traffic-thing-2}. The data and its analysis can be seen in Figure
+\ref{fig:congestion-graph}.
+
+Congestion functions form the backbone of the BeeJamA algorithm as a key
+component in making routing decisions.
+
 \subsection{Nagel-Schreckenberg Model} \label{sec:nagel}
 
 The Nagel-Schreckenberg Model~\cite{nagel} is a cellular automaton model for the
 flow of traffic on roads.
 
 The model splits roads into discrete cells, with each car taking up a single
-cell at a time. The vehicles then follow 4 rules, in parallel to simulate the
-flow of traffic. Each car has a fixed velocity $v$ for that step, which
-represents the number of cells the vehicle will move forward in the final rule.
-The model does not allow for overtaking, and as a result exhibits realistic
-behaviour for traffic jams and flow.
+cell at a time. The vehicles then follow 4 rules to simulate the flow of
+traffic. Each car has a fixed velocity $v$, which represents the number of cells
+the vehicle intends to move forward. The first three steps determine the
+velocity, with the final step updating the position of each vehicle.  The model
+does not allow for overtaking, exhibiting realistic behaviour for traffic jams
+and flow.
 
 \begin{enumerate}
     \item \textbf{Acceleration} - if the vehicle is not at the max speed and
@@ -646,47 +673,47 @@ behaviour for traffic jams and flow.
         vehicle in front.
     \item \textbf{Randomisation} - reduce the velocity by 1 with probability
         $p$.
-    \item \textbf{Car movement} - move each vehicle forward by its velocity $v$.
+    \item \textbf{Movement} - move each vehicle forward by its velocity $v$.
 \end{enumerate}
 
 Each cell is meant to approximately represent the size of a single vehicle,
 whilst each step (running through all four rules) represents a discrete amount
-of time.
+of time - usually a single second.
 
 We'll now run through a brief example of the effects of each step. Our road will
-have 9 cells with two vehicles on them. Our max speed ($v_{max}$) will be 5.
-For this example, we will ignore the randomisation step.
+have nine cells and two vehicles. Our max speed ($v_{max}$) will be 5.  For this
+example, we will ignore the randomisation step.
 
 \begin{figure}[!h]
 \centering
 \begin{tikzpicture}
     \draw[step=1cm,color=gray] (0,0) grid (9,1);
-    \node at (1.5,0.5) {\textbf{4}};
-    \node at (5.5,0.5) {\textbf{0}};
+    \node at (1.5,0.5) {\color{blue} \textbf{4}};
+    \node at (5.5,0.5) {\color{red}  \textbf{0}};
 \end{tikzpicture}
 \end{figure}
 
-We now perform the acceleration step for each vehicle. The second cell vehicle
-is currently at speed 4 - as the vehicle in front is only 3 cells away, it does
-not accelerate. The sixth cell vehicle increments its speed from 0 to 1.
+We first perform the acceleration step for each vehicle. The blue vehicle
+is currently at speed 4 - as the red vehicle is only 3 cells away, it does
+not increse its velocity. The red vehicle increments its speed from 0 to 1.
 
-During the slow step, the second cell vehicle must reduce its speed from 4 to 3
-so it does not hit the sixth cell vehicle.
+During the slow step, the blue vehicle must reduce its speed from 4 to 3
+so it does not hit the red vehicle.
 
 \begin{figure}[!h]
 \centering
 \begin{tikzpicture}
     \draw[step=1cm,color=gray] (0,0) grid (9,1);
-    \node at (4.5,0.5) {\textbf{3}};
-    \node at (6.5,0.5) {\textbf{1}};
+    \node at (4.5,0.5) {\color{blue} \textbf{3}};
+    \node at (6.5,0.5) {\color{red}  \textbf{1}};
 \end{tikzpicture}
 \end{figure}
 
-Finally, the vehicles move to their new destinations. This demonstration briefly
-shows the behaviour of two vehicles, but fails to demonstrate the creation and
-flow of traffic jams. In Figure \ref{nagel-demo}, we can see how traffic jams
-form and move in the Nagel-Schreckenberg model. This graph shows what happens
-when there is a density of 0.1 cars per cell.
+The vehicles now move to their new destinations. This demonstration briefly
+shows the interaction between two vehicles, but does not demonstrate the
+creation and flow of traffic jams. In Figure \ref{nagel-demo}, we can see how
+traffic jams form and move in the Nagel-Schreckenberg model. This graph shows
+what happens when there is a density of 0.1 cars per cell.
 
 \begin{figure}[h]
     \centering
@@ -1183,6 +1210,18 @@ transparently handles the forward and reverse edges, storing two boolean arrays
 (\texttt{boolean[][] cells} and \texttt{boolean[][] reverseCells}) and uses
 whichever one is appropriate for the current EdgeIteratorState.
 
+\subsubsection{Cell Size}\label{sec:cell-size}
+
+One important question that must be answered is how many cells should be created
+for each edge. According to the original paper, each cell should represent the
+space a single vehicle takes up. In Europe, the average car is around 4.5 metres
+long. Assuming that cars have at least a one metre gap between them suggests
+that the cell size should be at least 5.5 metres. However, in the US the average car
+length is 5 metres, suggesting 6 metres or more would be an appropriate cell
+size. To accomodate these use cases and others, the size of cells is a
+configurable parameter, allowing the users to pick an appropriate size for the
+vehicles they are simulating.
+
 \subsection{Vehicle and Cell Iterators}
 
 \begin{figure}[h]
@@ -1540,6 +1579,16 @@ centralised management of writing to disk.
 
 \subsubsection{Network Metrics}
 
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \vspace{-1em}
+    \begin{greybox}
+        \centering
+        \includegraphics[width=\textwidth]{dijkstra-15k-wide}
+        \caption{Post-simulation analysis of the 9,000th iteration of 15,000 vehicles}\label{fig:offline-network}
+    \end{greybox}
+    \vspace{-2em}
+\end{wrapfigure}
+
 Network Metrics provide information about the roads themselves and how congested
 or occupied they are. Instead of providing numerical data for every edge (which
 provides very little information given how few cells/vehicles the average edge
@@ -1551,16 +1600,6 @@ re-purposed and instead placed into an iteration file, meaning the data is human
 readable and easy to parse. Adding a simple input box with basic parsing code
 allows the data to be explored interactively after the simulation has finished,
 as can be seen in Figure \ref{fig:offline-network}.
-
-\begin{wrapfigure}{r}{0.4\textwidth}
-    \vspace{-1em}
-    \begin{greybox}
-        \centering
-        \includegraphics[width=\textwidth]{dijkstra-15k-wide}
-        \caption{Post-simulation analysis of the 9,000th iteration of 15,000 vehicles}\label{fig:offline-network}
-    \end{greybox}
-    \vspace{-2em}
-\end{wrapfigure}
 
 \subsection{Event System}
 
@@ -1583,6 +1622,7 @@ With the addition of metrics, it became clear that it would be useful to be able
 to run a simulation in the background and analyse the data later. One use case
 would be understanding how long it takes all vehicles to reach their
 destinations - another is for analysing very high density networks where it may
+
 not be desirable to view the data on screen.
 
 A command line flag (\texttt{-{}-file}) was added representing the number of
@@ -1619,16 +1659,17 @@ routing algorithm was designed, implemented and tested.
 I chose to design a V2I algorithm, as there would be a substantial amount of
 additional code required to simulate realistic V2V communication. It is also
 beneficial that V2I simulation can apply to both high and low density situations
-as it is not limited by the distance to the nearest vehicle. Instead, access to
-a central system that knew the location and planned destination of every vehicle
-in a city was assumed. The algorithm would then provide routes for each vehicle
-in the system.
+as it is not limited by the distance to the nearest vehicle. Furthermore, V2I
+algorithms that rely only on mobile connections are able to work with both human
+drivers and self-driving cars, unlike V2V algorithms that would require all
+vehicles to have new hardware and software.  Instead, access to a central system
+that knew the location and planned destination of every vehicle in a city is
+assumed. The algorithm then provides routes for each vehicle in the system.
 
-The initial implementation of the Marmoset algorithm is described below. It is
+The initial design of the Marmoset algorithm is described below. It is
 important to note that this is not the final algorithm - the goal was to find a
-potentially effective and then optimise and improve it using the simulation
-engine. We will describe the behaviour of individual vehicles and the central
-system separately.
+technique that could potentially be effective and then optimise, improve and
+understand it using the simulation engine.
 
 \subsubsection{Vehicle Behaviour}
 
@@ -1651,9 +1692,6 @@ When a route is requested, the data from the expected map is used in conjunction
 with a congestion function to modify the weight of edges based on their expected
 density. This will return a route that avoids high-congestion roads, which will
 be reflected in the expected map upon its next update.
-
-A congestion function was chosen that was similar to the data found by
-<RESEARCHERS/CONGESTION FUNCTION STUFF HERE>
 
 \subsubsection{Design Justification}
 
@@ -1747,11 +1785,11 @@ for this behaviour is that a vehicle is much more likely to visit an edge
 nearer to it than further away, as it has a higher probability of having
 re-routed by then.
 
-Additionally, it was found that random routing did not have the expected results
-- many vehicles never adjusted their routes, whilst others did it 7 times during
-a single simulation. This is problematic as the end result is that too many
-vehicles remain on the highly congested routes, even if it is known that they
-should be avoided.
+Additionally, it was found that random routing did not have the desired results
+- many vehicles never adjusted their routes, whilst others re-routed as many as
+seven times during a single simulation. This is problematic as the end result is
+that too many vehicles remain on the highly congested routes, even if it is
+known that they should be avoided.
 
 \subsubsection{Parameter Adjustments}
 
@@ -1852,21 +1890,23 @@ completely (with 0 vehicles yet to reach their destination) in a little over
 \chapter{Critical Evaluation}
 \label{chap:evaluation}
 
-\section{Marmoset Algorithm Evaluation}
+\section{Algorithmic Evaluation}
 
 A simple model of rush hour was created for the purpose of evaluating the
-Marmoset algorithm. Each vehicle is given a random location and destination. The
-starting location is randomly distributed within the entirely of London, bounded
-by the M25. The destination is randomly distributed across the centre of London
-only, roughly covering Zone 1.
+Marmoset algorithm. Each vehicle is given a random location and destination
+within London. The starting location is randomly distributed within the entirely
+of London, appproximately bounded by the M25. The destination is randomly
+distributed across the centre of London only, roughly covering Zone 1. Each
+algorithm was simulated with 10,000 to 80,000 vehicles in increments of 10,000,
+with the goal of understanding how traffic flows differently within each
+algorithm.
 
-\subsection{Vehicle Density Comparisons}
+\subsection{Dijkstra's Algorithm}\label{sec:density}
 
-The quantity of vehicles on the road clearly has the largest impact on
-congestion. Each algorithm was tested with 10,000 to 80,000 vehicles in
-increments of 10,000.
-
-\subsubsection{Dijkstra's Algorithm}
+We start by analysing the results of simulation using Dijkstra's algorithm to
+route the vehicles. Unlike the Marmoset algorithm, the vehicles do not avoid
+congestion, attempting to find the fastest route to their destination based only
+on the speed limit of each road.
 
 \begin{figure}[h]
     \centering
@@ -1875,41 +1915,42 @@ increments of 10,000.
     Dijlkstra's Algorithm}\label{fig:dijkstra-speed}
 \end{figure}
 
-The graph in Figure \ref{fig:dijkstra-speed} shows two different cases for
+The graph in Figure \ref{fig:dijkstra-speed} shows two different outcomes when
 routing with Dijkstra's Algorithm. When simulating with 10,000 and 20,000
 vehicles, we see the behaviour of the algorithm when all vehicles reach their
 destination and terminate successfully. The remaining six simulations show the
 behaviour of the algorithm when it fails to terminate and the vehicles slow to a
 halt.
+
 \begin{wrapfigure}{l}{0.4\textwidth}
+    \vspace{-1em}
     \begin{greybox}
         \centering
         \includegraphics[width=\textwidth]{20k-dij-speed}
-        \caption{Comparision of speed an remaining number of vehicles using
-        Dijkstra's algorithm with 20,000 vehicles.}\label{fig:20k-dij-speed}
+        \caption{Comparison of speed and remaining number of vehicles using Dijkstra's algorithm with 20,000 vehicles.}\label{fig:20k-dij-speed}
     \end{greybox}
-    \vspace{-3em}
+    \vspace{-2em}
 \end{wrapfigure}
 
-In the successful termination cases, we see three stages. The first exhibits a
-slow decline in average speed as we reach the congested state. We then see a
-stage where the speed remains fixed, whilst the vehicles slowly move towards
-their destinations. Finally, we see a period with increased speed volatility.
-This is due to the decreased volume of vehicles causing the average to change
-much faster, as can be seen in Figure \ref{fig:20k-dij-speed}.
+In the successful termination cases, we see three stages. The average speed
+starts high, followed by a decline in as we reach the congested state. This is
+followed by a where the speed remains mostly stable whilst the vehicles move
+slowly towards their destinations. Finally, we see a period with increased speed
+volatility.  This is due to the decreased volume of vehicles causing the average
+to change much faster, as can be seen in Figure \ref{fig:20k-dij-speed}.
 
 In the case of simulations that do not terminate normally, we see the same first
-two stages (pre-congestion and congestion respectively), but at a certain
+two stages (pre-congestion and congestion), but at a certain
 inflection point the average speed declines faster until it reaches zero. This
 is most notable for the 30,000 vehicle case, where the inflection point can be
 seen at around iteration 7,000, after which the average speed enters a steep
 decline.
 
 The cause of the simulation failure can be seen in Figure \ref{fig:dijkstra-wtf}
-- a roundabout in central London becomes completely congestion, stopping any
-vehicle attempting to use the roundabout. As the cars continue to pile up, more
-and more main roads become completely full until no vehicles are capable of any
-movement.
+- a roundabout in central London becomes fully congested, stopping any vehicle
+from being able to route past the roundabout. As the queue of cars continues to
+grow, more and more main roads become full until no remaining vehicles are
+capable of movement.
 
 \begin{figure}[h]
 \centering
@@ -1925,7 +1966,7 @@ movement.
 \caption{The system state shortly before termination}\label{fig:dijkstra-wtf}
 \end{figure}
 
-\subsubsection{Marmoset Algorithm}
+\subsection{Marmoset Algorithm}
 
 \begin{figure}[p]
     \centering
@@ -1935,41 +1976,11 @@ movement.
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=0.9\textwidth]{i11k-sdv-comparison}
+    \includegraphics[width=0.8\textwidth]{i11k-sdv-comparison}
     \caption{The 11,000th iteration of 50,000 and 80,000 vehicles respectively.}\label{fig:i11k-congestion}
 \end{figure}
 
-We now compare this to the Marmoset routing algorithm. The most notable
-difference is that the Marmoset algorithm successfully terminates even with
-80,000 vehicles attempting to enter the city centre (16,000 more than in rush
-hour).
-
-Figure \ref{fig:sdv-speed} shows that the Marmoset algorithm exhibits the same
-behaviour as Dijkstra's Algorithm on successful termination, but without the
-limitation on the number of vehicles that can be simulated. The simulation
-displays the three stage behaviour as before, with the congested stage
-elongating as the number of vehicles increases. We can also see a large
-difference in the amount of time it takes for the simulation to terminate,
-falling into three separate clusters - less than 40,000 vehicles, 50,000 to
-70,000 vehicles and 80,000 vehicles. The reason for this is not
-clear from this graph alone.
-
-Looking at the iteration data for the inflection point into the congested state
-in Figure \ref{fig:i11k-congestion},
-we can start to understand what the cause of this behaviour may be. At iteration
-11,000, we see similar patterns of behaviour for both sets of vehicles. For the
-50,000 vehicle simulation, we see three key areas of congestion (circle in
-green on both maps). For the lower density simulation, these three areas are
-distinct - once a vehicle has left the congested roads it enters an area of low
-congestion. In the 80,000 vehicle simulation, this is not the case - instead,
-the highly congested roads are joint together, requiring significantly longer to
-clear. Hence we can conclude that the clustering of total travel time is a
-proprety of the map and routes that have been chosen to run on it - as the
-number of vehicles on the road increases, areas prone to congestion increase in
-size and connect, causing sudden increases in completion time with only a small
-increase in the number of vehicles.
-
-\begin{figure}[h]
+\begin{figure}[p]
     \centering
     \begin{subfigure}[b]{0.3\textwidth}
         \centering
@@ -1986,19 +1997,124 @@ increase in the number of vehicles.
         \includegraphics[width=\textwidth]{sdv-dij-comp-50k}
         \caption{50,000 vehicles}
     \end{subfigure}
-    \caption{Comparison of average speed between Dijkstra's algorithm and the
-    Marmoset algorithm}\label{fig:sdv-dij-comp}
+    \caption{Comparison of average speed between Dijkstra's algorithm and the Marmoset algorithm}\label{fig:sdv-dij-comp}
 \end{figure}
 
-Finally, we look at a direct comparision between the Marmoset algorithm and Dijkstra's
-algorithm at different vehicle densities. In Figure \ref{fig:sdv-dij-comp}, we see that
-when Dijkstra's algorithm does terminate, vehicles reach their destinations much
-faster than with the Marmoset algorith, despite a lower average speed. This is
-likely due to the `selfish' behaviour of Dijkstra's algorithm allowing certain
-vehicles to reach their destinations earlier. With lower vehicles densities,
-this frees up the roads and enables other vehicles to reach their destinations
-sooner. However, with more vehicles on the road the congestion level becomes too
-high, and hence the vehicles are blocked from reaching their destination.
+We now compare these results to the Marmoset routing algorithm. The most
+notable difference is that the Marmoset algorithm successfully terminates even
+when simulating 80,000 vehicles entering the city centre, 16,000 more than in
+rush hour.
+
+Figure \ref{fig:sdv-speed} shows that the Marmoset algorithm exhibits the same
+behaviour as Dijkstra's Algorithm for 10,000 and 20,000 vehicles, but without
+the limitation on the number of vehicles that can be simulated. The data
+shows the same three stage behaviour as before, with the congested stage
+elongating as the number of vehicles increases. We can also see a large
+difference in the amount of time it takes for the simulation to terminate,
+falling into three separate clusters - less than 40,000 vehicles, 50,000 to
+70,000 vehicles and 80,000 vehicles. The reason for this is not clear from this
+graph alone. To gain further insight into why this clustering may be occuring,
+we can look directly at the state of the vehicles at specific iterations.
+
+The engine records a snapshot of the position of each vehicle every 1000
+iterations. We will compare the state of the system when simulating 50,000
+vehicles and 80,000 vehicles, at iteration 11,000. This has been chosen as it is
+approximately at the inflection point where the vehicles enter their most
+congested state with the slowest average speed. However, the 80,000 vehicle
+iteration takes significantly longer to leave this state than the 50,000 vehicle
+simulation.
+
+Figure \ref{fig:i11k-congestion}, helps us understand what the cause of this
+behaviour may be. For the 50,000 vehicle simulation, we see three key areas of
+congestion (circled in green on both maps). For the lower density simulation,
+these three areas are separated - once a vehicle has left the congested roads it
+enters an area of low congestion. In the 80,000 vehicle simulation, this is not
+the case - instead, the highly congested roads are joint together, requiring
+significantly longer to clear.  We can conclude that the clustering of total
+travel time is a proprety of the map and routes that run on it - as the number
+of vehicles on the road increases, areas prone to congestion increase in size
+and connect, causing sudden jumps in completion time with only a small increase
+in the number of vehicles.
+
+Figure \ref{fig:sdv-dij-comp} shows a direct comparision between the two
+algorithms. We see that when Dijkstra's algorithm does terminate, vehicles reach
+their destinations earlier than with the Marmoset algorithm, despite a lower
+average speed. This is likely due to the `selfish' behaviour of Dijkstra's
+algorithm, allowing certain vehicles to reach their destinations earlier. With
+lower vehicles densities, this frees up the roads and enables other vehicles to
+reach their destinations sooner. However, with more vehicles on the road the
+congestion blocks vehicles from reaching their destination.
+
+\subsection{Per-Vehicle Metrics}
+
+The data above shows what happens to the vehicles on average, but does not
+provide us with any further insight on the distribution of speed or congestion.
+The vehicle metrics can be used to better understand the impact each algorithm
+has on travel time for each vehicle.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.23\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{tt-10k}
+        \caption{10,000 vehicles}\label{fig:tt-hist-10k}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.23\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{tt-20k}
+        \caption{20,000 vehicles}\label{fig:tt-hist-20k}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.23\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{tt-50k}
+        \caption{50,000 vehicles}\label{fig:tt-hist-50k}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.23\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{tt-80k}
+        \caption{80,000 vehicles}\label{fig:tt-hist-80k}
+    \end{subfigure}
+    \caption{Histogram comparing travel time of vehicles using each algorithm.}\label{fig:tt-hist}
+\end{figure}
+
+In Figure \ref{fig:tt-hist}, we see some interesting patterns emerge. As
+demonstrated by the graphs comparing average speed, lower density simulations
+complete faster using Dijkstra's algorithm. In Figure \ref{fig:tt-hist-10k}
+this behaviour is particularly noticable, with the Marmoset algorithm showing a
+tail of vehicles with long travel times, although this is less noticable in
+Figure \ref{fig:tt-hist-20k}.
+
+Figure \ref{fig:tt-hist-50k} gives us further insight into the clustering of
+completion times mentioned above (see Figure \ref{fig:sdv-speed}). On the
+right of the histogram we see a small spike in travel times, centred around
+iteration 30,000. This supports the theory that congested areas become
+connected and dependent on each other for vehicles to reach their destinations -
+once a certain group of vehicles reach their destinations, the group they
+`blocked' is able to move once again. The same observation can be made with
+Figure \ref{fig:tt-hist-80k}, which has a small spike at iteration 30,000 and
+another, larger spike around iteration 40,000.
+
+\subsection{Vehicle Ratio Analysis}
+
+In addition to comparison between the two routing algorithms, we can also
+analyse their behaviour when driving together on the same roads. As shown in
+Section \ref{sec:density}, routing using only Dijkstra's algorithm fails to
+terminate with more than 20,000 vehicles. One of the issues with multi-vehicle
+routing algorithms is that in order to improve congestion some vehicles have to
+take longer routes than they otherwise would have. Human drivers may not
+appreciate being told to take a longer route than they would otherwise use. We
+can analyse the effects of this behaviour by running both types of vehicle on
+the road at the same time and identify what percentage of vehicles have to be
+'misbehaving' for the algorithm to fail.
+
+Simulating 50,000 vehicles with different vehicle densities showed how strong
+the impact even a small number of non-Marmoset vehicles could have on
+congestion. Even with 80\% of the vehicles using the Marmoset algorithm,
+the simulation failed to terminate.
+
+\subsection{Marmoset Algorithm Optimisation}
+
+
 
 \section{Marmoset Simulation Engine Evaluation}
 
@@ -2034,6 +2150,14 @@ high, and hence the vehicles are blocked from reaching their destination.
 
 \chapter{Conclusion}
 \label{chap:conclusion}
+
+\section{The Marmoset Algorithm}
+
+\subsection{Future Improvements}
+
+\section{The Marmoset Simulation Engine}
+
+\subsection{Future Improvements}
 
 %{\bf A compulsory chapter,     of roughly $5$ pages}
 %\vspace{1cm}
