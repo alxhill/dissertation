@@ -935,19 +935,19 @@ When setting up the project, it was important to be able to use and modify the
 underlying GraphHopper routing engine. The GraphHopper project is setup with
 four existing modules - core, tools, web and android. Although it would have
 been ideal to use GraphHopper as an external library, it was necessary to make
-minor internal changes to the main engine. As such, I created a GitHub fork of
-the project and added marmoset as a fifth module in the project.
+minor internal changes to the main engine. As such, a GitHub fork of the project
+was created with \texttt{marmoset} as a fifth module in the project.
 
 GraphHopper uses the Maven dependency and build tool, with its own custom shell
 script for building, running and testing different versions of the engine. To
-keep Marmoset separated from the core project, I created my own shell script for
-building and running the marmoset engine. It supports four main actions - clean,
-build, rebuild and run. It also allows multiple commands to be run in succession
-for convenience.
+keep Marmoset separated from the core project, a custom shell script for
+building and running the marmoset engine was created. It supports four main
+actions - clean, build, rebuild and run. It also allows multiple commands to be
+run in succession for convenience.
 
-Additionally, I wanted to create a modern codebase in spite of the core engine
-being written in Java. Although I briefly explored using Scala, much of my work
-would rely on extending and using the existing Java APIs in GraphHopper.
+Additionally, it was desirable to create a modern codebase in spite of the core
+engine being written in Java. Although Scala was briefly considered, much of my
+work would rely on extending and using the existing Java APIs in GraphHopper.
 Thankfully, Java 8 has introduced a number of key tools that allow
 functional-style code to be written. The code below shows the difference for
 performing a simple task - converting a list of objects into strings and joining
@@ -955,7 +955,6 @@ them by commas.
 
 \noindent
 \begin{tabular}{c|c}
-
 \begin{lstlisting}
 public String getVehicleData()
 {
@@ -986,11 +985,11 @@ readable line using the Java 8 Stream API.
 
 \subsection{Server Implementation}
 
-For the raw file server, I used the NanoHttd~\cite{nanohttpd} library, as it
+For the raw file server, the NanoHttd~\cite{nanohttpd} library was used, as it
 requires minimal setup and is easy to run on a separate thread. For the
-client-server communication, I initially used the NanoHttpd WebSocket
-implementation, but it did not appear to be fully functional. As such, I
-switched to using the Java-Websocket library~\cite{javawebsocket}, extending the
+client-server communication, initially the NanoHttpd WebSocket implementation
+was used, but it did not appear to be fully functional. As such, we switched to
+using the Java-Websocket library~\cite{javawebsocket}, extending the
 WebSocketServer class to create the MarmosetSocketServer class.
 
 In the architecture diagram (Figure \ref{fig:init-arch}), we see four main
@@ -1008,9 +1007,10 @@ data from MarmosetHopper to the socket server.
 In most types of simulation, time must be split into discrete steps that
 represent a fixed time interval in the real world. Looking at Figure
 \ref{fig:init-arch}, we can see that it is the Marmoset class that triggers each
-timestep. At this stage of the project, I had not established how well the front
-or back end would perform. As a way of simplifying the data flow and processing,
-Marmoset simply waits one second between each call of the timestep function.  As
+timestep. At this stage of the project, it had not been established how
+effectively the front or back end would perform at receiving and rendering the
+vehicles. As a way of simplifying the data flow and processing, the Marmoset
+class simply waits one second between each call of the timestep function.  As
 both front end and back end take significantly less time than a second to
 perform their tasks, this was an appropriate simplification for this stage of
 development.
@@ -1098,7 +1098,7 @@ However, there are many core features missing from the engine at this point.
         again.
 \end{itemize}
 
-For the next stage of development, I focused on improving the realism of the
+The focus for the next stage of develeopment was on improving the realism of the
 vehicle simulation.
 
 \section{Realistic Simulation}
@@ -1123,14 +1123,14 @@ edges - which are small, but do not have junctions - or OSM ways, which can be
 larger but would allow for more usable metrics and would make the system less
 dependent on GraphHopper.
 
-Ultimately, I chose to use GraphHopper's edges as the base unit for cells. This
-is primarily due to the fact that GraphHopper does not have an internal mapping
+Ultimately, GraphHopper's edges were chosen as the base unit for cells. This was
+primarily due to the fact that GraphHopper does not have an internal mapping
 from its edges to OSM Ways, and does not return which Ways are used as part of a
 routing response. Additionally, GraphHopper provides an
 \texttt{AllEdgesIterator} that returns both the maximum edge ID as well as the
 data for every edge in the graph.
 
-The next decision is how and where to store the cells. In the original paper, we
+The next decision was how and where to store the cells. In the original paper, we
 saw that each vehicle was represented by its velocity stored as an integer in
 the cell array. As we are storing a much larger amount of information about each
 vehicle in the Vehicle class, this is not a viable option. If vehicles store
@@ -1190,14 +1190,14 @@ roads.
 In Figure \ref{fig:gh-edge-problem}, we can see why this may be an issue. When
 moving through the edges, we are unable to tell if we are travelling forwards or
 backwards based on the EdgeIteratorState by itself - the ID is the same and the
-\texttt{isForward} method returns true in both directions. Initially, I had
-thought a more complex solution than the boolean arrays would be required -
+\texttt{isForward} method returns true in both directions. Initially, there was
+concern that a more complex solution than the boolean arrays would be required -
 perhaps some kind of 2D mapping from pairs of node IDs (or a base node and edge
 node) to the cell array. However, it is important to note that we don't actually
 need to know if GraphHopper internally stores an edge as forward or reverse so
 long as we are able to distinguish between the two cases shown above.
 
-The technique I came up with to solve this uses the fact that the base node and
+The technique we discovered to solve this uses the fact that the base node and
 adjacent node returned by the edge changes depending on direction. As such, we
 can define edges where the base node is greater than the adjacent node as
 `forward' and edges where the base node is less than the adjacent node as
@@ -1354,13 +1354,13 @@ receiving the next set of data.
 
 \subsubsection{Marker Rendering}
 
-I had initially used the Leaflet.AnimatedMarker library to make it appear as
-though the vehicles are driving around the map in real time. However, this had a
+Initially, the Leaflet.AnimatedMarker library was used to make it appear as
+though the vehicles were driving around the map in real time. However, this had a
 huge performance cost, and as such had to be disabled.
 
-Additionally, the vehicle image I used was reasonably large and in colour. I
-created a much smaller vehicle image (from 15KB to 1KB.), which did improve
-performance a little, but did not raise the 16,000 vehicle limitation.
+Additionally, the vehicle image used was reasonably large and in colour.
+Creating a much smaller vehicle image (from 15KB to 1KB) improved performance a
+little, but did not raise the 16,000 vehicle limitation.
 
 One of the core issues with the existing implementation was the use of
 \texttt{img} tags for displaying the vehicles. As each HTML tag is a full blown
@@ -1380,7 +1380,7 @@ SVG and the HTML5 Canvas API.
 
 Unlike the img tag, the Canvas API is designed for drawing and other graphical
 purposes. Instead of one tag per vehicle, A single \texttt{<canvas>} element
-would be able to render every vehicle. I had been concerned that there would be
+would be able to render every vehicle. We had been concerned that there would be
 major challenges in extending the Leaflet Marker class to use an entirely
 different way of showing markers, but thankfully Leaflet provided the location
 to display the markers in pixels to marker subclasses. Using Canvas offered
@@ -1396,7 +1396,7 @@ This would have to be implemented by hand to be supported with Canvas - manually
 detecting the current mouse position, checking which vehicle it was hovering
 over and then drawing a custom popup on top of the view.
 
-Instead, I decided to experiment with SVG (Scalable Vector Graphics), an XML
+Instead, we experimented with SVG (Scalable Vector Graphics), an XML
 based web API. One key advantage is that Leaflet has built in support for
 drawing certain types of SVG elements. The static image marker could simply be
 replaced with a \texttt{CircleMarker}, which used the same API as the Animated
@@ -1504,8 +1504,8 @@ EXPLAIN THIS BIT FURTHER MAYBE???
 One of the issues with the system at this point was the lack of support for
 multiple vehicle types - although there is a Vehicle class that could have been
 be subclassed, it was not easy to modify its behaviour without having to rewrite
-large portions of the code.  As such, I decided a refactor of this part of the
-system was required to improve the architecture of the system.
+large portions of the code.  As such, this part of the system was refactored as
+required to improve the architecture of the system.
 
 \subsubsection{Vehicle Refactoring}
 
@@ -1526,9 +1526,9 @@ correct type and with the right routing information.
 
 For the standard routing algorithm, new \texttt{DijkstraVehicle} and
 \texttt{DijkstraVehicleIterator} classes have been created. As a way of
-verifying that multiple vehicle types are possible, I also created a
-\texttt{RandomVehicle} and corresponding \texttt{RandomVehicleIterator} that
-simply drive around at random with no overarching behaviour.
+verifying that multiple vehicle types are possible, a \texttt{RandomVehicle} and
+corresponding \texttt{RandomVehicleIterator} that simply drive around at random
+with no overarching behaviour were implemented.
 
 \subsection{Metric calculations}
 
@@ -1548,8 +1548,8 @@ one or more vehicles. They can be calculated at any time, so can be recorded and
 stored on each iteration. Vehicle metrics are the easiest way of getting a sense
 of the overall behaviour of the system at any point in time.
 
-With the goal of understanding the levels of congestion, I tracked two main
-vehicle metrics: the number vehicles not moving at the maximum road speed, and
+With the goal of understanding the levels of congestion, two main
+vehicle metrics were tracked: the number vehicles not moving at the maximum road speed, and
 the number of vehicles that slowed down due to a vehicle in front of them.
 
 A new inner \texttt{Metric} class was added to MarmosetHopper, with simple data
@@ -1570,8 +1570,8 @@ expected and actual time is another metric that can be used to compare different
 vehicle behaviours.
 
 Route metrics can only be recorded once the vehicle has reached its destination
-rather than whilst it's travelling. As such, I added a \texttt{printMetrics}
-function to BaseVehicle and provided implementations in DijkstraVehicle, which
+rather than whilst it's travelling. As such, a \texttt{printMetrics}
+function was added to BaseVehicle with implementations in DijkstraVehicle, which
 prints the expected time from GraphHopper and the actual number of iterations
 the vehicle took to reach its destination.
 
@@ -1632,14 +1632,14 @@ vehicles to be simulated. The simulation creates a folder for the metrics
 including the number of vehicles and a Unix timestamp, allowing it to be
 uniquely identified.
 
-However, the offline simulation appeared to be running slower than I had hoped
-given it was not constrained by the browser rendering. The VisualVM Java
-profiler was used to identify potential performance improvements whilst
-simulating. Interestingly, far more time was spent in the
-\texttt{updateLocation} step than I had expected - and given that the physical
-location is only used for display and not internal routing, a flag was added to
-disable the location updates for every timestep. Instead, the location is only
-updated when required (e.g for outputting the locations every 1000 iterations).
+However, the offline simulation appeared to be running slower than hoped given
+it was not constrained by the browser rendering. The VisualVM Java profiler was
+used to identify potential performance improvements whilst simulating.
+Interestingly, far more time was spent in the \texttt{updateLocation} step than
+expected - and given that the physical location is only used for display and not
+internal routing, a flag was added to disable the location updates for every
+timestep. Instead, the location is only updated when required (e.g for
+outputting the locations every 1000 iterations).
 
 \begin{figure}[h]
     \centering
@@ -1658,7 +1658,7 @@ routing algorithm was designed, implemented and tested.
 
 \subsection{Algorithm Design}\label{sec:algo}
 
-I chose to design a V2I algorithm, as there would be a substantial amount of
+We chose to design a V2I algorithm, as there would be a substantial amount of
 additional code required to simulate realistic V2V communication. It is also
 beneficial that V2I simulation can apply to both high and low density situations
 as it is not limited by the distance to the nearest vehicle. Furthermore, V2I
@@ -1793,11 +1793,23 @@ seven times during a single simulation. This is problematic as the end result is
 that too many vehicles remain on the highly congested routes, even if it is
 known that they should be avoided.
 
-\subsubsection{Parameter Adjustments}
+\subsubsection{Parameter Adjustments}\label{sec:parms}
 
-The algorithm offers many parameters that can be adjusted, listed below. Some of
-these parameters are specific to the Marmoset algorithm, whilst others are
-general parameters of the simulation engine itself.
+The algorithm offers five core parameters that can be adjusted, listed below.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[height=10em]{congestion-function}
+        \caption{The congestion function.\\ $\displaystyle v(x) = \frac{\tanh(2-\frac{x}{15})+1.5}{2.5}$}\label{fig:final-cong-func}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[height=10em,clip,trim=1cm 5mm 0 6cm]{progress-function}
+        \caption{The progress function.\\ $\displaystyle f(x) = \frac{1}{8x + 2}$}\label{fig:final-prog-func}
+    \end{subfigure}
+\end{figure}
 
 \begin{itemize}
     \item \textbf{Congestion function} - can be modified to reduce penalties overall,
@@ -1805,28 +1817,68 @@ general parameters of the simulation engine itself.
         'tail', etc.
     \item \textbf{Progress function} - can be modified to decrease or increase
         values on nodes further away.
-    \item \textbf{Re-routing percentage} - intially set to re-route 0.1\% of
-        vehicles each iteration, can be modified to change how quickly the
+    \item \textbf{Re-routing percentage} - can be modified to change how quickly the
         vehicles react to high-congestion areas.
+    \item \textbf{Damping factor} - can be modified to change the 'memory' of
+        the expected map.
+    \item \textbf{Expected map update frequency} - can be modified to change how
+        fast the system reacts to vehicles changing their routes.
+\end{itemize}
+
+After a few minor experiments, the congestion function shown in Figure
+\ref{fig:final-cong-func} was used for testing the algorithm, as it penalised
+busy roads without causing overly long routes for most vehicles. Likewise, the
+progress function in Figure \ref{fig:final-prog-func} was chosen to ensure that
+central roads would not be repeatedly penalised and cause undesirable results.
+
+The damping factor was initially chosen as 0.6, meaning that the edges kept 60\%
+of their value when the expected map was updated. This proved to be too high,
+causing extended travel times and other issues when simulating. As such, a lower
+value of 0.2 was used.
+
+The re-route percentage has an impact on both the behaviour of the vehicles and
+the performance of the engine - the more vehicles it has to reroute on each
+iteration, the longer the simulation takes overall. With a re-route percentage
+of 0.1\%, simulating 64,000 vehicles requires 640 re-routing operations at each
+timestep. On a many-core server, this took approximately one second per
+iteration. This was a slow but acceptable compromise, as the simulation could be
+left to run overnight and analysed after the fact using the metric data.
+Furthermore, the speed of each iteration increases the more vehicles reach their
+destination, as the number of vehicles to re-reoute decreases.
+
+There are also a number of parameters that must be selected for the simulation
+engine itself.
+
+\begin{itemize}
     \item \textbf{Cell size} - can increase or decrease number of vehicles each
-    road can have, also affects max speed of roads.
-    \item \textbf{Vehicle density} - overall number of vehicles can be adjusted
-        to identify inflection points and understand interaction between
-        vehicles on the road.
-    \item \textbf{Vehicle ratios} - parameter for determining what proportion of
-        vehicles are self driving, can be used to analyse the impact of
-        `selfish' drivers on congestion.
-    \item \textbf{Vehicle destinations} - start and end location of vehicles can
-        be adjusted to better model/understand traffic flow under different
-        conditions.
+        road can have, also affects max speed of roads.
     \item \textbf{Slow probability} - modifying the probablity a vehicle slows
         down (as described by the Nagel-Schreckenberg algorithm) can be adjusted
         to simulated different types of driving behaviour.
+    \item \textbf{Vehicle destinations} - start and end location of vehicles can
+        be adjusted to better model/understand traffic flow under different
+        conditions.
 \end{itemize}
 
-As part of the evaluation of the algorithm, each of these parameters was
-adjusted and a comparison was made between the outcome using DijkstraVehicles or
-SelfDrivingVehicles exclusively.
+Due to the increasing size of European vehicles and the failure to account for
+larger vehicles like trucks or vans, 6.5 metres was chosen to be the size of
+cells in simulation. Brief tests showed that this had a negligible impact on
+the overall performance of the algorthm, having the same effect as minorly
+reducing the vehicle density.
+
+For the slow probability, a value of 0.4 was chosen based on research in
+\cite{nagel-detail}. There are various valid values for the probability, ranging
+from 0 to around 0.5. If the value is too low, the model does not simulate
+traffic jams, whilst a value too high would fail to match reality.
+
+A simple model of rush hour was created for the purpose of evaluating the
+algorithms. Each vehicle is given a random location and destination within
+London. The starting location is randomly distributed within the entirely of
+London, appproximately bounded by the M25. The destination is randomly
+distributed across the centre of London only, roughly covering Zone 1. Each
+algorithm was simulated with 10,000 to 80,000 vehicles in increments of 10,000,
+with the goal of understanding how traffic flows differently within each
+algorithm.
 
 \subsubsection{Evaluation}
 
@@ -1864,44 +1916,12 @@ is reached in around 12,000 iterations, whilst 20,000 vehicles terminates
 completely (with 0 vehicles yet to reach their destination) in a little over
 9,000 iterations.
 
-%This chapter is intended to describe what you did: the goal is to explain
-%the main activity or activities, of any type, which constituted your work
-%during the project.  The content is highly topic-specific, but for many
-%projects it will make sense to split the chapter into two sections: one
-%will discuss the design of something (e.g., some hardware or software, or
-%an algorithm, or experiment), including any rationale or decisions made,
-%and the other will discuss how this design was realised via some form of
-%implementation.
-
-%This is, of course, far from ideal for {\em many} project topics.  Some
-%situations which clearly require a different approach include:
-
-%\begin{itemize}
-%\item In a project where asymptotic analysis of some algorithm is the goal,
-      %there is no real ``design and implementation'' in a traditional sense
-      %even though the activity of analysis is clearly within the remit of
-      %this chapter.
-%\item In a project where analysis of some results is as major, or a more
-      %major goal than the implementation that produced them, it might be
-      %sensible to merge this chapter with the next one: the main activity
-      %is such that discussion of the results cannot be viewed separately.
-%\end{itemize}
-
 % -----------------------------------------------------------------------------
 
 \chapter{Critical Evaluation}
 \label{chap:evaluation}
 
 \section{Algorithmic Evaluation}
-
-A simple model of rush hour was created for the purpose of evaluating the
-Marmoset algorithm. Each vehicle is given a random location and destination
-within London. The starting location is randomly distributed within the entirely
-of London, appproximately bounded by the M25. The destination is randomly
-distributed across the centre of London only, roughly covering Zone 1. Each
-algorithm was simulated with 10,000 to 80,000 vehicles in increments of 10,000,
-with the goal of understanding how traffic flows differently within each
-algorithm.
 
 \subsection{Dijkstra's Algorithm}\label{sec:density}
 
@@ -1912,7 +1932,7 @@ on the speed limit of each road.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\textwidth]{dijkstra-speed}
+    \includegraphics[width=0.8\textwidth]{dijkstra-speed}
     \caption{Average speed at each iteration for vehicles routing with
     Dijlkstra's Algorithm}\label{fig:dijkstra-speed}
 \end{figure}
@@ -1968,11 +1988,11 @@ capable of movement.
 \caption{The system state shortly before termination}\label{fig:dijkstra-wtf}
 \end{figure}
 
-\subsection{Marmoset Algorithm}
+\subsection{Marmoset Algorithm}\label{sec:marmoset-eval}
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=0.8\textwidth]{sdv-speed}
+    \includegraphics[width=0.9\textwidth]{sdv-speed}
     \caption{Average speed at each iteration for vehicles routing with the Marmoset Algorithm}\label{fig:sdv-speed}
 \end{figure}
 
@@ -2117,30 +2137,66 @@ the road at the same time and identify what percentage of vehicles have to be
 
 Simulating 50,000 vehicles with different vehicle densities showed how strong
 the impact even a small number of non-Marmoset vehicles could have on
-congestion. Surprisingly, even with 80\% of the vehicles using the Marmoset algorithm,
-the simulation failed to terminate. Figure \ref{fig:ratio-av} shows the average
-speed of the vehicles when using both algorithms simultaneously in various
-combinations. Although the vehicles fail to reach their destinations completely with 80\%
-Marmoset vehicles, we do see a change in the behaviour of the algorithm as the
-proportion of Marmoset vehicles increases. Notably, the time it takes for the
-average velocity to reach zero is drastically increased - it took 52,801
-iterations before the engine decided to terminate the simulation.
+congestion. Surprisingly, even with 80\% of the vehicles using the Marmoset
+algorithm, the simulation failed to terminate. Figure \ref{fig:ratio-av} shows
+the average speed of the vehicles when using both algorithms simultaneously in
+various combinations. Although the vehicles fail to reach their destinations
+completely with 80\% Marmoset vehicles, we do see a change in the behaviour of
+the algorithm as the proportion of Marmoset vehicles increases. Notably, the
+time it takes for the average velocity to reach zero is drastically increased -
+it took 52,801 iterations before the engine decided to terminate the simulation.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{0-20-hist}
+        \caption{}\label{fig:0-20-hist}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{90-100-hist}
+        \caption{}\label{fig:90-100-hist}
+    \end{subfigure}
+    \caption{Histograms of travel time for different }\label{fig:ratio-hists}
+\end{figure}
 
 We also see changes in both average speed and total completion time with 90\%
 Marmoset vehicles, even though all vehicles reach their destinations. The lack
-of ability to operate effectively whilst routing with other types of vehicles
-is a flaw in the algorithm that suggests it may not be appropriate for real
-world use - any multi-vehicle routing algorithm would be rolled out slowly
-rather than all at once, meaning it should be able to handle different types of
-vehicles on the road. Interestingly, Figure \ref{fig:ratio-av} shows that average speed with 20\%
-Marmoset vehicles is significantly slower than when routing exclusively with
-Dijkstra's algorithm.
+of ability to operate effectively whilst routing with other types of vehicles is
+a flaw in the algorithm that suggests it may not be appropriate for real world
+use - any multi-vehicle routing algorithm would be rolled out slowly rather than
+all at once, meaning it should be able to handle different types of vehicles on
+the road. Interestingly, Figure \ref{fig:ratio-av} shows that average speed with
+20\% Marmoset vehicles is significantly slower than when routing exclusively
+with Dijkstra's algorithm.
 
-\subsection{Conclusion}
+However, the overall picture does not appear to be so simple. The histogram in Figure
+\ref{fig:0-20-hist} shows that the vehicles that do reach their destination do
+so sooner when there are some vehicles using the Marmoset algorithm. One
+possible cause of this could be that the Marmoset vehicles avoid the higher
+congestion areas, allowing the Dijkstra vehicles to reach their destinations
+sooner. This could also explain the lower average speeds, as the Marmoset
+vehicles would avoid the fastest roads, allowing the nearby Dijkstra vehicles to
+move towards their destination with less congestion.
 
-
+In Figure \ref{fig:90-100-hist}, we see the impact of vehicles using the most
+congested routes on overall travel time. Notably, the peak of the 90\% histogram
+occurs earlier than for the 100\% histogram, but it has a longer tail with a
+spike around 8,000 iterations later. This is likely due to the Dijkstra
+vehicles causing a further increase in congestion for busy roads, excaberating
+the congestion connectivity issue discussed in Section \ref{sec:marmoset-eval}.
 
 \section{Marmoset Simulation Engine Evaluation}
+
+We will now analyse the
+
+\subsection{Performance Analysis}
+
+\subsection{Flexibility?}
+
+\subsection{Whatever else I can think of}
 
 %{\bf A topic-specific chapter, of roughly $15$ pages}
 %\vspace{1cm}
