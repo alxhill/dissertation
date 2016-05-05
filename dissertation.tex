@@ -305,30 +305,30 @@ The proliferation of information whilst driving is particularly important in
 cities, where congestion plays a primary role in determining optimal routes.
 Cities also struggle with `rush hours' at the start and end of the working day,
 when congestion is at its worst. In London, this issue was so problematic that
-in 2003, a congestion charge has been in place to deter drivers from entering
-and leaving the center of the city at peak times. In spite this, upwards of
+in 2003, a congestion charge was put in place to deter drivers from entering
+and leaving the centre of the city at peak times. In spite of this, upwards of
 64,000 people drive into the centre of London every day~\cite{tfl}.
 
 Looking forwards, we see two global trends that suggest that congestion will
-become more of an issue in future. Firstly, more and more people are living in
-cities - even with public transportation, this increases the number of vehicles
-on the road even the proportion of households that own cars decreases. Secondly,
-on-demand transport solutions such as those provided by Uber are placing more
-vehicles on the road, especially at peak times. One of Uber's key insights is
-using market techniques to match supply and demand better than existing taxi and
-minicab services. If there is an increase in riders requesting vehicles in a
-certain area, Uber activates ``surge pricing", increasing the cost of the ride
-by a fixed multiple - for example, 1.5x. This information is sent to their
-network of drivers, who will move to the location in search of higher fares. The
-net result is that high-demand in certain areas will create further congestion,
-despite the efficiencies on demand transportation has over individual car
-ownership.
+become more of an issue in future. Firstly, increasing numbers of people are
+living in cities - even with public transportation, this increases the number of
+vehicles on the road even if the proportion of households that own cars
+decreases.  Secondly, on-demand transport solutions such as those provided by
+Uber are placing more vehicles on the road, especially at peak times. One of
+Uber's key insights is using market techniques to match supply and demand better
+than existing taxi and minicab services. If there is an increase in riders
+requesting vehicles in a certain area, Uber activates ``surge pricing",
+increasing the cost of the ride by a fixed multiple - for example, 1.5x. This
+information is sent to their network of drivers, who will move to the location
+in search of higher fares. The net result is that high demand in certain areas
+creates further congestion, despite the efficiencies on-demand transportation
+has over individual car ownership.
 
 \section{Self-Driving Vehicles}
 
 Vehicles have improved alongside the development of effective routing
 algorithms; GPS based navigation, with traffic information and turn by turn
-routing has now been integrated into every modern vehicle available today.  At
+routing has now been integrated into most new vehicle available to consumers. At
 the same time, we are beginning to witness the rise of self-driving cars,
 capable of planning and executing routes themselves with no need for human
 intervention. This is being approached from two different perspectives.
@@ -342,14 +342,14 @@ to drive itself. The software is not yet capable of full autonomy, but each
 update brings self-driving cars closer to reality.
 
 The second approach is from companies like Google, who have been building a
-self-driving vehicle `from scratch'. Their vehicle that has no steering wheel
-and requires no human intervention to drive from one location to another.
-Google's car has driven more than 1.5 million miles with fewer accidents than
-human driver would have had.
+self-driving vehicle `from scratch'. Their vehicle has no steering wheel and
+requires no human intervention to drive from one location to another.  Google's
+car has driven more than 1.5 million miles with fewer accidents than a human
+driver would have had.
 
 This raises many questions about the role of personal transportation and the
 effect this will have on congestion. Will driving become as dated as
-horse-riding is today - or will people's desire to drive mean that there will
+horse-riding is today, or will people's desire to drive mean that there will
 always be human driven vehicles on the road? More importantly, will self driving
 cars improve or harm congestion? Furthermore, how will they decide what routes
 they should take?
@@ -362,7 +362,7 @@ may have.
 
 \section{Simulation}
 
-The simulation process of modelling, making assumptions about behaviour and
+The simulation process of modelling, making assumptions about behaviour, and
 analysing the results has proven to be effective in numerous situations.
 Vehicle simulation can be used in a number of ways:
 
@@ -380,7 +380,7 @@ Vehicle simulation can be used in a number of ways:
 
 One such simulation tool is MATSim, short for Multi-Agent Transport Simulation.
 MATSim is commonly used by researchers in the intelligent transport field for
-macroscopic (large scale) simulations. MATSim can be used to perform many
+macroscopic (large-scale) simulations. MATSim can be used to perform many
 different types of simulation, from routing air traffic to planning for
 evacuation in crisis situations. This flexibility is of course an advantage -
 but it comes at a cost. As the engine is so flexible, it requires substantial
@@ -390,7 +390,7 @@ data into the right format. Worse, a separate proprietary tool is needed to
 visualise the routing information.
 
 This complexity and inaccessability of data makes it harder to iterate on new
-ideas. If the data were easier to visualise, flaws with an algorithm could be
+ideas. If the data were easier to visualise, an algorithm's flaws could be
 identified near instantly and suitable modifications made immediately.
 Unfortunately, two of the more popular MATSim visualisation tools suffer from
 the same problem as MATSim - they are designed to support a massive variety of
@@ -427,7 +427,7 @@ difficulty of viewing data on a map.
 
 On the other end of the spectrum, we have SUMO, short for Simulation of Urban
 MObility~\cite{sumo}. SUMO is designed for microscopic simulations, down to
-individual vehicles and traffic lights. Unlike MATSim, SUMO is a more focussed
+individual vehicles and traffic lights. Unlike MATSim, SUMO is a more focused
 and unified project (although the default distribution comes with nine pieces of
 software), primarily enabling city planners to see the impact of changes to the
 road network. Bus timetables and schedules could be changed, traffic lights
@@ -440,7 +440,7 @@ microscopic simulation, meaning it is very accurate for simulating the behaviour
 of each vehicle, traffic light, pedestrian and truck. Unsurprisingly, this comes
 at a substantial performance cost. SUMO's accuracy and focus makes it a good
 tool for its use case, but it does not lend itself to the city scale simulation
-and in depth data analysis that is needed to answer questions about the future
+and in-depth data analysis that is needed to answer questions about the future
 of transportation.
 
 \section{Objectives}
@@ -1711,6 +1711,16 @@ The central system stores the number of vehicles that have been told to route
 along each edge, called the Expected Map. It is initialised with zero values for
 all edges on start-up.
 
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \vspace{-1em}
+    \begin{greybox}
+        \centering
+        \includegraphics[width=\textwidth]{congestion-crap}
+        \caption{The initial choice of congestion function.}\label{fig:cong-crappy}
+    \end{greybox}
+    \vspace{-3em}
+\end{wrapfigure}
+
 At a fixed interval, the system updates the Expected Map by multiplying every
 edge by a damping factor that is less than 1. It then adds the edges in each
 vehicle's current route to the Expected Map.
@@ -1720,9 +1730,15 @@ with a congestion function to modify the weight of edges based on their expected
 density. This will return a route that avoids high-congestion roads, which will
 be reflected in the Expected Map upon its next update.
 
+The graphs in Figures \ref{fig:congestion-graph} and \ref{fig:congestion-graph-2} were similar in nature to a
+sigmoid function such as $\tanh$, so this was used as the foundation for the
+congestion function. Adjusting the scale and position of the function led to the
+graph shown in Figure \ref{fig:cong-crappy}, $\displaystyle v(x) = \frac{\tanh(2-\frac{x}{15})+1}{2}$.
+
 \subsubsection{Design Justification}
 
-\begin{wrapfigure}{l}{0.5\textwidth}
+\begin{wrapfigure}{r}{0.5\textwidth}
+    \vspace{-1em}
     \begin{greybox}
         \centering
         \includegraphics[width=\textwidth]{beejama}
@@ -1747,8 +1763,6 @@ chosen to ensure that the busy areas will not be avoided by all vehicles once th
 Expected Map has shown that they will be busy. If every vehicle was rerouted
 simultaneously, the vehicles would completely avoid the busy roads and hence
 fail to use the network capacity available to them.
-
-ADD THE INITIAL CONGESTION FUNCTION.
 
 \subsection{Implementation}
 
@@ -1993,7 +2007,8 @@ halt.
     \begin{greybox}
         \centering
         \includegraphics[width=\textwidth]{20k-dij-speed}
-        \caption{Comparison of speed and remaining number of vehicles using Dijkstra's algorithm with 20,000 vehicles.}\label{fig:20k-dij-speed}
+        \caption{Comparison of speed and remaining number of vehicles using
+        Dijkstra's algorithm with 20,000 vehicles.}\label{fig:20k-dij-speed}
     \end{greybox}
     \vspace{-2em}
 \end{wrapfigure}
@@ -2250,7 +2265,7 @@ $O(E\log V)$ and every subsequent timestep is $O(1)$. Hence for all vehicles, we
 have a worst case performance of $O(NE\log V))$. For the overall system, we
 have that as $I \rightarrow \infty$, the performance of the simulation overall
 tends to $O(IN)$. We also have a substantial performance improvement through the
-use of Contraction Hierarchies, analysed here~\cite{ch-complexity}.
+use of Contraction Hierarchies, analysed in~\cite{ch-complexity}.
 
 For the Marmoset algorithm, a certain percentage of the vehicles are re-routed
 every iteration - let this value be $c$. This means that the average runtime
@@ -2260,19 +2275,44 @@ and hence the runtime of the whole system is $O(INE\log V)$. We are also
 limited by the fact that we cannot use Contraction Hierarchies, as the algorithm
 re-weights the edegs on the graph each time the Expected Map is recalculated.
 
-Clearly, the performance of the Marmoset algorithm is substantially worse than routing
-using Dijkstra's algorithm. This was shown to be true in practice, with the
-Dijkstra's simulation taking around 15 minutes compared to up to 5 hours for
-the Marmoset algorithm. However, there are many ways this could be improved in
-the real world. When simulating, all routing requests must be performed on a
-single machine - in the real world, the Expected Map could be stored centrally
-and distributed the vehicles, who then perform their own requests. This reduces
-the performance of the centralised system to $O(N)$ per iteration, with each
-vehicle running Dijkstra's algorithm in $O(E\log V)$. As routing is a task
-many GPS systems are already do, this seems to be a realistic option for
-implementing the algorithm in the real world. Furthermore, it is likely that the
-code and algorithms could be substantially opimised to improve performance were
-a central system a requirement.
+Clearly, the performance of the Marmoset algorithm is worse than routing using
+Dijkstra's algorithm. This was shown to be true in practice, with the Dijkstra's
+simulation taking around 15 minutes compared to up to 5 hours for the Marmoset
+algorithm. However, there are many ways this could be improved in the real
+world. When simulating, all routing requests must be performed on a single
+machine - in the real world, the Expected Map could be stored centrally and
+distributed the vehicles, who then perform their own requests. This reduces the
+performance of the centralised system to $O(N)$ per iteration, with each vehicle
+running Dijkstra's algorithm in $O(E\log V)$. As routing is a task many GPS
+systems are already do, this seems to be a realistic option for implementing the
+algorithm in the real world. Furthermore, it is likely that the code and
+algorithms could be substantially opimised to improve performance were a central
+system a requirement.
+
+\subsection{Algorithm Limitations}
+
+The approach chosen does have a few limitations. Other than speed, there are a
+few other things missing that could improve the efficiency of the routes
+generated by the algorithm.
+
+The algorithm's parameters - the progress function, congestion function, damping
+factor and re-route percentage - were chosen based on brief analysis of a
+running simulation rather than in depth exploration of the effect changing the
+parameters. This would offer further insight into the working of the algorithm
+as well as improving its performance overall. Unfortunately this was not
+possible due to the large number of possible combinations of parameters as well
+as the longer running time for simulations using the Marmoset algorithm.
+
+A key factor that the Expected Map does not take account of is the time at which
+a vehicle will travel on a particular road. If a large number of vehicles were
+all travelling along the same route but at different times, the Expected Map
+would believe that the road would be congested in spite of this. The progress
+function was added to mitigate this, but it does not completely eradicate the
+issue.
+
+We also saw some issuse regarding increased travel time
+
+* large increases in travel time for some vehicles +
 
 \section{Simulation Engine Evaluation}
 
@@ -2285,7 +2325,7 @@ Thanks to the system's architecture, implementing and testing the Marmoset
 algorithm has been a painless task, enabling insight though both visualisation
 and data analysis.
 
-\subsection{Potential Improvements}
+\subsection{Limitations}
 
 * metric gathering improvement
 * performance improvement
@@ -2293,6 +2333,9 @@ and data analysis.
 * V2V comms
 * show planned routes
 * 'higher level' visualisation stuff
+
+BUT: don't wanna fall prey to the same issues with MATSim -> more like SUMO for
+cities.
 
 %{\bf A topic-specific chapter, of roughly $15$ pages}
 %\vspace{1cm}
@@ -2377,6 +2420,10 @@ many other potential situations. For example, ...
 
 Although the algorithm has some minor flaws that could be improved upon, it is
 able to solve the multi-vehicle routing problem in a novel and effective manor.
+
+Extensions:
+* support road closure/roadworks etc in the expected map
+* multi-directional edge blocking!
 
 \section{The Marmoset Simulation Engine}
 
