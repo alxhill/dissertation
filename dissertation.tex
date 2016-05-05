@@ -120,9 +120,6 @@
 
 \chapter*{Executive Summary}
 
-{\bf A compulsory section, of at most $1$ page}
-\vspace{1cm}
-
 %\noindent
 %This section should pr\'{e}cis the project context, aims and objectives,
 %and main contributions (e.g., deliverables) and achievements; the same
@@ -236,9 +233,6 @@ V2I                 &:     & Vehicle to Infrastructure \\
 
 \chapter*{Acknowledgements}
 
-{\bf An optional section, of at most $1$ page}
-\vspace{1cm}
-
 % Thank Ben, Peter Karich, Pie Mapping, all my friendzzz
 
 %\noindent
@@ -273,78 +267,91 @@ V2I                 &:     & Vehicle to Infrastructure \\
 
 \noindent
 
-\section{Routing in the 21st Century} % retitled introduction?
+\section{Routing in the 21st Century}
 
 When MapQuest first launched in 1996, most drivers found their way to new
-locations using physical paper maps as well as knowledge gained through
-experience. MapQuest was the first online service to change that - instead of
-figuring out a route yourself, you could enter your location and destination and
-have a route provided to you. Using these routes required printing
-out or writing down the instructions yourself, meaning changes to the driving
-environment (such as traffic or roadworks) could not be anticipated.
+locations using physical paper maps. MapQuest was the first mainstream online
+service to change that - instead of figuring out a route yourself, you could
+enter your location and destination and have a route provided to you. Using
+these routes required printing out or writing down the instructions yourself,
+meaning changes to the driving environment (such as traffic or roadworks) could
+not be anticipated.
 
-In 2005, the first online version of Google Maps was released. Unlike its
-predecessors, Google Maps used real-time traffic analysis to improve the routes
-it offered to its users. Initially, Google Maps lagged behind MapQuest, but with
-improvements to both their interface and their map and route quality they soon
-took the lead. However, for a time most routes were still printed - even
-vehicles with GPS navigation rarely used non-static mapping information.
+In 2005, the first online version of Google Maps was released. Initially, Google
+Maps lagged behind MapQuest, but with fast improvements to their map and route
+quality they soon took the lead. Google was quick to improve their mapping and
+routing offering, integrating real-time traffic analysis to give its users a
+significantly better experience. However, for a time most routes were still
+printed - even vehicles with GPS navigation rarely used non-static mapping
+information.
 
 It took the release of the iPhone in 2007 to take full advantage of the new
 information available - suddenly, people were able to plan routes and modify
-them whilst travelling, whilst Google could use this information to improve
+them during the journey, whilst Google could use this information to improve
 their data on congestion.
 
-\section{Self-Driving Vehicles}
-
-This technology has now been integrated into almost every modern vehicle
-available to purchase today. GPS based navigation, with traffic information and
-turn by turn routing instructions are standard features in many car models.
-Furthermore, we are seeing some further intelligence being added to cars, from
-two perspectives.
-
-The first is modifying existing cars - adding features such as cruise control,
-automatic braking systems, reading of road signs, lane following on highways,
-and so on until eventually the car will need minimal or no human intervention.
-This approach is being taken by Tesla, who have released multiple software
-updates to their car software that enables further automation by the car itself.
-The second approach is from companies like Google, who have been building a
-self-driving vehicle `from scratch', creating a vehicle that has no steering
-wheel and requires no human intervention to drive from one location to another.
+Google weren't the only company with this idea - a small startup called Waze had
+a similar vision. Their app provided routes to users that avoided traffic by
+tracking the movement of other vehicles using the app. If cars in a
+certain area were stationary, the app informed other drivers that there may be
+congestion and offered them alternative routes. Their strategy proved
+successful, and in May 2013 they were acquired by Google for an estimated \$1.3
+billion.
 
 \section{Congestion}
 
-With the advent of Google Maps and the proliferation of mobile devices, many
-drivers are now provided with directions that can incorporate large amounts of
-additional information - including current traffic conditions and road closures.
-This is particularly important in cities, where the levels of congestion during
-`rush hour' can have a drastic impact on travel time.
+The proliferation of information whilst driving is particularly important in
+cities, where congestion plays a primary role in determining optimal routes.
+Cities also struggle with `rush hours' at the start and end of the working day,
+when congestion is at its worst. In London, this issue was so problematic that
+in 2003, a congestion charge has been in place to deter drivers from entering
+and leaving the center of the city at peak times. In spite this, upwards of
+64,000 people drive into the centre of London every day~\cite{tfl}.
 
-Looking forwards, we can see two trends that suggest that congestion will become
-more of an issue in future. Firstly, more and more people are living in cities -
-even with good public transportation, this will increase the number of vehicles
-on the road even if it lowers the proportion of households that own cars.
-Secondly, on-demand transport solutions (such as those provided by Uber) are
-leading to more vehicles on the road, especially at peak times. One of Uber's
-key insights is using market techniques to better match supply and demand than
-existing taxi and minicab services. If there is an increase in riders requesting
-vehicles in a certain area, Uber activates \"surge pricing", increasing the cost
-of the ride by a fixed multiple - for example, 1.5x. This information is sent to
-their network of drivers, who will move to the location in search of higher
-paying riders. The net result of this is that high-demand in certain areas will
-create further congestion, even though on demand transportation is usually more
-efficient than personal car ownership.
+Looking forwards, we see two global trends that suggest that congestion will
+become more of an issue in future. Firstly, more and more people are living in
+cities - even with public transportation, this increases the number of vehicles
+on the road even the proportion of households that own cars decreases. Secondly,
+on-demand transport solutions such as those provided by Uber are placing more
+vehicles on the road, especially at peak times. One of Uber's key insights is
+using market techniques to match supply and demand better than existing taxi and
+minicab services. If there is an increase in riders requesting vehicles in a
+certain area, Uber activates ``surge pricing", increasing the cost of the ride
+by a fixed multiple - for example, 1.5x. This information is sent to their
+network of drivers, who will move to the location in search of higher fares. The
+net result is that high-demand in certain areas will create further congestion,
+despite the efficiencies on demand transportation has over individual car
+ownership.
 
-At the same time, we are beginning to witness the rise of self-driving cars,
+\section{Self-Driving Vehicles}
+
+Vehicles have improved alongside the development of effective routing
+algorithms; GPS based navigation, with traffic information and turn by turn
+routing has now been integrated into every modern vehicle available today.  At
+the same time, we are beginning to witness the rise of self-driving cars,
 capable of planning and executing routes themselves with no need for human
-intervention. This raises many questions about the role of personal
-transportation and the effect this will have on congestion. Will driving become
-as dated as horse-riding is today - or will people's enjoyment of it mean that
-there'll always be human driven vehicles on the road? More importantly, will
-self driving cars improve or harm congestion - and how will they decide what
-routes they should take?
-% could expand upon this with further extensions of long term self-driving
-% future, as well as more specific issues that SDVs raise.
+intervention. This is being approached from two different perspectives.
+
+The first is modifying existing cars - adding features such as cruise control,
+automatic braking systems, reading of road signs, lane following on highways,
+and other features for automated control until the car will need minimal or no
+human intervention. This approach is being taken by Tesla, who have released
+multiple software updates to their car software that improves the car's ability
+to drive itself. The software is not yet capable of full autonomy, but each
+update brings self-driving cars closer to reality.
+
+The second approach is from companies like Google, who have been building a
+self-driving vehicle `from scratch'. Their vehicle that has no steering wheel
+and requires no human intervention to drive from one location to another.
+Google's car has driven more than 1.5 million miles with fewer accidents than
+human driver would have had.
+
+This raises many questions about the role of personal transportation and the
+effect this will have on congestion. Will driving become as dated as
+horse-riding is today - or will people's desire to drive mean that there will
+always be human driven vehicles on the road? More importantly, will self driving
+cars improve or harm congestion? Furthermore, how will they decide what routes
+they should take?
 
 Answers to these questions are important to many people, including individual
 drivers, companies owning large fleets of vehicles, and city planners. Although
@@ -354,48 +361,101 @@ may have.
 
 \section{Simulation}
 
-One way of finding answers to these questions is simulation - modelling and
-making assumptions about future behaviours and analysing the results. Vehicles
-simulation can be used in a number of ways:
+The simulation process of modelling, making assumptions about behaviour and
+analysing the results has proven to be effective in numerous situations.
+Vehicle simulation can be used in a number of ways:
 
 \begin{itemize}
     \item Simulating current vehicle behaviour and traffic conditions to
         identify improvements to the road network.
-    \item Modifying the road and transport networks (e.g busses, taxis) in the
-        simulation to identify the impact changes would have.
+    \item Modifying the road and transport networks (such as busses or taxis) in
+        the simulation to identify the impact changes would have.
     \item Designing and running novel algorithms for simulating self-driving
         vehicles, modelling their behaviour in response to both human drivers
         and other self-driving vehicles.
 \end{itemize}
 
-\subsection{Types of Simulation}
-
-\textbf{V2V vs V2I etc}
-
-There are two main tools in use today for running vehicle simulations. The first
-is MATSim~\cite{matsim}, and the second is SUMO~\cite{sumo}.
-
 \subsection{MATSim}
+
+One such simulation tool is MATSim, short for Multi-Agent Transport Simulation.
+MATSim is commonly used by researchers in the intelligent transport field for
+macroscopic (large scale) simulations. MATSim can be used to perform many
+different types of simulation, from routing air traffic to planning for
+evacuation in crisis situations. This flexibility is of course an advantage -
+but it comes at a cost. As the engine is so flexible, it requires substantial
+setup and is complex to use for vehicle routing - there is no built in support
+for OpenStreetMap data, instead requiring a multi-stage process to convert the
+data into the right format. Worse, a separate proprietary tool is needed to
+visualise the routing information.
+
+This complexity and inaccessability of data makes it harder to iterate on new
+ideas. If the data were easier to visualise, flaws with an algorithm could be
+identified near instantly and suitable modifications made immediately.
+Unfortunately, two of the more popular MATSim visualisation tools suffer from
+the same problem as MATSim - they are designed to support a massive variety of
+use cases, meaning they aren't especially good at any specific one of them.
+
+Via is a commercial application for visualising the output of MATSim
+simulations. It is capable of providing a large amount of information about a
+completed simulation, but is also able to import tracked vehicles from GPS data
+and perform analysis on that. Of course this has its use, but it also has the
+downside of obscuring the simple use case of watching and understanding the
+behaviour of a vehicle simulation.
+
+A brief attempt at a basic simulation highlighted the complexity and struggle of
+the MATSim workflow - specifically, the confusing and unintuitive user
+interfaces of the tools required, the necessity of installing multiple pieces of
+software (none of which directly reference each other) and the surprising
+difficulty of viewing data on a map.
 
 \subsection{SUMO}
 
-Existing tools are cumbersome, slow, non-interactive and designed to be used for
-any type of multi-agent problem - from routing air traffic to planning for
-evacuation in crisis situations. This project aims to create a system designed
-exclusively for one goal - road based simulations for vehicles and traffic.  By
-focusing on a specific use case, a tool can be easier to use, faster to setup
-and provide specialised functionalities for our use case.
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[height=10em]{sumo-1}
+    \end{subfigure}
+    \hspace{1em}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[height=10em,clip,trim=7cm 0 7cm 0]{sumo-2}
+    \end{subfigure}
+    \caption{Screenshots of the SUMO simulation engine}\label{fig:sumo}
+\end{figure}
 
-Additionally, existing tools tend to focus on simulation then visualisation,
-without combining the two. Simultaneous simulation and visualisation allows a
-much tighter loop of testing and iterating on algorithm design and analysis.
+On the other end of the spectrum, we have SUMO, short for Simulation of Urban
+MObility~\cite{sumo}. SUMO is designed for microscopic simulations, down to
+individual vehicles and traffic lights. Unlike MATSim, SUMO is a more focussed
+and unified project (although the default distribution comes with nine pieces of
+software), primarily enabling city planners to see the impact of changes to the
+road network. Bus timetables and schedules could be changed, traffic lights
+added or modified with various models of vehicle behaviour.
+
+SUMO seems to lack many of the issues with MATSim - it is mostly unified,
+designed for a specific use case and makes it easy to visualise vehicle
+behaviour, as shown in Figure \ref{fig:sumo}. However, SUMO's use cases require
+microscopic simulation, meaning it is very accurate for simulating the behaviour
+of each vehicle, traffic light, pedestrian and truck. Unsurprisingly, this comes
+at a substantial performance cost. SUMO's accuracy and focus makes it a good
+tool for its use case, but it does not lend itself to the city scale simulation
+and in depth data analysis that is needed to answer questions about the future
+of transportation.
+
+\section{Objectives}
+
+Unlike existing simulation engines, this project aims to create a system
+designed exclusively for city-scale real-time macroscopic car simulation, for
+aiding development of new multi-vehicle routing algorithms. By focusing on this
+use case, we believe a tool can be created that surpasses existing simulation
+engines in both performance and ease of use.
 
 \begin{quote}
 \noindent
-The high-level objective of this project is to build an easier, faster way of
-simulating the behaviour of vehicles, primarily in cities. We will use this
-simulation engine to design and improve a potential algorithm for multi-vehicle
-routing. The concrete aims are:
+This project aims to have two key deliverables. The first is a flexible, fast
+and easy to use simulation and visualisation engine. The second is a
+multi-vehicle routing algorithm designed and developed using the simulation
+engine. The concrete objectives are:
 
 \begin{enumerate}
     \item Research existing algorithms and simulation tools to identify the
@@ -405,57 +465,24 @@ routing. The concrete aims are:
         flexibility.
     \item Build and optimise the simulation engine on top of existing open
         source tools.
-    \item Demonstrate the power and flexibility of the engine by experimentally
-        creating a novel multi-vehicle routing algorithm.
+    \item Design and implement a novel multi-vehicle routing algorithm.
+    \item Use the tools provided by the simulation engine to analyse, understand
+        and optimise the routing algorithm.
 \end{enumerate}
 
 \end{quote}
-
-%This chapter should describe the project context, and motivate each of
-%the proposed aims and objectives.  Ideally, it is written at a fairly
-%high-level, and easily understood by a reader who is technically
-%competent but not an expert in the topic itself.
-
-%In short, the goal is to answer three questions for the reader.  First,
-%what is the project topic, or problem being investigated?  Second, why
-%is the topic important, or rather why should the reader care about it?
-%For example, why there is a need for this project (e.g., lack of similar
-%software or deficiency in existing software), who will benefit from the
-%project and in what way (e.g., end-users, or software developers) what
-%work does the project build on and why is the selected approach either
-%important and/or interesting (e.g., fills a gap in literature, applies
-%results from another field to a new problem).  Finally, what are the
-%central challenges involved and why are they significant?
-
-%The chapter should conclude with a concise bullet point list that
-%summarises the aims and objectives.  For example:
-
-%\begin{quote}
-%\noindent
-%The high-level objective of this project is to reduce the performance
-%gap between hardware and software implementations of modular arithmetic.
-%More specifically, the concrete aims are:
-
-%\begin{enumerate}
-%\item Research and survey literature on public-key cryptography and
-      %identify the state of the art in exponentiation algorithms.
-%\item Improve the state of the art algorithm so that it can be used
-      %in an effective and flexible way on constrained devices.
-%\item Implement a framework for describing exponentiation algorithms
-      %and populate it with suitable examples from the literature on
-      %an ARM7 platform.
-%\item Use the framework to perform a study of algorithm performance
-      %in terms of time and space, and show the proposed improvements
-      %are worthwhile.
-%\end{enumerate}
-%\end{quote}
 
 % -----------------------------------------------------------------------------
 
 \chapter{Technical Background}
 \label{chap:technical}
 
-%%%%%% ======= 10 PAGES =======
+This chapter contains both the algorithmic and practical details that are
+required to understand how the project will be delivered. The algorithmic
+section covers existing single and multi-vehicle routing algorithms as well as
+the processes used for realistic vehicle simulation. The implementation section
+introduces the open source software that provides routing algorithms and road
+network information to the simulation engine.
 
 \section{Algorithmic Background}
 
@@ -464,79 +491,71 @@ routing. The concrete aims are:
 Dijkstra's Algorithm~\cite{dijkstra}, originally designed in 1956, forms the
 foundation of most modern routing algorithms.
 
-\begin{algorithm}[h]
-\SetKwProg{Fn}{Function}{}{}
-\DontPrintSemicolon
-\SetAlgoLined
-
-    \Fn{\textsc{Dijkstra}(G,s,d)}{
-        $Q \leftarrow \textrm{new Priority Queue}$ \;
-        $dist[s] \leftarrow 0$ \;
-        \For{vertex $v \neq s \in G$}{
-            $dist[v] = \infty$ \;
-            $prev[v] = undefined$ \;
-            $Q.\textrm{add}(v, dist[v])$ \tcp*[h]{Adds $v$ to priority queue with weight $dist[v]$} \;
-        }
-        \While{$Q \neq \emptyset$}{
-            $u \leftarrow Q.\textrm{extract\_min}()$ \;
-            \If{$u = d$}{
-                $\textbf{Return BuildPath}(u)$
-            }
-            \For{neighbour $v$ of $u$}{
-                $d \leftarrow dist[u] + \textbf{distance}(u,v)$ \;
-                \If{$d < dist[v]$}{
-                    $dist[v] \leftarrow d$ \;
-                    $prev[v] \leftarrow u$ \;
-                    $Q.\textrm{decrease\_priority}(v, d)$ \;
-                }
-            }
-        }
-    }
-
-\caption{Dijkstra's Algorithm}\label{dij-alg}
-\end{algorithm}
+\begin{figure}[h]
+    \centering
+    \includegraphics[page=7,clip,trim=0 10cm 12cm 0,width=0.8\textwidth]{architecture}
+    \caption{Graph showing roads with distance and speed limit at the edges}\label{fig:graph-weights}
+\end{figure}
 
 The algorithm operates on a graph consisting of nodes connected to each other by
-edges. Each edge has a weight - this could be the length of the road in a real
-world map. Given two nodes $S$ and $D$, the goal is to return a list of edges
-that represents the shortest path between the nodes.
+edges. Each edge has a weight, representing the cost of travelling along that
+edge. Given a source node $S$ and a destination node $D$, the algorithm returns a list of edges
+representing the shortest path between $S$ and $D$.
 
 At its core, the algorithm picks the edge with the next shortest distance from
-the source node and updates the distance value for that node. It repeats this
-process until it finds the source node connected to an edge, then works
-backwards to construct the shortest path between the two nodes.
+the source node and updates the minimum distance value for that node. It repeats
+this process until it finds the source node, then works backwards to construct
+the shortest path between the two nodes.
 
-Algorithm \ref{dij-alg} shows how it works in pseudo-code. The implementation for
-the \textbf{BuildPath} function simply iterates through each nodes parent and
-adds it to the output list. We also define the \textbf{distance} function that
-simply returns the weight of the edge between vertices $u$ and $v$.
+There are a few key ways of implementing the algorithm, making use of different
+types of heap. They each have different performance characteristics, but the
+most common approach uses a binary heap and offers $O(E\log V)$ performance,
+where $E$ is the number of edges and $V$ is the number of vertices in the graph.
+
+When routing in the real world, the weights of the graph are not usually fixed.
+As shown in Figure \ref{fig:graph-weights}, the road's speed limit and distance
+are stored on the edges of the graph. This data is used in combination with
+information about the vehicle to calculate the travel time, which can then be
+used as the weight of an edge. For example, unlike cars motorcycles may not be
+able to reach 80mph, so we would use the maximum speed of the vehicle rather
+than the road to calculate the travel time for that edge. This concept allows a
+single graph to provide routes to multiple types of traveller.
 
 \subsubsection{Bidirectional Dijkstra's Algorithm}
 
 By default, the algorithm searches outwards from only the source. We can improve
 the performance of Dijkstra's algorithm by searching backwards from the
-destination and forward from the source simultaneously.
+destination and forward from the source simultaneously. This has a dramatic
+effect on the number of edges that are searched, as can be seen in Figure
+\ref{fig:bidijkstra}.
 
 \subsubsection{A* Algorithm}
 
 By itself, Dijkstra's algorithm will search all edges based on their cost from
 the start node. However, when routing on a real world map this leads to a lot of
-wasted work searching in the opposite direction from the destination.
+wasted work searching away from the destination - this can be seen in Figure
+\ref{fig:bidijkstra}.
 
-In Dijkstra's algorithm, the distance from the source node is used as the key in
-the priority queue (line X). The A* algorithm~\cite{astar} instead seeks to minimise the
-function $f(v) = dist[v] + h(v)$, where $h(v)$ is a heuristic that estimates the
-cost to destination.
+Dijkstra's algorithm picks the next edge to check based only on the distance
+from the source node, using this as the key in a priority queue. The A*
+algorithm modifies this by including a heuristic function representing an
+estimate of the distance to the destination node. This allows it to prioritise
+nodes that are more likely to route towards the destination. Figure
+\ref{fig:astar} shows the paths searched by the A* algorithm - note that it does
+not look as far behind the source node as Dijkstra's algorithm, to its left.
 
 A bidirectional version of the A* algorithm can also be used for further
-improvements to performance.
+improvements to performance. However, although a bidirectional Dijkstra's
+algorithm is significantly more efficient than a single direction one, the same
+is not true for the A* algorithm as the heuristics cannot be as
+tight~\cite{astar-bi}.
 
 \begin{figure}[h]
 \centering
 \begin{subfigure}[b]{0.4\textwidth}
     \centering
     \includegraphics[height=15em]{bidijkstra-city}
-    \caption{Dijkstra's Algorithm}\label{fig:bidijkstra}
+    \caption{Bidirectional Dijkstra's Algorithm}\label{fig:bidijkstra}
 \end{subfigure}
 \hspace{2em}
 \begin{subfigure}[b]{0.4\textwidth}
@@ -549,8 +568,8 @@ improvements to performance.
 
 \subsubsection{Contraction Hierarchies}
 
-If the weights on each edge are known in advance, we can process the graph to
-pre-compute the shortest path between key nodes and hence improve the
+If the weights on each edge are known in advance, we can pre-process the graph to
+compute the shortest path between certain nodes and improve the
 performance of routing requests by orders of magnitude. Contraction
 Hierarchies~\cite{ch} is one technique for graph preprocessing.  It works by
 building shortcuts on top of each other in a hierarchy, and using a modified
@@ -560,28 +579,31 @@ current one to route between two points.
 Although they double memory usage, in practice Contraction Hierarchies have a
 huge impact on query times. For routing from Moscow to Madrid, any Dijkstra
 based algorithm takes at least 10 seconds, compared to less than 0.05s for a
-processed graph.
-\textbf{Cite: https://graphhopper.com/public/slides/2014-locationtech.pdf}
+processed graph~\cite{ch-perf}.
 
 \subsection{Multi-Vehicle Routing Algorithms}
 
-Providing viable routes for a single vehicle is now essentially a solved
-problem, with various implementations used in many commercial products for both
-consumers and businesses. However, the problem of routing multiple vehicles
-simultaneously has many solutions~\cite{beejama,rt:compstudy,rt:decentralized,
+Providing viable routes for a single vehicle is a problem with accepted
+solutions and various implementations used in many successful commercial
+products. However, the problem of routing multiple vehicles simultaneously has
+many solutions~\cite{beejama,rt:compstudy,rt:decentralized,
 rt:guidance,rt:congestion,rt:car,rt:unexpected}, but no accepted `best practice'
 technique.
 
-Multi-Vehicle routing algorithms come in various forms, depending on the
-author's goals and expectations for future vehicle connectivity. Some algorithms
-are designed to have a large scale overview of where each vehicle is on the
-road, and will dispatch routing information to the vehicles centrally. On the
-other end, algorithms may assume no central information and instead rely upon
-vehicle to vehicle connections for passing information. Algorithms with a
-centralised component are referred to as \textbf{V2I}, standing for Vehicle to
-Infrastructure, whilst \textbf{V2V} refers to Vehicle to Vehicle algorithms. A
-simulation engine capable of implementing both V2V and V2I communication models
-is known as a V2X engine.
+This is primarily due to their research focussed nature - it is not currently
+possible to route all vehicles collaboratively, so many types of algorithm exist
+to deal with different expectations of the future of transport communication.
+
+As such, multi-vehicle routing algorithms usually fall into one of two
+categories. Some algorithms are designed to have a large scale overview of where
+each vehicle is on the road using some secondary infrastructure, and will
+dispatch routing information to the vehicles centrally. On the other end,
+algorithms may assume no central information and instead rely upon vehicle to
+vehicle connections for passing information. Algorithms relying on the
+installation of additional infrastructure are referred to as \textbf{V2I},
+standing for Vehicle to Infrastructure, whilst \textbf{V2V} refers to Vehicle to
+Vehicle algorithms. A simulation engine capable of implementing both V2V and V2I
+communication models is known as a V2X engine.
 
 \subsubsection{VANET}
 
@@ -590,9 +612,20 @@ Although primarily theoretical at the moment, wireless networking protocols and
 algorithms have been designed to support the creation and use of a VANET. VANETs
 have a number of potential use cases - allowing vehicles to follow one another
 with no driver intervention, real-time calculation and distribution of traffic
-information and so on.
+information and so on. V2V algorithms relying on a VANET have been created and
+shown to offer improvements in routing performance.
 
 \subsubsection{BeeJamA}\label{sec:beejama}
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \vspace{-1em}
+    \begin{greybox}
+        \centering
+        \includegraphics[width=\textwidth]{congestion-graph-1}
+        \caption{Empirically derived congestion function from~\cite{traffic-graphs}}\label{fig:congestion-graph}
+    \end{greybox}
+    \vspace{-3em}
+\end{wrapfigure}
 
 The BeeJamA~\cite{beejama} algorithm is a V2I approach for multi-vehicle routing. It is based
 off an algorithm originally created for routing in packet switching networks
@@ -600,24 +633,12 @@ that has been adapted for use on road networks. Its behaviour is inspired by the
 behaviour of bees, which are able to effectively search and scavenge for food in
 a large area surrounding their hive.
 
-\noindent
-\begin{wrapfigure}{l}{0.5\textwidth}
-    \begin{greybox}
-        \centering
-        \includegraphics[width=\textwidth]{beejama}
-        \caption{A comparison of BeeJamA to Dijkstra's Algorithm in terms of travel time.}\label{fig:bjam-dijkstra}
-    \end{greybox}
-    \vspace{-2em}
-\end{wrapfigure}
-
-The BeeJamA algorithm uses a quality rating function to determine a probability
-that a vehicle will be sent down a specific road. The map is split into regions
-called Foraging Regions. Each region stores two types of table - an
-Intra-Foraging Region routing table and an Inter-Foraging Region routing table.
-These store the cost from the quality rating function of using a particular
-route to reach the destination. The tables are kept up to date by sending
-virtual vehicles between regions, which record how long their journey took and
-inform the region they have entered.
+The map is split into regions called Foraging Regions. Each region stores two
+types of table - an Intra-Foraging Region routing table and an Inter-Foraging
+Region routing table.  These store the cost of using a particular route to reach
+the destination. The tables are kept up to date by sending virtual vehicles
+between regions, which record how long their journey took and update the tables
+of the region they have entered.
 
 Whilst routing, each vehicle consults the routing table and probablistically
 picks its next step. This is a key part of the algorithm that helps keep routes
@@ -626,31 +647,28 @@ optimal as it would have high levels of congestion. Results from a custom-built
 simulation engine have shown that the algorithm can perform better than using
 Dijkstra's algorithm with delayed traffic information.
 
-\subsubsection{Congestion Functions}
-
 \begin{wrapfigure}{r}{0.4\textwidth}
-    \begin{greybox}
-        \centering
-        \includegraphics[width=\textwidth]{congestion-graph-1}
-        \caption{Empirically derived congestion function from~\cite{traffic-graphs}}\label{fig:congestion-graph}
-    \end{greybox}
-    \vspace{-1mm}
+    \vspace{-1em}
     \begin{greybox}
         \centering
         \includegraphics[width=\textwidth]{congestion-graph-2}
-        \caption{Mathematical congestion functions for different types of road
-        from~\cite{beejama}}\label{fig:congestion-graph-2}
+        \caption{Mathematical congestion functions for different types of road from~\cite{beejama}}\label{fig:congestion-graph-2}
     \end{greybox}
-    \vspace{-8em}
+    \vspace{-3em}
 \end{wrapfigure}
+
+When routing with Dijkstra's algorithm, the travel time for each edge is usually
+estimated based only on the road's speed limit and distance (as well as the
+maximum speed of the vehicle). The BeeJamA improves upon this drastically by
+taking into account the number of vehicles on a given road. Instead of using the
+maximum velocity for a road, BeeJamA uses a congestion function that takes into
+account the density of vehicles on a given road as well as the road type. The
+congestion functions they and other researchers have derived can be seen in
+Figures \ref{fig:congestion-graph} and \ref{fig:congestion-graph-2}.
 
 Empirical analysis of real world data has been performed with the goal of
 creating a function from density of vehicles to velocity~\cite{traffic-graphs,
-traffic-thing-2}. The data and its analysis can be seen in Figure
-\ref{fig:congestion-graph}.
-
-Congestion functions form the backbone of the BeeJamA algorithm as a key
-component in making routing decisions.
+traffic-thing-2}.
 
 \subsection{Nagel-Schreckenberg Model} \label{sec:nagel}
 
@@ -718,7 +736,8 @@ what happens when there is a density of 0.1 cars per cell.
 \begin{figure}[h]
     \centering
     \includegraphics[scale=0.4]{nagel}
-    \caption{Formation of traffic jams in the Nagel-Schreckenberg Model}\label{nagel-demo}
+    \caption{Formation of traffic jams in the Nagel-Schreckenberg Model
+    from~\cite{nagel}}\label{nagel-demo}
 \end{figure}
 
 \section{Implementation Background}
@@ -879,8 +898,6 @@ Adjacent Node.
 
 \chapter{Project Execution}
 \label{chap:execution}
-
-%%%%%% ======= 15 PAGES ======= %%%%%%
 
 \section{Overview}
 
@@ -1300,8 +1317,6 @@ not be changed from this CellIterator.
 
 \subsection{Results and Evaluation}
 
-<CREATE ARCHITECTURE DIAGRAM YAH>
-
 At this point, the system was capable of simulating any number of vehicles with
 realistic traffic flow behaviour. However, there were still many key performance
 improvements that needed to occur before the system would be ready for
@@ -1414,8 +1429,9 @@ in Figure \ref{fig:orange-markers}.
 
 \subsubsection{WebSocket Data Format}
 
-The back-end initially just sent down data in string format - for example,
-\textit{10067|51.5306611887|0.1609468558|1} for vehicle with id 10067. This
+The back-end initially just sent down data in string format - for example a
+vehicle with id 10067 could have a string of
+\textit{10067|51.5306611887|0.1609468558|1}. This
 format has a number of issuses. Firstly, there is limited precision for the
 values, as they must be truncated to a certain number of decimal places.
 Secondly, the format is text based, meaning there is a much larger overhead of
@@ -1496,8 +1512,6 @@ GraphHopper to find the route to their destination. This takes orders of
 magnitude longer than the timesteps themselves, and as GraphHopper is
 thread-safe for making routing requests is an easy way to further improve
 performance.
-
-EXPLAIN THIS BIT FURTHER MAYBE???
 
 \subsection{Architecture Improvements}
 
@@ -1624,7 +1638,6 @@ With the addition of metrics, it became clear that it would be useful to be able
 to run a simulation in the background and analyse the data later. One use case
 would be understanding how long it takes all vehicles to reach their
 destinations - another is for analysing very high density networks where it may
-
 not be desirable to view the data on screen.
 
 A command line flag (\texttt{-{}-file}) was added representing the number of
@@ -1697,6 +1710,15 @@ be reflected in the expected map upon its next update.
 
 \subsubsection{Design Justification}
 
+\begin{wrapfigure}{l}{0.5\textwidth}
+    \begin{greybox}
+        \centering
+        \includegraphics[width=\textwidth]{beejama}
+        \caption{Oscillation of travel time when using Dijkstra's algorithm withtraffic information.}\label{fig:bjam-dijkstra}
+    \end{greybox}
+    \vspace{-2em}
+\end{wrapfigure}
+
 The goal of the expected map is to help vehicles avoid roads that are likely to
 have high levels of traffic. However, a naive approach to this would result in
 oscillatory behaviour between optimal and sub-optimal routes, as can be seen in
@@ -1715,8 +1737,6 @@ simultaneously, the vehicles would completely avoid the busy roads and hence
 fail to use the network capacity available to them.
 
 \subsection{Implementation}
-
-<create a nice pretty diagram k>
 
 The implementation of this algorithm made use of the new event system, and
 required a subclassing two GraphHopper types. A central self-driving vehicle
@@ -1833,8 +1853,8 @@ central roads would not be repeatedly penalised and cause undesirable results.
 
 The damping factor was initially chosen as 0.6, meaning that the edges kept 60\%
 of their value when the expected map was updated. This proved to be too high,
-causing extended travel times and other issues when simulating. As such, a lower
-value of 0.2 was used.
+causing extended travel times when simulating. As such, a lower
+value of 0.2 was used and found to be more effective.
 
 The re-route percentage has an impact on both the behaviour of the vehicles and
 the performance of the engine - the more vehicles it has to reroute on each
@@ -1921,6 +1941,11 @@ completely (with 0 vehicles yet to reach their destination) in a little over
 \chapter{Critical Evaluation}
 \label{chap:evaluation}
 
+The goal of this section is providing an empirical and critical analysis of the
+Marmoset algorith compared to Dijkstra's algorithm, as well as an evaluation of
+the suitability of the simulation engine for the purpose of multi-vehicle
+routing algorithm design.
+
 \section{Algorithmic Evaluation}
 
 \subsection{Dijkstra's Algorithm}\label{sec:density}
@@ -1932,9 +1957,9 @@ on the speed limit of each road.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{dijkstra-speed}
+    \includegraphics[width=0.9\textwidth]{dijkstra-speed}
     \caption{Average speed at each iteration for vehicles routing with
-    Dijlkstra's Algorithm}\label{fig:dijkstra-speed}
+    Dijkstra's Algorithm}\label{fig:dijkstra-speed}
 \end{figure}
 
 The graph in Figure \ref{fig:dijkstra-speed} shows two different outcomes when
@@ -2159,7 +2184,7 @@ it took 52,801 iterations before the engine decided to terminate the simulation.
         \includegraphics[width=\textwidth]{90-100-hist}
         \caption{}\label{fig:90-100-hist}
     \end{subfigure}
-    \caption{Histograms of travel time for different }\label{fig:ratio-hists}
+    \caption{Histograms of travel time for different ratios of vehicles.}\label{fig:ratio-hists}
 \end{figure}
 
 We also see changes in both average speed and total completion time with 90\%
@@ -2172,31 +2197,82 @@ the road. Interestingly, Figure \ref{fig:ratio-av} shows that average speed with
 20\% Marmoset vehicles is significantly slower than when routing exclusively
 with Dijkstra's algorithm.
 
-However, the overall picture does not appear to be so simple. The histogram in Figure
-\ref{fig:0-20-hist} shows that the vehicles that do reach their destination do
-so sooner when there are some vehicles using the Marmoset algorithm. One
-possible cause of this could be that the Marmoset vehicles avoid the higher
-congestion areas, allowing the Dijkstra vehicles to reach their destinations
-sooner. This could also explain the lower average speeds, as the Marmoset
-vehicles would avoid the fastest roads, allowing the nearby Dijkstra vehicles to
-move towards their destination with less congestion.
+However, the overall picture does not appear to be so simple. The histogram in
+Figure \ref{fig:0-20-hist} shows that the vehicles that do reach their
+destination do so sooner when there are some vehicles using the Marmoset
+algorithm. One possible cause of this could be that the Marmoset vehicles avoid
+the higher congestion areas, allowing the Dijkstra vehicles to reach their
+destinations sooner. This could also explain the lower average speeds, as the
+Marmoset vehicles would avoid the fastest roads, allowing the nearby Dijkstra
+vehicles to move towards their destination with less congestion.
 
 In Figure \ref{fig:90-100-hist}, we see the impact of vehicles using the most
 congested routes on overall travel time. Notably, the peak of the 90\% histogram
 occurs earlier than for the 100\% histogram, but it has a longer tail with a
-spike around 8,000 iterations later. This is likely due to the Dijkstra
-vehicles causing a further increase in congestion for busy roads, excaberating
-the congestion connectivity issue discussed in Section \ref{sec:marmoset-eval}.
+spike around 8,000 iterations later. This is likely due to the Dijkstra vehicles
+causing a further increase in congestion for busy roads, excaberating the
+congestion connectivity issue discussed in Section \ref{sec:marmoset-eval}.
 
-\section{Marmoset Simulation Engine Evaluation}
+\subsection{Algorithm Performance}
 
-We will now analyse the
+The Marmoset algorithm must be fast enough to return routing queries in realtime
+whilst vehicles are on the road. We will now analytically derive the asymptotic
+peformance of the algorithm.
 
-\subsection{Performance Analysis}
+We will start by defining the number of vehicles as $N$ and the number of
+iterations as $I$ (note that this will not be known in advance and could be
+infinite). Dijkstra's algorithm runs in $O(E \log V)$ when using a binary heap for the
+priority queue, which is how it is implemented in GraphHopper. The vehicles that
+route themselves with Dijkstra's algorithm calculate their route once during
+their first iteration and then simply iterate through their route until reaching
+their destination. This means that the first timestep for each vehicle takes
+$O(E\log V)$ and every subsequent timestep is $O(1)$. Hence for all vehicles, we
+have a worst case performance of $O(NE\log V))$. For the overall system, we
+have that as $I \rightarrow \infty$, the performance of the simulation overall
+tends to $O(IN)$. We also have a substantial performance improvement through the
+use of Contraction Hierarchies, analysed here~\cite{ch-complexity}.
 
-\subsection{Flexibility?}
+For the Marmoset algorithm, a certain percentage of the vehicles are re-routed
+every iteration - let this value be $c$. This means that the average runtime
+iteration is $O(cNE\log V)$, which is equivalent to $O(NE \log V)$. The
+rebuilding of the expected map takes $O(N)$, which is less than the routing step
+and hence the runtime of the whole system is $O(INE\log V)$. We are also
+limited by the fact that we cannot use Contraction Hierarchies, as the algorithm
+re-weights the edegs on the graph each time the expected map is recalculated.
 
-\subsection{Whatever else I can think of}
+Clearly, the performance of the Marmoset algorithm is substantially worse than routing
+using Dijkstra's algorithm. This was shown to be true in practice, with the
+Dijkstra's simulation taking around 15 minutes compared to up to 5 hours for
+the Marmoset algorithm. However, there are many ways this could be improved in
+the real world. When simulating, all routing requests must be performed on a
+single machine - in the real world, the expected map could be stored centrally
+and distributed the vehicles, who then perform their own requests. This reduces
+the performance of the centralised system to $O(N)$ per iteration, with each
+vehicle running Dijkstra's algorithm in $O(E\log V)$. As routing is a task
+many GPS systems are already do, this seems to be a realistic option for
+implementing the algorithm in the real world. Furthermore, it is likely that the
+code and algorithms could be substantially opimised to improve performance were
+a central system a requirement.
+
+\section{Simulation Engine Evaluation}
+
+We will now analyse how well the simulation engine has performed in terms
+of its suitability for algorithm design.
+
+\subsection{Flexibility}
+
+Thanks to the system's architecture, implementing and testing the Marmoset
+algorithm has been a painless task, enabling insight though both visualisation
+and data analysis.
+
+\subsection{Potential Improvements}
+
+* metric gathering improvement
+* performance improvement
+* labelling different types of vehicles in the UI
+* V2V comms
+* show planned routes
+* 'higher level' visualisation stuff
 
 %{\bf A topic-specific chapter, of roughly $15$ pages}
 %\vspace{1cm}
@@ -2231,13 +2307,42 @@ We will now analyse the
 \chapter{Conclusion}
 \label{chap:conclusion}
 
+This section will conclude the project, discussing the overall quality of the
+algorithm and simulation engine as well as the potential they hold for future
+research and development.
+
+\section{Achievements and Contributions}
+
+The primary achievement of this project was building a simulation engine focussed
+on algorithm design that is fast enough to handle the simulation of entire cities.
+The simulation engine was then used to design, implement and optimise the
+Marmoset algorithm for multi-vehicle routing.
+
+By using the insight from other multi-vehicle routing algorithms, a
+congestion function was idetified and optimised that is capable of
+
 \section{The Marmoset Algorithm}
 
-\subsection{Future Improvements}
+As shown in the Critical Evaluation (Chapter \ref{chap:evaluation}), the
+Marmoset algorithm performed better than Dijkstra's for situations with high
+levels of congestion. Empirical analysis demonstrated that the algorithm offered
+an improvement in average speed and avoids mass congestion when dealing with
+high volumes of vehicles, and is able to handle a small number of `selfish'
+vehicles driving alonside the Marmoset routed vehicles.
+
+However, there were some flaws that would need addressing in future research.
+Namely, improvements to travel time,
+
+Nonetheless, the approach has shown promise, and is flexible enough to cover
+many other potential situations. For example, ...
+
+Although the algorithm has some minor flaws that could be improved upon, it is
+able to solve the multi-vehicle routing problem in a novel and effective manor.
 
 \section{The Marmoset Simulation Engine}
 
-\subsection{Future Improvements}
+The simulation engine is
+
 
 %{\bf A compulsory chapter,     of roughly $5$ pages}
 %\vspace{1cm}
@@ -2293,7 +2398,7 @@ We will now analyse the
 
 \appendix
 
-\chapter{An Example Appendix}
+\chapter{Self-Driving Vehicle Implementation}
 \label{appx:example}
 
 %Content which is not central to, but may enhance the dissertation can be
