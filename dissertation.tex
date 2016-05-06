@@ -42,6 +42,7 @@
 \usepackage{subcaption}
 \usepackage{adjustbox}
 \usepackage[T1]{fontenc}
+\usepackage{ragged2e}
 
 \raggedbottom
 
@@ -221,8 +222,7 @@ visualisation part running in the browser using JavaScript.
 \noindent
 \begin{tabular}{lcl}
 OSM                 &:     & OpenStreetMap \\
-GraphHopper         &:     & Open Source Routing Engine, used for location to
-    location routing requests \\
+GraphHopper         &:     & Open Source Routing Engine, used for point to point routing requests \\
 VANET               &:     & Vehicular-AdHoc NETwork \\
 V2V                 &:     & Vehicle to Vehicle \\
 V2I                 &:     & Vehicle to Infrastructure \\
@@ -272,14 +272,13 @@ SVG                 &:     & Scalable Vector Graphics \\
 
 When MapQuest first launched in 1996, most drivers found their way to new
 locations using physical paper maps. MapQuest was the first mainstream online
-service to change that - instead of figuring out a route yourself, you could
-enter your location and destination and have a route provided to you. Using
-these routes required printing out or writing down the instructions yourself,
-meaning changes to the driving environment (such as traffic or roadworks) could
-not be anticipated.
+service to change that, allowing users to enter their location and destination
+and have a route provided to them. Using these routes required printing out or
+writing down the instructions, meaning changes to the driving environment (such
+as traffic or roadworks) could not be anticipated.
 
 In 2005, the first online version of Google Maps was released. Initially, Google
-Maps lagged behind MapQuest, but with fast improvements to their map and route
+Maps lagged behind MapQuest, but with rapid improvements to their map and route
 quality they soon took the lead. Google was quick to improve their mapping and
 routing offering, integrating real-time traffic analysis to give its users a
 significantly better experience. However, for a time most routes were still
@@ -312,34 +311,34 @@ and leaving the centre of the city at peak times. In spite of this, upwards of
 Looking forwards, we see two global trends that suggest that congestion will
 become more of an issue in future. Firstly, increasing numbers of people are
 living in cities - even with public transportation, this increases the number of
-vehicles on the road even if the proportion of households that own cars
-decreases.  Secondly, on-demand transport solutions such as those provided by
-Uber are placing more vehicles on the road, especially at peak times. One of
-Uber's key insights is using market techniques to match supply and demand better
-than existing taxi and minicab services. If there is an increase in riders
-requesting vehicles in a certain area, Uber activates ``surge pricing",
-increasing the cost of the ride by a fixed multiple - for example, 1.5x. This
-information is sent to their network of drivers, who will move to the location
-in search of higher fares. The net result is that high demand in certain areas
-creates further congestion, despite the efficiencies on-demand transportation
-has over individual car ownership.
+vehicles on the road notwithstanding the decrease in the proportion of
+households owning cars. Secondly, on-demand transport solutions such as those
+provided by Uber are placing more vehicles on the road, especially at peak
+times. One of Uber's key insights is using market techniques to match supply and
+demand better than existing taxi and minicab services. If there is an increase
+in riders requesting vehicles in a certain area, Uber activates ``surge
+pricing", increasing the cost of the ride by a fixed multiple - for example,
+1.5x. This information is sent to their network of drivers, who will move to the
+location in search of higher fares. The net result is that high demand in
+certain areas creates further congestion, despite the efficiencies on-demand
+transportation has over individual car ownership.
 
 \section{Self-Driving Vehicles}
 
 Vehicles have improved alongside the development of effective routing
 algorithms; GPS based navigation, with traffic information and turn by turn
-routing has now been integrated into most new vehicle available to consumers. At
+routing has now been integrated into most new vehicles available to consumers. At
 the same time, we are beginning to witness the rise of self-driving cars,
 capable of planning and executing routes themselves with no need for human
 intervention. This is being approached from two different perspectives.
 
-The first is modifying existing cars - adding features such as cruise control,
-automatic braking systems, reading of road signs, lane following on highways,
-and other features for automated control until the car will need minimal or no
-human intervention. This approach is being taken by Tesla, who have released
-multiple software updates to their car software that improves the car's ability
-to drive itself. The software is not yet capable of full autonomy, but each
-update brings self-driving cars closer to reality.
+The first is through the modification of existing cars - adding features such as
+cruise control, automatic braking systems, reading of road signs, lane following
+on highways, and other features for automated control until the car will need
+minimal or no human intervention. This approach is being taken by Tesla, who
+have released multiple software updates to their car software that improves the
+car's ability to drive itself. The software is not yet capable of full autonomy,
+but each update brings self-driving cars closer to reality.
 
 The second approach is from companies like Google, who have been building a
 self-driving vehicle `from scratch'. Their vehicle has no steering wheel and
@@ -351,8 +350,8 @@ This raises many questions about the role of personal transportation and the
 effect this will have on congestion. Will driving become as dated as
 horse-riding is today, or will people's desire to drive mean that there will
 always be human driven vehicles on the road? More importantly, will self driving
-cars improve or harm congestion? Furthermore, how will they decide what routes
-they should take?
+cars improve or worsen congestion? Furthermore, how will these vehicles decide
+what routes they should take?
 
 Answers to these questions are important to many people, including individual
 drivers, companies owning large fleets of vehicles, and city planners. Although
@@ -467,8 +466,8 @@ engine. The concrete objectives are:
     \item Build and optimise the simulation engine on top of existing open
         source tools.
     \item Design and implement a novel multi-vehicle routing algorithm.
-    \item Use the tools provided by the simulation engine to analyse, understand
-        and optimise the routing algorithm.
+    \item Use the tools provided by the simulation engine to analyse,
+        understand, and optimise the routing algorithm.
 \end{enumerate}
 
 \end{quote}
@@ -1672,9 +1671,9 @@ outputting the locations every 1000 iterations).
 \end{figure}
 
 Removing the location updates had a drastic improvement to offline performance,
-reducing a simulation from TIME A to TIME B. Simulations with large numbers of
-vehicles could now be simulated to completion in a reasonably short amount of
-time.
+reducing a simulation from over 3 hours to under 7 minutes. Simulations with
+large numbers of vehicles could now be simulated to completion in a reasonably
+short amount of time.
 
 \section{Algorithm Design and Implementation}
 
@@ -1983,7 +1982,7 @@ routing algorithm design.
 
 \subsection{Dijkstra's Algorithm}\label{sec:density}
 
-We start by analysing the results of simulation using Dijkstra's algorithm to
+We start by analysing the results of simulation when using Dijkstra's algorithm to
 route the vehicles. Unlike the Marmoset algorithm, the vehicles do not avoid
 congestion, attempting to find the fastest route to their destination based only
 on the speed limit of each road.
@@ -1991,16 +1990,15 @@ on the speed limit of each road.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\textwidth]{dijkstra-speed}
-    \caption{Average speed at each iteration for vehicles routing with
-    Dijkstra's Algorithm}\label{fig:dijkstra-speed}
+    \caption{Average speed at each iteration for vehicles routing with Dijkstra's Algorithm}\label{fig:dijkstra-speed}
 \end{figure}
 
 The graph in Figure \ref{fig:dijkstra-speed} shows two different outcomes when
 routing with Dijkstra's Algorithm. When simulating with 10,000 and 20,000
 vehicles, we see the behaviour of the algorithm when all vehicles reach their
-destination and terminate successfully. The remaining six simulations show the
-behaviour of the algorithm when it fails to terminate and the vehicles slow to a
-halt.
+destination and the simulation terminates successfully. The remaining six
+simulations show the behaviour of the algorithm when it fails to terminate and
+the vehicles slow to a halt.
 
 \begin{wrapfigure}{l}{0.4\textwidth}
     \vspace{-1em}
@@ -2014,25 +2012,30 @@ halt.
 \end{wrapfigure}
 
 In the successful termination cases, we see three stages. The average speed
-starts high, followed by a decline as we reach the congested state. This is
-followed by a longer period of time where the speed remains mostly stable whilst
-the vehicles move slowly towards their destinations. Finally, we see a period
-with increased speed volatility.  This is due to the decreased volume of
-vehicles causing the average to change much faster, as can be seen in Figure
+starts high, followed by a decline as we enter the congested state. This is
+followed by a longer period of time where the speed remains mostly stable as
+vehicles move towards their destinations. Finally, we see a period with
+increased speed volatility. This is due to the lower volume of vehicles causing
+the average speed to change much faster. The speed is measured in cells per
+iteration, which will always be an integer, so the speed of the final few
+vehicles will oscillate between integer values, as can be seen in Figure
 \ref{fig:20k-dij-speed}.
 
 In the case of simulations that do not terminate normally, we see the same first
-two stages (pre-congestion and congestion), but at a certain
-inflection point the average speed declines faster until it reaches zero. This
-is most notable for the 30,000 vehicle case, where the inflection point can be
-seen at around iteration 7,000, after which the average speed enters a steep
-decline.
+two stages (pre-congestion and congestion), but at a certain inflection point
+the average speed declines faster until it reaches zero. This is most notable
+for the 30,000 vehicle simulation, where the inflection point can be seen near
+iteration 7,000, after which the average speed enters a steep decline.
 
-The cause of the simulation failure can be seen in Figure \ref{fig:dijkstra-wtf}
-- the Elephant \& Castle roundabout in central London becomes fully congested,
-stopping any vehicle from being able to route past the roundabout. As the queue
-of cars continues to grow, more and more main roads become full until no
-remaining vehicles are capable of movement.
+The cause of the simulation failure can be seen in Figure
+\ref{fig:dijkstra-wtf}, where the Elephant \& Castle roundabout in central
+London becomes fully congested, stopping any vehicle from being able to route
+past it. As the queue of cars continues to grow, more and more main roads become
+full until no remaining vehicles are capable of movement.
+
+As we can see, although Dijkstra's algorithm provides the optimal routes for the
+road network, it is incapable of handling the practical concerns that arise when
+dealing with high congestion environments.
 
 \begin{figure}[h]
 \centering
@@ -2100,15 +2103,15 @@ at the state of the vehicles at specific iterations.
 
 The engine records a snapshot of the position of each vehicle every 1000
 iterations. We will compare the state of the system when simulating 50,000
-vehicles and 80,000 vehicles, at iteration 11,000. This has been chosen as it is
-approximately at the inflection point where the vehicles enter their most
-congested state with the slowest average speed. However, the 80,000 vehicle
-iteration takes significantly longer to leave this state than the 50,000 vehicle
-simulation.
+vehicles and 80,000 vehicles at iteration 11,000. This has been chosen as it is
+approximately close to the inflection point where the vehicles enter their most
+congested state with the slowest average speed. Note how the 80,000 vehicle
+iteration takes significantly longer to leave the congested state than the
+50,000 vehicle simulation.
 
 Figure \ref{fig:i11k-congestion}, helps us understand what the cause of this
 behaviour may be. For the 50,000 vehicle simulation, we see three key areas of
-congestion (circled in green on both maps). For the lower density simulation,
+congestion, circled in green on both maps. For the lower density simulation,
 these three areas are separated - once a vehicle has left the congested roads it
 enters an area of low congestion. In the 80,000 vehicle simulation, this is not
 the case - instead, the highly congested roads are joined together, requiring
@@ -2130,9 +2133,9 @@ congestion blocks vehicles from reaching their destination.
 \subsection{Per-Vehicle Metrics}
 
 The data above shows what happens to the vehicles on average, but does not
-provide us with any further insight on the distribution of speed or congestion.
-The vehicle metrics can be used to better understand the impact each algorithm
-has on travel time for each vehicle.
+provide us with any further insight on the distribution of travel time or
+congestion. The vehicle metrics can be used to better understand the impact
+each algorithm has on travel time for each vehicle.
 
 \begin{figure}[h]
     \centering
@@ -2163,8 +2166,7 @@ In Figure \ref{fig:tt-hist}, we see some interesting patterns emerge. As
 demonstrated by the graphs comparing average speed, lower density simulations
 complete faster using Dijkstra's algorithm. In Figure \ref{fig:tt-hist-10k}
 this behaviour is particularly noticable, with the Marmoset algorithm showing a
-tail of vehicles with long travel times, although this is less noticable in
-Figure \ref{fig:tt-hist-20k}.
+tail of vehicles with long travel times.
 
 Figure \ref{fig:tt-hist-50k} gives us further insight into the clustering of
 completion times mentioned above (see Figure \ref{fig:sdv-speed}). On the
@@ -2176,18 +2178,27 @@ once a certain group of vehicles reach their destinations, the group they
 Figure \ref{fig:tt-hist-80k}, which has a small spike at iteration 30,000 and
 another, larger spike around iteration 40,000.
 
-\subsection{Vehicle Ratio Analysis}
+Looking again at Figures \ref{fig:tt-hist-50k} and \ref{fig:tt-hist-80k}, it
+appears that the vehicles routed with Dijkstra's algorithm reach their
+destinations sooner than those routed by the Marmoset algorithm. This is
+primarily because the histogram only includes vehicles that have reached their
+destination, meaning the remaining vehicles never reached their destination at
+all. We can conclude that this `greedy' behaviour benefits those that do
+reach their destination at the cost of the thousands of vehicles incapable of
+reaching their destinations due to the high levels of congestion.
+
+\subsection{Vehicle Ratio Analysis}\label{sec:ratio}
 
 In addition to comparison between the two routing algorithms, we can also
 analyse their behaviour when driving together on the same roads. As shown in
 Section \ref{sec:density}, routing using only Dijkstra's algorithm fails to
 terminate with more than 20,000 vehicles. One of the issues with multi-vehicle
 routing algorithms is that in order to improve congestion some vehicles have to
-take longer routes than they otherwise would have. Human drivers may not
-appreciate being told to take a longer route than they would otherwise use. We
-can analyse the effects of this behaviour by running both types of vehicle on
-the road at the same time and identify what percentage of vehicles have to be
-`misbehaving' for the algorithm to fail.
+take longer routes than they would otherwise use. Human drivers would not
+appreciate the delay and may instead choose to drive on the optimal route. We
+can analyse the effects of this behaviour by simulating both types of vehicle at
+the same time and identify what percentage of vehicles `misbehaving' causes the
+algorithm to fail.
 
 \begin{figure}[h]
     \centering
@@ -2195,16 +2206,24 @@ the road at the same time and identify what percentage of vehicles have to be
     \caption{Average velocity simulating 50,000 vehicles using the Marmoset and Dijkstra's algorithm.}\label{fig:ratio-av}
 \end{figure}
 
-Simulating 50,000 vehicles with different vehicle densities showed how strong
-the impact even a small number of non-Marmoset vehicles could have on
-congestion. Surprisingly, even with 80\% of the vehicles using the Marmoset
-algorithm, the simulation failed to terminate. Figure \ref{fig:ratio-av} shows
-the average speed of the vehicles when using both algorithms simultaneously in
-various combinations. Although the vehicles fail to reach their destinations
-completely with 80\% Marmoset vehicles, we do see a change in the behaviour of
-the algorithm as the proportion of Marmoset vehicles increases. Notably, the
-time it takes for the average velocity to reach zero is drastically increased -
-it took 52,801 iterations before the engine decided to terminate the simulation.
+Simulating 50,000 vehicles in different ratios showed how strong the impact even
+a small number of non-Marmoset vehicles have on congestion. Surprisingly, even
+with 80\% of the vehicles using the Marmoset algorithm, the simulation failed to
+terminate. Figure \ref{fig:ratio-av} shows the average speed of the vehicles
+when using both algorithms simultaneously in various combinations. Although the
+vehicles fail to reach their destinations completely with 80\% Marmoset
+vehicles, we do see a change in the behaviour of the algorithm as the proportion
+of Marmoset vehicles increases. Notably, the time it takes for the average
+velocity to reach zero is drastically increased - it took 52,801 iterations
+before the engine decided to terminate the simulation, compared to 16,504 iterations
+when routing exclusively with Dijkstra's algorithm.
+
+The cause of this is likely the Marmoset vehicles attempting to avoid the
+central area where the rest of the vehicles are stuck. As the central vehicles
+are not moving, the routes they have planned will be repeatedly added to the
+Expected Map, further increasing the penalties for travelling on those roads.
+After avoiding the central area as much as they can, the Marmoset vehicles
+eventually join the congested vehicles and the simulation terminates.
 
 \begin{figure}[h]
     \centering
@@ -2222,13 +2241,14 @@ it took 52,801 iterations before the engine decided to terminate the simulation.
     \caption{Histograms of travel time for different ratios of vehicles.}\label{fig:ratio-hists}
 \end{figure}
 
-We also see changes in both average speed and total completion time with 90\%
-Marmoset vehicles, even though all vehicles reach their destinations. The lack
-of ability to operate effectively whilst routing with other types of vehicles is
-a flaw in the algorithm that suggests it may not be appropriate for real world
-use - any multi-vehicle routing algorithm would be rolled out slowly rather than
-all at once, meaning it should be able to handle different types of vehicles on
-the road. Interestingly, Figure \ref{fig:ratio-av} shows that average speed with
+We also see changes in both average speed and total completion time when
+simulating 90\% Marmoset vehicles, even though all vehicles reach their
+destinations. The lack of ability to operate effectively whilst routing with
+other types of vehicles is a flaw in the algorithm that suggests it may need
+further optimisation before it is appropriate for real world use - any
+multi-vehicle routing algorithm would be rolled out slowly rather than all at
+once, meaning it should be able to handle different types of vehicles on the
+road. Interestingly, Figure \ref{fig:ratio-av} shows that average speed with
 20\% Marmoset vehicles is significantly slower than when routing exclusively
 with Dijkstra's algorithm.
 
@@ -2241,12 +2261,13 @@ destinations sooner. This could also explain the lower average speeds, as the
 Marmoset vehicles would avoid the fastest roads, allowing the nearby Dijkstra
 vehicles to move towards their destination with less congestion.
 
-In Figure \ref{fig:90-100-hist}, we see the impact of vehicles using the most
-congested routes on overall travel time. Notably, the peak of the 90\% histogram
-occurs earlier than for the 100\% histogram, but it has a longer tail with a
-spike around 8,000 iterations later. This is likely due to the Dijkstra vehicles
-causing a further increase in congestion for busy roads, excaberating the
-congestion connectivity issue discussed in Section \ref{sec:marmoset-eval}.
+In Figure \ref{fig:90-100-hist}, we see the impact on travel time of more
+vehicles than expected using the most congested routes. Notably, the peak of
+the 90\% histogram occurs earlier than for the 100\% histogram, but it has a
+longer tail with a spike approximately 8,000 iterations later.  This is likely
+due to the Dijkstra vehicles causing a further increase in congestion for busy
+roads, excaberating the congestion connectivity issue discussed in Section
+\ref{sec:marmoset-eval}.
 
 \subsection{Algorithm Performance}
 
@@ -2256,24 +2277,28 @@ peformance of the algorithm.
 
 We will start by defining the number of vehicles as $N$ and the number of
 iterations as $I$ (note that this will not be known in advance and could be
-infinite). Dijkstra's algorithm runs in $O(E \log V)$ when using a binary heap for the
-priority queue, which is how it is implemented in GraphHopper. The vehicles that
-route themselves with Dijkstra's algorithm calculate their route once during
-their first iteration and then simply iterate through their route until reaching
-their destination. This means that the first timestep for each vehicle takes
-$O(E\log V)$ and every subsequent timestep is $O(1)$. Hence for all vehicles, we
-have a worst case performance of $O(NE\log V))$. For the overall system, we
-have that as $I \rightarrow \infty$, the performance of the simulation overall
-tends to $O(IN)$. We also have a substantial performance improvement through the
-use of Contraction Hierarchies, analysed in~\cite{ch-complexity}.
+infinite). Dijkstra's algorithm runs in $O(E \log V)$ when using a binary heap
+for the priority queue, which is how it is implemented in GraphHopper. The
+vehicles that route themselves with Dijkstra's algorithm calculate their route
+once during their first iteration and then iterate through their route until
+reaching their destination. This means that the first timestep for each vehicle
+takes $O(E\log V)$ and every subsequent timestep is $O(1)$. Hence for all
+vehicles, we have a worst case performance of $O(NE\log V))$. For the overall
+system, we have that as $I \rightarrow \infty$, the performance of the
+simulation overall tends to $O(IN)$. It is also worth noting that the routing
+step of these vehicles is able to take advantage of Contraction Hierarchies.
+Analysing the computational complexity of Contraction Hierarchies is a complex
+task~\cite{ch-complexity}, but it is known that in practice their use results in
+orders of magnitude faster routing~\cite{ch-perf}.
 
 For the Marmoset algorithm, a certain percentage of the vehicles are re-routed
-every iteration - let this value be $c$. This means that the average runtime
-iteration is $O(cNE\log V)$, which is equivalent to $O(NE \log V)$. The
+every iteration (usually 0.1\%). Let this value be $c$, a constant between 0 and
+1. This means that the runtime of each iteration is $O(cNE\log V)$. The
 rebuilding of the Expected Map takes $O(N)$, which is less than the routing step
-and hence the runtime of the whole system is $O(INE\log V)$. We are also
-limited by the fact that we cannot use Contraction Hierarchies, as the algorithm
-re-weights the edegs on the graph each time the Expected Map is recalculated.
+and hence the runtime of the whole system is $O(cINE\log V)$. Unlike the vehicls
+routing with Dijkstra's algorithm, we are unable to use Contraction Hierarchies
+as the algorithm re-weights the edegs on the graph each time the Expected Map is
+recalculated.
 
 Clearly, the performance of the Marmoset algorithm is worse than routing using
 Dijkstra's algorithm. This was shown to be true in practice, with the Dijkstra's
@@ -2284,35 +2309,51 @@ machine - in the real world, the Expected Map could be stored centrally and
 distributed the vehicles, who then perform their own requests. This reduces the
 performance of the centralised system to $O(N)$ per iteration, with each vehicle
 running Dijkstra's algorithm in $O(E\log V)$. As routing is a task many GPS
-systems are already do, this seems to be a realistic option for implementing the
+systems are capable of, this seems to be a realistic option for implementing the
 algorithm in the real world. Furthermore, it is likely that the code and
-algorithms could be substantially opimised to improve performance were a central
+algorithms could be substantially optimised to improve performance were a central
 system a requirement.
 
 \subsection{Algorithm Limitations}
 
-The approach chosen does have a few limitations. Other than speed, there are a
-few other things missing that could improve the efficiency of the routes
-generated by the algorithm.
+The approach chosen does have a few limitations. There are a few improvements
+that could increase the efficiency of the routes generated by the algorithm.
 
 The algorithm's parameters - the progress function, congestion function, damping
-factor and re-route percentage - were chosen based on brief analysis of a
-running simulation rather than in depth exploration of the effect changing the
-parameters. This would offer further insight into the working of the algorithm
-as well as improving its performance overall. Unfortunately this was not
-possible due to the large number of possible combinations of parameters as well
-as the longer running time for simulations using the Marmoset algorithm.
+factor and re-route percentage - were chosen based on brief analyses of a
+running simulation rather than in an depth exploration on the effect changing
+each parameter. This would offer further insight into the working of the
+algorithm as well as improving its performance overall. Unfortunately this was
+not possible due to the large number of possible combinations of parameters as
+well as the longer running time for simulations using the Marmoset algorithm.
 
 A key factor that the Expected Map does not take account of is the time at which
 a vehicle will travel on a particular road. If a large number of vehicles were
 all travelling along the same route but at different times, the Expected Map
-would believe that the road would be congested in spite of this. The progress
-function was added to mitigate this, but it does not completely eradicate the
-issue.
+would predict high levels of congestion and hence a longer travel time. The
+progress function was added to mitigate this, but it does not completely
+eradicate the issue.
 
-We also saw some issuse regarding increased travel time
+From a more theoretical standpoint, it is clear that the algorithm is not
+capable of identifying algorithmically optimal routes in congested situations.
+In practice, vehicle routing is not deterministic enough for this to be a
+requirement for a multi-vehicle routing algorithm, but in the interest of
+evaluating the quality of the routes compared, identifying the best possible
+completion time for a collection of vehicles would be valuable.
 
-* large increases in travel time for some vehicles +
+The spikes in the distribution of travel time indicate another area of potential
+improvement for the algorithm. Ideally, all vehicles should arrive as soon as
+possible, but in practice this is not necessarily possible. Nonetheless, the
+algorithm does not incorporate a sense of fairness - some vehicles may have to
+route much further due to the timing of re-routing operations. Balancing this
+unfairness may have a detrimental effect on the quality of routes, but an
+algorithm that felt fair would be more popular with drivers.
+
+On the same note, the algorithm is not capable of providing an accurate
+estimation of journey time, as a vehicle's route is likely to change multiple
+times whilst driving. Time estimation is an important part of journey planning,
+so even being able to show a possible range of travel times would be an
+improvement.
 
 \section{Simulation Engine Evaluation}
 
@@ -2321,21 +2362,127 @@ of its suitability for algorithm design.
 
 \subsection{Flexibility}
 
-Thanks to the system's architecture, implementing and testing the Marmoset
-algorithm has been a painless task, enabling insight though both visualisation
-and data analysis.
+Implementing the Marmoset algorithm required a simulation with the ability to:
+
+\begin{itemize}
+    \item create vehicles with specific behaviour
+    \item generate routes with a custom function defining the weight of each edge
+    \item request route data from the vehicles and update the weighting class
+    \item change the route whilst the vehicles were moving
+    \item move the vehicles realistically once their route had been planned
+\end{itemize}
+
+We will now see how the features of the engine made this task relatively easy.
+
+Defining the vehicle specific behavior required creating a new class using the
+\texttt{Vehicle} interface. By simply extending the \texttt{DijkstraVehicle}
+class, the additional functionality was be added without difficulty. The
+\texttt{SelfDrivingVehicle} class implements three methods - two for routing and
+re-routing and one for returning the current path.
+
+Generating routes using a custom weighting was done with the creation of the
+\texttt{ExpectedWeighting} class. This class extended the GraphHopper
+\texttt{FastestWeighting} class, which uses the speed limit and road distance to
+calculate the fastest possible travel time of a given road. The
+\texttt{ExpectedWeighting} used the \texttt{calcWeight} method of the
+\texttt{FastestWeighting}, incorporating its own implementation of the
+congestion function to return the adjusted weighting.
+
+These two examples show how the use of existing code and powerful abstractions
+enabled the implementation of new vehicle behaviour without repetitive code or
+complex integration.
+
+Requesting route data and updating the Expected Map required creating a new
+class for managing the \texttt{SelfDrivingVehicle}s. The
+\texttt{MultiSDVController} listened to the ``vehicle:add'' event and kept track
+of the vehicle if it was an instance of \texttt{SelfDrivingVehicle}. In addition
+to the vehicles, it stores a reference to the \texttt{ExpectedWeighting}. By
+listening to the ``iteration:end'' event, the controller can pass information
+between the \texttt{ExpectedWeighting} and the vehicles.
+
+Using the methods defined in the \texttt{SelfDrivingVehicle} class, the
+controller can instruct the vehicles to update and replace their route. The
+\texttt{SelfDrivingVehicleIterator} has a single \texttt{resetEdges} method for
+updating the route.
+
+No additional work is required to create realistic vehicle simulation, as the
+\texttt{BaseVehicle} and \texttt{CellIterator} classes handle the implementation
+of the Nagel-Schreckenberg model.
+
+Overall, there are four key things that have made this flexibility possible.
+
+\begin{enumerate}
+    \item The \texttt{BaseVehicle} and \texttt{BaseVehicleIterator} abstractions
+        allowed for code with minimal boilerplate or repetition.
+    \item The event system enabled classes to augment the system with new
+        behaviour.
+    \item The GraphHopper routing engine allowed the creation of a novel
+        routing strategy.
+    \item The \texttt{CellIterator} and \texttt{CellGraph} implementations
+        hid the details of the Nagel-Schreckenberg simulation, working in
+        conjunction with the \texttt{VehicleIterator}.
+\end{enumerate}
 
 \subsection{Limitations}
 
-* metric gathering improvement
-* performance improvement
-* labelling different types of vehicles in the UI
-* V2V comms
-* show planned routes
-* 'higher level' visualisation stuff
+Although the engine has proven effective for algorithm design, there are a
+number of features that could be added to improve the experience.
 
-BUT: don't wanna fall prey to the same issues with MATSim -> more like SUMO for
-cities.
+With regards to the flexibility mentioned above, one challenge was passing the
+the \texttt{ExpectedWeighting} to GraphHopper. This was done by subclassing the
+\texttt{GraphHopper} class into a small \texttt{MarmosetGraphHopper} class that
+overrode the \texttt{createWeighting} method, returning the same instance of the
+\texttt{ExpectedWeighting} every time. Although this was effective at solving
+the problem at hand, it added a fair amount of unnecessary code and is not
+flexible to future weighting classes. A more flexible
+\texttt{MarmosetGraphHopper} class could be created allowing the weighting class
+to be chosen by the system's user.
+
+Currently, the simulation becomes so congested that no vehicles are able to
+travel when using Dijkstra's algorithm with large numbers of vehicles. Although
+bad traffic occurs in practice, it usually does not stop the movement of an
+entire city. Improvements to the Nagel-Schreckenberg model could be made to
+support multiple lanes~\cite{nlanes}, likely removing the issue created by the
+overcongested roundabout. In general, further improvements could be made to add
+to the realism of the vehicle simulation.
+
+Metrics are an important part of understanding a new algorithm. At the
+moment, only three vehicle metrics and two route metrics are tracked.
+Different vehicles and algorithms may want to keep track of certain values,
+either for the vehicles, routes or the network overall. Adding techniques that
+allow for this level of customisation without requiring the user to simply write
+their own metric code would be useful. It could also automatically calculate a
+number of statistics about each type of data it receives, returning the maximum,
+miniumum, average and standard deviation of any metric is is passed by default.
+It could also be beneficial for the engine to automatically generate graphs and
+histograms when the simulation terminates.
+
+The current performance of the simulation was good, but there is definitely room
+for improvement. For testing purposes, the engine was run on a 20 CPU server to
+make the tests complete faster. This was effective, but only offered a 2-3x
+performance increase over a consumer laptop, despite having well over 5x the
+processing power. This could likely be improved through a better multi-threaded
+architecture and optimisations for the \texttt{BaseVehicle} and
+\texttt{CellGraph} classes.
+
+When comparing the ratios of different vehicles in Section \ref{sec:ratio}, the
+front end UI does not show any difference between each vehicle type making a
+direct visual behaviour analysis impossible. If the UI displayed different
+coloured markers for each type of vehicle, this could be avoided. In general the
+front end UI could be improved by surfacing additional data, showing the
+current route a vehicle is planning on taking and showing the current state of
+the Expected Map.
+
+The engine is currently well equipped to deal with the V2I use case, but there
+is no built in support for V2V communication. Adding a realistic V2V simulation
+model and communication protocol would be a major addition to the engine,
+enabling the simulation and design of many other types of algorithm.
+
+However, in spite of this the engine performs its job effectively. There are
+cleary improvements that could be made, but it is important to avoid creating
+an engine like MATSim that is good at many things but great at nothing. The
+purpose of Marmoset is to be a city-scale macroscopic simulation engine for
+algorithm design, a job it has proven itself capable of.
 
 %{\bf A topic-specific chapter, of roughly $15$ pages}
 %\vspace{1cm}
@@ -2383,9 +2530,9 @@ Marmoset algorithm for multi-vehicle routing.
 
 The architecture of the simulation engine enabled easy implementation of a
 reasonably complex algorithm for routing. The three main architectural insights
-were the separation of Vehicle and VehicleIterator classes, the use of an event
-system for adding behaviour and taking advantage of the flexibility of the
-GraphHopper routing engine.
+were the separation of \texttt{Vehicle} and \texttt{VehicleIterator} classes,
+the use of an event system for adding behaviour and taking advantage of the
+flexibility of the GraphHopper routing engine.
 
 The engine was then optimised for speed and ease of use. Running a 64,000
 vehicle simulation took just 6 minutes 24 seconds when using routes provided by
@@ -2415,15 +2562,16 @@ of `selfish' vehicles driving alonside the Marmoset routed vehicles.
 However, there were some flaws that would need addressing in future research.
 Improvements to travel time
 
-Nonetheless, the approach has shown promise, and is flexible enough to cover
-many other potential situations. For example, ...
-
-Although the algorithm has some minor flaws that could be improved upon, it is
-able to solve the multi-vehicle routing problem in a novel and effective manor.
+Nonetheless, the approach has shown promise, and could plausibly be used to
+many other potential situations. For example, thne Expected Map could be used to
+increase the weights on roads that
 
 Extensions:
 * support road closure/roadworks etc in the expected map
 * multi-directional edge blocking!
+
+Although the algorithm has some minor flaws that could be improved upon, it is
+able to solve the multi-vehicle routing problem in a novel and effective manner.
 
 \section{The Marmoset Simulation Engine}
 
