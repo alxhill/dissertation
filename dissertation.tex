@@ -382,7 +382,7 @@ MATSim is commonly used by researchers in the intelligent transport field for
 macroscopic (large-scale) simulations. MATSim can be used to perform many
 different types of simulation, from routing air traffic to planning for
 evacuation in crisis situations. This flexibility is of course an advantage -
-but it comes at a cost. As the engine is so flexible, it requires substantial
+but it comes at a cost. As the engine is so open-ended, it requires substantial
 setup and is complex to use for vehicle routing - there is no built in support
 for OpenStreetMap data, instead requiring a multi-stage process to convert the
 data into the right format. Worse, a separate proprietary tool is needed to
@@ -617,16 +617,6 @@ shown to offer improvements in routing performance.
 
 \subsubsection{BeeJamA}\label{sec:beejama}
 
-\begin{wrapfigure}{r}{0.4\textwidth}
-    \vspace{-1em}
-    \begin{greybox}
-        \centering
-        \includegraphics[width=\textwidth]{congestion-graph-1}
-        \caption{Empirically derived congestion function from~\cite{traffic-graphs}}\label{fig:congestion-graph}
-    \end{greybox}
-    \vspace{-3em}
-\end{wrapfigure}
-
 The BeeJamA~\cite{beejama} algorithm is a V2I approach for multi-vehicle routing. It is based
 off an algorithm originally created for routing in packet switching networks
 that has been adapted for use on road networks. Its behaviour is inspired by the
@@ -647,16 +637,6 @@ optimal as it would have high levels of congestion. Results from a custom-built
 simulation engine have shown that the algorithm can perform better than using
 Dijkstra's algorithm with delayed traffic information.
 
-\begin{wrapfigure}{r}{0.4\textwidth}
-    \vspace{-1em}
-    \begin{greybox}
-        \centering
-        \includegraphics[width=\textwidth]{congestion-graph-2}
-        \caption{Mathematical congestion functions for different types of road from~\cite{beejama}}\label{fig:congestion-graph-2}
-    \end{greybox}
-    \vspace{-3em}
-\end{wrapfigure}
-
 When routing with Dijkstra's algorithm, the travel time for each edge is usually
 estimated based only on the road's speed limit and distance (as well as the
 maximum speed of the vehicle). The BeeJamA improves upon this drastically by
@@ -669,6 +649,22 @@ Figures \ref{fig:congestion-graph} and \ref{fig:congestion-graph-2}.
 Empirical analysis of real world data has been performed with the goal of
 creating a function from density of vehicles to velocity~\cite{traffic-graphs,
 traffic-thing-2}.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[height=12em]{congestion-graph-1}
+        \caption{Empirically derived congestion function from~\cite{traffic-graphs}}\label{fig:congestion-graph}
+    \end{subfigure}
+    \hspace{1em}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[height=12em]{congestion-graph-2}
+        \caption{Mathematical congestion functions for different types of road from~\cite{beejama}}\label{fig:congestion-graph-2}
+    \end{subfigure}
+    \caption{}
+\end{figure}
 
 \subsection{Nagel-Schreckenberg Model} \label{sec:nagel}
 
@@ -740,7 +736,7 @@ what happens when there is a density of 0.1 cars per cell.
     from~\cite{nagel}}\label{nagel-demo}
 \end{figure}
 
-\section{Implementation Background}
+\section{Implementation Background}\label{sec:tech-impl}
 
 \subsection{OpenStreetMaps}
 
@@ -755,7 +751,7 @@ well as an ID. By themselves, they can be used to represent small features such
 as traffic lights, lampposts, or pylons. However, a way is also defined by an
 ordered list of nodes.
 
-Ways are the most flexible element in OpenStreetMaps. If a way starts and ends
+Ways are the most important element in OpenStreetMaps. If a way starts and ends
 at two different nodes, it is called an `open' way. This is commonly used for
 sections of roads and paths. A way that starts and ends at the same node is
 called a `closed' way. Often this is used to represent an area - such as a park
@@ -909,7 +905,7 @@ The execution of this project was split into 4 stages, each with its own goal.
     \item \textbf{Realistic Simulation} - implement the Nagel-Schreckenberg
         model to make the vehicle behaviour more realistic.
     \item \textbf{Performance and Architecture Improvement} - make the
-        simulation engine fast and flexible enough to deal with the challenges
+        simulation engine fast and adaptable enough to deal with the challenges
         of algorithm design.
     \item \textbf{Algorithm Design and Implementation} - create and improve
         a novel approach to the multi-vehicle routing problem using the
@@ -1120,7 +1116,7 @@ However, there are many core features missing from the engine at this point:
 The focus for the next stage of develeopment was on improving the realism of the
 vehicle simulation.
 
-\section{Realistic Simulation}
+\section{Realistic Simulation}\label{sec:nagel-impl}
 
 In section \ref{sec:nagel} we introduced the Nagel-Schreckenberg Model for
 traffic flow simulation. This section discusses the implementation of this model
@@ -1341,7 +1337,7 @@ algorithm development.
     \item The simulation cannot be paused or resumed.
 \end{itemize}
 
-\section{Performance and Architecture Improvements}
+\section{Performance and Architecture Improvements}\label{sec:arch}
 
 There were two core goals for the system at this stage. Firstly, improve
 performance such that at least 64,000 vehicles can be simulated and secondly,
@@ -1455,7 +1451,7 @@ Vehicles, which add their data into a specific offset. This is significantly
 more efficient than the string based method, although the change is primarily
 for improving network and front end performance.
 
-\subsection{Back end Performance}
+\subsection{Back end Performance}\label{sec:perf}
 
 \subsubsection{Removing the time-lock}
 
@@ -1515,7 +1511,7 @@ GraphHopper to find the route to their destination. This takes orders of
 magnitude longer than the timesteps themselves, and as GraphHopper routing
 requests are thread-safe is an easy way to further improve performance.
 
-\subsection{Architecture Improvements}
+\subsection{Architecture Improvements}\ref{sec:arch}
 
 One of the issues with the system at this point was the lack of support for
 multiple vehicle types - although there is a \texttt{Vehicle} class that could
@@ -1763,7 +1759,7 @@ Expected Map has shown that they will be busy. If every vehicle was rerouted
 simultaneously, the vehicles would completely avoid the busy roads and hence
 fail to use the network capacity available to them.
 
-\subsection{Implementation}
+\subsection{Implementation}\label{sec:marmoset-impl}
 
 The implementation of this algorithm made use of the new event system and
 required the subclassing of two GraphHopper types. A central self-driving vehicle
@@ -2314,31 +2310,32 @@ algorithm in the real world. Furthermore, it is likely that the code and
 algorithms could be substantially optimised to improve performance were a central
 system a requirement.
 
-\subsection{Algorithm Limitations}
+\subsection{Algorithm Limitations}\label{sec:algolim}
 
 The approach chosen does have a few limitations. There are a few improvements
 that could increase the efficiency of the routes generated by the algorithm.
 
 The algorithm's parameters - the progress function, congestion function, damping
-factor and re-route percentage - were chosen based on brief analyses of a
-running simulation rather than in an depth exploration on the effect changing
-each parameter. This would offer further insight into the working of the
-algorithm as well as improving its performance overall. Unfortunately this was
-not possible due to the large number of possible combinations of parameters as
-well as the longer running time for simulations using the Marmoset algorithm.
+factor, re-route percentage and update frequency - were chosen based on brief
+analyses of running a simulation rather than an in-depth exploration on the
+effect changing each parameter. This would offer further insight into the
+working of the algorithm as well as improving its performance overall.
+Unfortunately this was not possible due to the large number of possible
+combinations of parameters as well as the longer running time for simulations
+using the Marmoset algorithm.
 
-A key factor that the Expected Map does not take account of is the time at which
-a vehicle will travel on a particular road. If a large number of vehicles were
-all travelling along the same route but at different times, the Expected Map
-would predict high levels of congestion and hence a longer travel time. The
-progress function was added to mitigate this, but it does not completely
-eradicate the issue.
+A key factor that the Expected Map does not take account is the time at which a
+vehicle will travel on a particular road. If a large number of vehicles were all
+travelling along the same route but at different times, the Expected Map would
+predict high levels of congestion and could result in the vehicles taking
+alternative routes. The progress function was added to help mitigate this, but
+it does not completely eradicate the issue.
 
 From a more theoretical standpoint, it is clear that the algorithm is not
-capable of identifying algorithmically optimal routes in congested situations.
+capable of identifying proviably optimal routes in congested situations.
 In practice, vehicle routing is not deterministic enough for this to be a
 requirement for a multi-vehicle routing algorithm, but in the interest of
-evaluating the quality of the routes compared, identifying the best possible
+evaluating the quality of the routes provided, identifying the best possible
 completion time for a collection of vehicles would be valuable.
 
 The spikes in the distribution of travel time indicate another area of potential
@@ -2347,15 +2344,14 @@ possible, but in practice this is not necessarily possible. Nonetheless, the
 algorithm does not incorporate a sense of fairness - some vehicles may have to
 route much further due to the timing of re-routing operations. Balancing this
 unfairness may have a detrimental effect on the quality of routes, but an
-algorithm that felt fair would be more popular with drivers.
+algorithm that felt fair would likely be more popular with drivers.
 
-On the same note, the algorithm is not capable of providing an accurate
-estimation of journey time, as a vehicle's route is likely to change multiple
-times whilst driving. Time estimation is an important part of journey planning,
-so even being able to show a possible range of travel times would be an
-improvement.
+Finally, the algorithm is not capable of providing an accurate estimation of
+journey time, as a vehicle's route is likely to change multiple during the
+journey. Time estimation is an important part of journey planning, so being
+able to show some kind of expected travel time would be a great improvement.
 
-\section{Simulation Engine Evaluation}
+\section{Simulation Engine Evaluation}\label{sec:simev}
 
 We will now analyse how well the simulation engine has performed in terms
 of its suitability for algorithm design.
@@ -2368,7 +2364,7 @@ Implementing the Marmoset algorithm required a simulation with the ability to:
     \item create vehicles with specific behaviour
     \item generate routes with a custom function defining the weight of each edge
     \item request route data from the vehicles and update the weighting class
-    \item change the route whilst the vehicles were moving
+    \item change the route whilst the vehicles were en route
     \item move the vehicles realistically once their route had been planned
 \end{itemize}
 
@@ -2376,7 +2372,7 @@ We will now see how the features of the engine made this task relatively easy.
 
 Defining the vehicle specific behavior required creating a new class using the
 \texttt{Vehicle} interface. By simply extending the \texttt{DijkstraVehicle}
-class, the additional functionality was be added without difficulty. The
+class, the additional functionality was added without difficulty. The
 \texttt{SelfDrivingVehicle} class implements three methods - two for routing and
 re-routing and one for returning the current path.
 
@@ -2409,7 +2405,8 @@ No additional work is required to create realistic vehicle simulation, as the
 \texttt{BaseVehicle} and \texttt{CellIterator} classes handle the implementation
 of the Nagel-Schreckenberg model.
 
-Overall, there are four key things that have made this flexibility possible.
+Together, these examples demonstrate the four key things that have made this
+fast and adaptable implementation possible.
 
 \begin{enumerate}
     \item The \texttt{BaseVehicle} and \texttt{BaseVehicleIterator} abstractions
@@ -2428,48 +2425,48 @@ Overall, there are four key things that have made this flexibility possible.
 Although the engine has proven effective for algorithm design, there are a
 number of features that could be added to improve the experience.
 
-With regards to the flexibility mentioned above, one challenge was passing the
+With regards to the flexibility mentioned above, one challenge was passing
 the \texttt{ExpectedWeighting} to GraphHopper. This was done by subclassing the
 \texttt{GraphHopper} class into a small \texttt{MarmosetGraphHopper} class that
 overrode the \texttt{createWeighting} method, returning the same instance of the
 \texttt{ExpectedWeighting} every time. Although this was effective at solving
 the problem at hand, it added a fair amount of unnecessary code and is not
-flexible to future weighting classes. A more flexible
-\texttt{MarmosetGraphHopper} class could be created allowing the weighting class
-to be chosen by the system's user.
+scalable to additional weighting classes. A better implementation of the
+\texttt{MarmosetGraphHopper} class could allow a weighting class
+to be added with a single function call.
 
 Currently, the simulation becomes so congested that no vehicles are able to
 travel when using Dijkstra's algorithm with large numbers of vehicles. Although
 bad traffic occurs in practice, it usually does not stop the movement of an
 entire city. Improvements to the Nagel-Schreckenberg model could be made to
-support multiple lanes~\cite{nlanes}, likely removing the issue created by the
-overcongested roundabout. In general, further improvements could be made to add
-to the realism of the vehicle simulation.
+support multiple lanes~\cite{multilanes, twolanes}, likely removing the issue
+with the Elephant \& Castle roundabout. In general, further improvements could
+be made to add to the realism of the vehicle simulation.
 
-Metrics are an important part of understanding a new algorithm. At the
-moment, only three vehicle metrics and two route metrics are tracked.
-Different vehicles and algorithms may want to keep track of certain values,
-either for the vehicles, routes or the network overall. Adding techniques that
-allow for this level of customisation without requiring the user to simply write
-their own metric code would be useful. It could also automatically calculate a
-number of statistics about each type of data it receives, returning the maximum,
-miniumum, average and standard deviation of any metric is is passed by default.
-It could also be beneficial for the engine to automatically generate graphs and
+Metrics are an important part of understanding a new algorithm. At the moment,
+only three vehicle metrics and two route metrics are tracked.  Different
+vehicles and algorithms may want to keep track of certain values, either for
+vehicles, routes, or the network overall. Adding techniques that allow for this
+level of customisation without requiring the user to simply write their own
+metric code would be useful. It could also automatically calculate a number of
+statistics about each type of data it receives, returning the maximum, miniumum,
+average and standard deviation of any metric is is passed by default.  It could
+also be beneficial for the engine to automatically generate graphs and
 histograms when the simulation terminates.
 
-The current performance of the simulation was good, but there is definitely room
-for improvement. For testing purposes, the engine was run on a 20 CPU server to
-make the tests complete faster. This was effective, but only offered a 2-3x
-performance increase over a consumer laptop, despite having well over 5x the
-processing power. This could likely be improved through a better multi-threaded
+The current performance of the simulation was good, but there is room for
+improvement. For testing purposes, the engine was run on a 20 CPU server.  It
+was able to complete simulations faster, but only offered a 2-3x performance
+increase over a consumer laptop, despite having well over 5x the processing
+power. This could likely be improved through a better multi-threaded
 architecture and optimisations for the \texttt{BaseVehicle} and
 \texttt{CellGraph} classes.
 
 When comparing the ratios of different vehicles in Section \ref{sec:ratio}, the
-front end UI does not show any difference between each vehicle type making a
-direct visual behaviour analysis impossible. If the UI displayed different
+front end UI does not show any difference between each vehicle type, making a
+visualisation based analysis impossible. If the UI displayed different
 coloured markers for each type of vehicle, this could be avoided. In general the
-front end UI could be improved by surfacing additional data, showing the
+front end UI could be improved by displaying additional data, showing the
 current route a vehicle is planning on taking and showing the current state of
 the Expected Map.
 
@@ -2484,34 +2481,6 @@ an engine like MATSim that is good at many things but great at nothing. The
 purpose of Marmoset is to be a city-scale macroscopic simulation engine for
 algorithm design, a job it has proven itself capable of.
 
-%{\bf A topic-specific chapter, of roughly $15$ pages}
-%\vspace{1cm}
-
-%\noindent
-%This chapter is intended to evaluate what you did.  The content is highly
-%topic-specific, but for many projects will have flavours of the following:
-
-%\begin{enumerate}
-%\item functional  testing, including analysis and explanation of failure
-      %cases,
-%\item behavioural testing, often including analysis of any results that
-      %draw some form of conclusion wrt. the aims and objectives,
-      %and
-%\item evaluation of options and decisions within the project, and/or a
-      %comparison with alternatives.
-%\end{enumerate}
-
-%\noindent
-%This chapter often acts to differentiate project quality: even if the work
-%completed is of a high technical quality, critical yet objective evaluation
-%and comparison of the outcomes is crucial.  In essence, the reader wants to
-%learn something, so the worst examples amount to simple statements of fact
-%(e.g., ``graph X shows the result is Y''); the best examples are analytical
-%and exploratory (e.g., ``graph X shows the result is Y, which means Z; this
-%contradicts [1], which may be because I use a different assumption'').  As
-%such, both positive {\em and} negative outcomes are valid {\em if} presented
-%in a suitable manner.
-
 % -----------------------------------------------------------------------------
 
 \chapter{Conclusion}
@@ -2523,87 +2492,245 @@ future research and development.
 
 \section{Achievements and Contributions}
 
-The primary achievement of this project was building a simulation engine focussed
-on algorithm design that is fast enough to handle the simulation of entire cities.
-The simulation engine was then used to design, implement and optimise the
-Marmoset algorithm for multi-vehicle routing.
+In this section we have revisited the original objectives of the project and
+discussed how they have been achieved.
 
-The architecture of the simulation engine enabled easy implementation of a
-reasonably complex algorithm for routing. The three main architectural insights
-were the separation of \texttt{Vehicle} and \texttt{VehicleIterator} classes,
-the use of an event system for adding behaviour and taking advantage of the
+\begin{enumerate}
+    \item \textit{Research existing algorithms and simulation tools to identify the
+        strengths and weaknesses of current approaches.}
+    \begin{quote}
+        Before starting the design or implementation, research was done into the
+        state of the art simulation engines and multi-vehicle routing
+        algorithms. \\
+
+        An exploration was done into SUMO and MATSim to see if they were
+        appropriate platforms for writing new multi-vehicle routing algorithms.
+        Finding them lacking in either the city-scale or macroscopic requirments
+        of this kind of development, the decision was made to build a
+        specialised simulation engine to aid in the creation of such an
+        algorithm. \\
+
+        Algorithms for realistic traffic flow simulation were discussed in Section
+        \ref{sec:nagel}, with the challenges faced implementing them shown in
+        Section \ref{sec:nagel-impl}. \\
+
+        Further research identified a separation between the two different types
+        of multi-vehicle routing algorithm. The first type deals with vehicle to vehicle
+        communications (or a VANET). This can be seen in the Connectivity Aware Routing
+        algorithm~\cite{rt:car}, creatively known as CAR. The second type deals with
+        vehicle to infrastructure communications, usually with some kind of
+        central management system. The BeeJamA algorithm~\cite{beejama} is an
+        example of a V2I algorithm. Its use of empirically derived congestion
+        functions proved to be a useful insight for the creation of the Marmoset
+        algorithm.
+    \end{quote}
+
+    \item \textit{Design a simulation architecture that allows for fast experimentation,
+        easy integration with real world information and full implementation flexibility.}
+    \begin{quote}
+        The design of the simulation engine was instrumental to its success. In
+        Section \ref{sec:arch}, we saw how the architecture evolved from a
+        simple core into a much improved engine with powerful abstractions and
+        well separated implementations of the traffic flow model. In Section
+        \ref{sec:simev}, evidence for the flexibility of the engine was provided
+        along with the core insights that provide it. \\
+
+        The GraphHopper engine was well equipped for handling the goal of
+        integrating with real world data, providing solid support for
+        OpenStreetMaps. This did not come at the cost of either performance or
+        adaptability, as GraphHopper has been designed to enable full control
+        over the data stored at each edge as well as the class that converts
+        this data into a weighting for the purpose of routing. \\
+
+        The front end visualisation layer made finding insight into the
+        behaviour of an algorithm much easier and faster than using an offline
+        simulation tool such as MATSim. Being able to iterate on the design and
+        experiment with parameters quickly allows for more effective development
+        and ultimately a better result.
+    \end{quote}
+
+    \item \textit{Build and optimise the simulation engine on top of existing open
+        source tools.}
+    \begin{quote}
+        GraphHopper, Leaflet.js, and Java are the three core open source tools
+        that made the simulation engine possible. The technical details
+        regarding the implementation can be read in Section \ref{sec:tech-impl}
+        and throughout Chapter \ref{chap:execution}. \\
+
+        Optimising the simulation engine was an important part of the project.
+        The initial implementation was slow, but with structural improvements to
+        the communication between the front and back end as well as analysis of
+        bottlenecks led to significant improvements in execution speed for both
+        parts of the application. This was discussed further in Section
+        \ref{sec:perf}. \\
+
+        However, whilst the engine itself was fast enough to handle real-time
+        simulation and visualisation of thousands of vehicles, the Marmoset
+        algorithm was not able to take full advantage of this due to the
+        computationally expensive re-routing processs. This meant that beyond
+        the initial choice of parameters it was hard to gain a deeper
+        understanding that changes to the algorithm had on the vehicle behavior
+        and congestion.
+    \end{quote}
+
+    \item \textit{Design and implement a novel multi-vehicle routing algorithm.}
+    \begin{quote}
+        In Section \ref{sec:algo}, the design of the Marmoset algorithm was laid
+        out, with the implementation in Section \ref{sec:marmoset-impl}. \\
+
+        The critical evaluation showed that the algorithm was capable of
+        offering a substantial improvement over using Dijkstra's algorithm,
+        which created blockages stopping large numbers of vehicles from reaching
+        their destination. \\
+
+        The algorithm uses the idea of congestion functions from the BeeJamA
+        algorithm for vehicle velocity prediction, but has novel ideas in the
+        form of the Expected Map and the progress function.
+    \end{quote}
+
+    \item \textit{Use the tools provided by the simulation engine to analyse,
+        understand, and optimise the routing algorithm.}
+    \begin{quote}
+        In Chapter \ref{chap:evaluation}, the performance of the Marmoset
+        algorithm was analysed in depth. Using metrics generated by the
+        simulation engine, we were able to reach an understanding of how the
+        engine behaved with increasing numbers of vehicles and gain an insight
+        into the unexpected clustering of time to completion. \\
+
+        We were also able to learn about the behaviour of the Marmoset algorithm
+        when routing alongside Dijkstra's algorithm. By showing a histogram of
+        travel times for different ratios of vehicles, we were able to see that despite
+        improvements in average speed, some vehicles had to suffer worsened
+        travel time.
+    \end{quote}
+
+\end{enumerate}
+
+The initial set of objectives in Chapter \ref{chap:context} set out two key
+deliverables. The first was a simulation engine and the second was an algorithm
+built on top of it.
+
+The first achievement of this project was building a simulation engine focused
+on algorithm design that was fast enough to handle the simulation of entire
+cities.  The engine was then used to design, implement and optimise the Marmoset
+algorithm for multi-vehicle routing.
+
+The architecture of the simulation engine enabled the implementation of a novel
+and complex algorithm for routing. The four main architectural insights were the
+separation and abstraction of \texttt{Vehicle} and \texttt{VehicleIterator}
+classes, the use of an event system for adding behaviour, the creation and
+abstraction of the \texttt{CellIterator} class, and making use of the
 flexibility of the GraphHopper routing engine.
 
 The engine was then optimised for speed and ease of use. Running a 64,000
-vehicle simulation took just 6 minutes 24 seconds when using routes provided by
-Dijkstra's algorithm, or 20.3ms per iteration when performing offline routing.
-It also offers a responsive interface for the visualisation of vehicles whilst
-the simulation is in progress.
+vehicle offline simulation took just 6 minutes 24 seconds or 20.3ms per
+iteration when using routes provided by Dijkstra's algorithm. A responsive
+interface for the visualisation of vehicles was created, allowing the users to
+watch the see the simulation as it is occurring.
 
 Following research into existing algorithms, a novel approach to providing
-routes for multiple vehicles was designed and implemented. By using the insight
-from the BeeJamA algorithm, a congestion function was identified and optimised,
-providing a key metric in predicting a vehicle's expected velocity. The use of
-visualisation whilst simulating enabled fast iteration and improvement on this
-function as well as quick insight into the impact this had on congestion
-overall. In conjunction with post-simulation visualisation, this also led to
-identifying the need for the progress function, avoiding overpenalising busy but
-distant roads.
+routes for multiple vehicles was designed and implemented. By using insight from
+the BeeJamA algorithm, a congestion function was identified and optimised,
+providing a key metric in predicting a vehicle's expected velocity on a given
+road. The use of visualisation whilst simulating enabled fast iteration and
+improvement on this function as well as quick insight into the impact it had on
+congestion overall. In conjunction with post-simulation visualisation, this led
+to identifying the need for the progress function to avoid over-penalising busy
+but distant roads.
 
-\section{The Marmoset Algorithm}
+\section{Future Work}
 
-As shown in the Critical Evaluation (Chapter \ref{chap:evaluation}), the
-Marmoset algorithm performed better than Dijkstra's for situations with high
-levels of congestion. Empirical analysis demonstrated that the algorithm offered
-an improvement in average speed and avoided mass congestion when dealing with
-high volumes of vehicles. It was also showon to be able to handle a small number
-of `selfish' vehicles driving alonside the Marmoset routed vehicles.
+As shown in Chapter \ref{chap:evaluation}, the Marmoset algorithm performed
+better than Dijkstra's for situations with high levels of congestion. Empirical
+analysis demonstrated that the algorithm offered an improvement in average speed
+and avoided mass congestion when dealing with high volumes of vehicles. It was
+also shown to be able to handle a small number of `selfish' vehicles driving
+alonside the Marmoset routed vehicles. In Section \ref{sec:algolim}, we looked
+at some of the direct limitations on the algorithm. We will now take a broader
+look at the potential impact the Marmoset algorithm could have in other fields.
 
-However, there were some flaws that would need addressing in future research.
-Improvements to travel time
+\subsection*{Machine Learning}
 
-Nonetheless, the approach has shown promise, and could plausibly be used to
-many other potential situations. For example, thne Expected Map could be used to
-increase the weights on roads that
+The congestion and progress functions are suitable candidates for optimisation
+using machine learning techniques, which could help discover very different
+functions that an individual researcher may not have considered. This could also
+be applied to the algorithm's other parameters, finding an optimal configuration
+between them without requiring an exhaustive search.
 
-Extensions:
-* support road closure/roadworks etc in the expected map
-* multi-directional edge blocking!
+\subsection*{Expected Map Intelligence}
 
-Although the algorithm has some minor flaws that could be improved upon, it is
-able to solve the multi-vehicle routing problem in a novel and effective manner.
+The Expected Map technique could be extended to store details of roadworks or
+other planned closures, using the existing process to help vehicle avoid the
+area and decrease the likelihood of creating additional congestion. Furthermore,
+data on peak traffic and travel times could be added onto the Expected Map,
+further anticipating driver behaviour and avoiding certain areas before vehicles
+are even planning to travel to or through a given location.
 
-\section{The Marmoset Simulation Engine}
+\subsection*{Broader Uses}
 
-The simulation engine is
+There are many other industries where the reduction of congestion is desirable.
+Most flights occur on predetermined routes, requiring careful planning to avoid
+in air collisions and congestion. Likewise, cargo ships and other commercial
+vessles could benefit from the improvements multi-vehicle routing can provide.
+With careful adaptation, the Marmoset techniques could be applied to these use
+case and many others.
 
+\subsection*{Real World Data Augmentation}
 
-%{\bf A compulsory chapter,     of roughly $5$ pages}
-%\vspace{1cm}
+At the moment, the simulation uses the mapping data and traffic flow to model
+vehicle behaviour. Real world data could be collected and used to improve the
+accuracy of the simulation engine and the Marmoset algorithm. Rather than
+creating estimates of travel time using only the congestion function, roads
+could be individually measured to build specialised congestion functions for
+those specific areas.
 
-%\noindent
-%The concluding chapter of a dissertation is often underutilised because it
-%is too often left too close to the deadline: it is important to allocation
-%enough attention.  Ideally, the chapter will consist of three parts:
+\subsection*{Competitive Simulation}
 
-%\begin{enumerate}
-%\item (Re)summarise the main contributions and achievements, in essence
-      %summing up the content.
-%\item Clearly state the current project status (e.g., ``X is working, Y
-      %is not'') and evaluate what has been achieved with respect to the
-      %initial aims and objectives (e.g., ``I completed aim X outlined
-      %previously, the evidence for this is within Chapter Y'').  There
-      %is no problem including aims which were not completed, but it is
-      %important to evaluate and/or justify why this is the case.
-%\item Outline any open problems or future plans.  Rather than treat this
-      %only as an exercise in what you {\em could} have done given more
-      %time, try to focus on any unexplored options or interesting outcomes
-      %(e.g., ``my experiment for X gave counter-intuitive results, this
-      %could be because Y and would form an interesting area for further
-      %study'' or ``users found feature Z of my software difficult to use,
-      %which is obvious in hindsight but not during at design stage; to
-      %resolve this, I could clearly apply the technique of Smith [7]'').
-%\end{enumerate}
+The ability to simulate multiple types of vehicle at the same time means we can
+simulate a likely outcome of capitalism - routing algorithms being sold as a
+competitive feature, each claiming to be able to get their drivers to their
+destinations fastest, probably at the cost of other users on the road.
+
+\subsection*{Distributed Computing}
+
+Even running the simulation engine on a very powerful computer did not give the
+performance desired. Making use of either a fleet of vehicles or a cluster of
+computers would allow for a drastic performance increase. This would require
+redesigning some major parts of the engine, but
+
+\subsection*{City Planning}
+
+The use of OpenStreetMaps allows for easy modification of the input data.
+This could be used to analyse the effects of building or changing the road
+network, enabling city planners to make more informed decisions. The use of the
+Marmoset algorithm would allow cities to be designed with self-driving vehicles
+in mind rather than just for the current state of transport.
+
+\subsection*{On-Demand Self Driving Vehicles}
+
+As discussed in Chapter \ref{chap:context}, the popularity of on-demand
+transport has increased dramatically, with most of the demand going towards
+Uber. With \$9 billion raised from investors, Uber are in a strong position to
+make long term investments into the future of transport, and have been making
+substantial invenstments into self-driving vehicles. Their vision is a powerful
+one - car ownership could be replaced entirely by a massive fleet of
+self-driving vehicles, picking up and dropping off passengers entirely
+autonomously.
+
+Understanding how best to design algorithms for this would be essential to
+finding the best approach to achieving this vision. The behaviour of these
+vehicles could be implemented as part of a simulation engine to aid in the
+decision making process.
+
+\section{Final Remarks}
+
+The future of driving and transportation is at a fascinating turning point. For
+the first time in history, cars will be able to drive themselves, enabling
+increases in productivity and reducing costs for businesses. For this to be
+possible, self-driving vehicles will have to be substantially smarter than the
+human-driven cars that have come before them. Solving this problem requires
+realistic, powereful simulation tools and new algorithms capable of exploiting the
+huge quantity of data these vehicles will provide.
 
 % =============================================================================
 
@@ -2630,10 +2757,10 @@ The simulation engine is
 % the same as chapters in a sense, but once signaled as being appendicies via
 % the associated macro, LaTeX manages them appropriatly.
 
-\appendix
+%\appendix
 
-\chapter{Self-Driving Vehicle Implementation}
-\label{appx:example}
+%\chapter{Self-Driving Vehicle Implementation}
+%\label{appx:example}
 
 %Content which is not central to, but may enhance the dissertation can be
 %included in one or more appendices; examples include, but are not limited
