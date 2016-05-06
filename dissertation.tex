@@ -121,46 +121,60 @@
 
 \chapter*{Executive Summary}
 
-%\noindent
-%This section should pr\'{e}cis the project context, aims and objectives,
-%and main contributions (e.g., deliverables) and achievements; the same
-%section may be called an abstract elsewhere.  The goal is to ensure the
-%reader is clear about what the topic is, what you have done within this
-%topic, {\em and} what your view of the outcome is.
+\section*{Abstract}
 
-%The former aspects should be guided by your specification: essentially
-%this section is a (very) short version of what is typically the first
-%chapter.  Note that for research-type projects, this {\bf must} include
-%a clear research hypothesis.  This will obviously differ significantly
-%for each project, but an example might be as follows:
+Since the mid-2000s, finding your way to a new destination has been as easy as
+entering your location and destination into an online service. Modern systems
+can take into account an enormous amount of data to provide the most efficient
+route. When provided with the start time of the journey, Google Maps is able to
+identify areas where there are levels of congestion, whilst Waze shares the
+location of their drivers to help improve the quality of this data.
 
-%\begin{quote}
-%My research hypothesis is that a suitable genetic algorithm will yield
-%more accurate results (when applied to the standard ACME data set) than
-%the algorithm proposed by Jones and Smith, while also executing in less
-%time.
-%\end{quote}
+However, these kinds of solutions make a core assumption about how routes should
+be returned. Each route is designed to be locally optimal for the user
+requesting it - but this means that routes may not be globally optimal for the
+system overall, creating congestion and traffic jams. This has been particularly
+problematic in large cities such as London, where 64,000 vehicles commute into
+the centre of town every working day.
 
-%\noindent
-%The latter aspects should (ideally) be presented as a concise, factual
-%bullet point list.  Again the points will differ for each project, but
-%an might be as follows:
+At the same time, we are witnessing the rise of vehicles capable of
+autonomous driving. These vehicles will be more connected than any future
+vehicles, enabling new opportunites for improving the lives of drivers. With the
+additional information self-driving vehicles can provide to central systems,
+routing algorithms capable of finding globally optimal routes can be designed
+and implemented with ease.
 
-%\begin{quote}
-%\noindent
-%\begin{itemize}
-%\item I spent $120$ hours collecting material on and learning about the
-      %Java garbage-collection sub-system.
-%\item I wrote a total of $5000$ lines of source code, comprising a Linux
-      %device driver for a robot (in C) and a GUI (in Java) that is
-      %used to control it.
-%\item I designed a new algorithm for computing the non-linear mapping
-      %from A-space to B-space using a genetic algorithm, see page $17$.
-%\item I implemented a version of the algorithm proposed by Jones and
-      %Smith in [6], see page $12$, corrected a mistake in it, and
-      %compared the results with several alternatives.
-%\end{itemize}
-%\end{quote}
+However, we are still at least a decade away from self-driving vehicles becoming
+mainstream. Until then, we can research and understand the impact they will have
+by creating realistic simulations of vehicles driving on roads. Using these
+simulations, networked algorithms controlling massive fleets of vehicles can be
+designed, tested, analysed, and optimised without needing thousands of vehicles
+on the road.
+
+This project has two core deliverables. The first is a simulation engine
+focused on city-scale vehicle simulation for the purpose of algorithm design.
+The second as a multi-vehicle routing algorithm designed to provide routes to
+an entire city of vehicles and create a reduction in the amount of congestion on
+the roads.
+
+\section*{Summary of Achievements}
+
+For this dissertation I have:
+\begin{quote}
+\begin{itemize}
+    \item Researched the current state of the art multi-vehicle routing
+        algorithms and simulation engines and techniques.
+    \item Designed a powerful set of abstractions enabling fast experimentation
+        and implementation flexibility for the routing algorithms and vehicle
+        behaviour.
+    \item Built and optimised a simulation making use of these abstractions.
+    \item Designed a multi-vehicle routing algorithm based on insights from
+        other algorithms as well as my own ideas.
+    \item Implemented the algorithm on top of the simulation engine.
+    \item Used the metrics from the engine to analyse and understand its
+        strengths and weaknesses.
+\end{itemize}
+\end{quote}
 
 % -----------------------------------------------------------------------------
 
@@ -234,7 +248,30 @@ SVG                 &:     & Scalable Vector Graphics \\
 
 \chapter*{Acknowledgements}
 
-% Thank Ben, Peter Karich, Pie Mapping, all my friendzzz
+I'd like to start by thanking the regulars of the back labs in 2.09 - James
+Burnside, Sam Healer, George Field, Hazel Doughty, Jamie Maddocks, Louis Auger,
+Andrei Ilisei, Ana Dumitras, Georgiana Ginghina, Freddie Caira and occasionally
+Ben Elgar for providing moral support and much needed distraction throughout the
+project.
+
+I'm incredibly grateful to Benjamin Sach, who happily agreed to supervise a
+project with little more than a vague idea described in a single sentence. His
+boundless confidence in the project has always been a great source of energy and
+motivation.
+
+The idea for this project came after a productive summer working at small
+startup called Pie Mapping. Max Glaisher's faith in my abilities and willingness
+to allow me to experiment with building a powerful routing platform gave me the
+knowledge and experience I needed to attempt a project focused on the excting
+fields of routing, transportation, and self-driving cars.
+
+Much of my work at Pie Mapping was adding features to a fork of the GraphHopper
+routing engine, built and maintained by Peter Karich. Without his incredible
+technical skill and passion for open source (let alone his willingness to
+provide free support to GraphHopper's users) this project would not have been possible.
+
+I would also like to thank my parents for their unwavering support and faith in
+my abilities.
 
 %\noindent
 %It is common practice (although totally optional) to acknowledge any
@@ -1156,10 +1193,10 @@ vehicle is in the cell and \texttt{false} if the cell is empty.
 
 In terms of physical storage, the are a number of options. At its core, we need
 a mapping from edge IDs to cell arrays. In Java, this would usually be
-represented as a Map of Lists (\texttt{Map<Integer, List<Boolean>>}). However,
+represented as a Map of Lists (\texttt{Map<Integer, List<Boolean>{}>}). However,
 the edge IDs in GraphHopper have been designed to be sequential starting from 0,
 with the highest ID accessible from the \texttt{AllEdgesIterator}. This means
-that we can instead use a list of lists (\texttt{List<List<Boolean>>}). This has
+that we can instead use a list of lists (\texttt{List<List<Boolean>{}>}). This has
 the advantage of allowing the lists to grow in size dynamically, but may have
 performance issues. In Java, Lists must store other Object types rather than
 primitive types. As objects in Java are all pointers, each Boolean will require
@@ -1284,7 +1321,7 @@ algorithm, whilst the \texttt{updateLocation} method interpolates the cell
 location into the edge geometry to find the vehicle's location.
 
 The class also stores two core things that make the implementation possible.
-The first is a \texttt{VehicleIterator} named \texttt{route} containing the
+The first is a \texttt{Vehicle\-Iterator} named \texttt{route} containing the
 list of edges each vehicle will take, as well as its current edge. The second is
 the current cell ID the vehicle is on. By duplicating the
 \texttt{VehicleIterator} and passing it to a new \texttt{CellIterator}, the
@@ -1534,7 +1571,7 @@ classes that implement most of the boilerplate functionality.
 \texttt{BaseVehicle} holds the implementation of the Nagel-Schreckenberg model,
 with routing behaviour defined by the \texttt{VehicleIterator}. A subclass of
 \texttt{BaseVehicle} must implement only a single method -
-\texttt{getVehicleIterator()}, which creates a \texttt{VehicleIterator} of the
+\texttt{getVehicleIterator()}, which creates a \texttt{Vehicle\-Iterator} of the
 correct type and with the right routing information.
 
 For the standard routing algorithm, new \texttt{DijkstraVehicle} and
@@ -2361,11 +2398,12 @@ of its suitability for algorithm design.
 Implementing the Marmoset algorithm required a simulation with the ability to:
 
 \begin{itemize}
-    \item create vehicles with specific behaviour
-    \item generate routes with a custom function defining the weight of each edge
-    \item request route data from the vehicles and update the weighting class
-    \item change the route whilst the vehicles were en route
-    \item move the vehicles realistically once their route had been planned
+    \item create vehicles with specific behaviour,
+    \item generate routes with a custom function defining the weight of each
+        edge,
+    \item request route data from the vehicles and update the weighting class,
+    \item change the route whilst the vehicles were en route,
+    \item move the vehicles realistically once their route had been planned.
 \end{itemize}
 
 We will now see how the features of the engine made this task relatively easy.
@@ -2402,7 +2440,7 @@ controller can instruct the vehicles to update and replace their route. The
 updating the route.
 
 No additional work is required to create realistic vehicle simulation, as the
-\texttt{BaseVehicle} and \texttt{CellIterator} classes handle the implementation
+\texttt{BaseVehicle} and \texttt{Cell\-Iterator} classes handle the implementation
 of the Nagel-Schreckenberg model.
 
 Together, these examples demonstrate the four key things that have made this
@@ -2420,7 +2458,7 @@ fast and adaptable implementation possible.
         conjunction with the \texttt{VehicleIterator}.
 \end{enumerate}
 
-\subsection{Limitations}
+\subsection{Simulation Engine Limitations}
 
 Although the engine has proven effective for algorithm design, there are a
 number of features that could be added to improve the experience.
@@ -2673,7 +2711,7 @@ Most flights occur on predetermined routes, requiring careful planning to avoid
 in air collisions and congestion. Likewise, cargo ships and other commercial
 vessles could benefit from the improvements multi-vehicle routing can provide.
 With careful adaptation, the Marmoset techniques could be applied to these use
-case and many others.
+cases and many others.
 
 \subsection*{Real World Data Augmentation}
 
@@ -2696,7 +2734,8 @@ destinations fastest, probably at the cost of other users on the road.
 Even running the simulation engine on a very powerful computer did not give the
 performance desired. Making use of either a fleet of vehicles or a cluster of
 computers would allow for a drastic performance increase. This would require
-redesigning some major parts of the engine, but
+redesigning some major parts of the engine, but due to the existing
+multi-threaded architecture would allow for reusing many of the core components.
 
 \subsection*{City Planning}
 
@@ -2730,7 +2769,8 @@ increases in productivity and reducing costs for businesses. For this to be
 possible, self-driving vehicles will have to be substantially smarter than the
 human-driven cars that have come before them. Solving this problem requires
 realistic, powereful simulation tools and new algorithms capable of exploiting the
-huge quantity of data these vehicles will provide.
+huge quantity of data these vehicles will provide. I believe Marmoset is the
+first step towards creating this system.
 
 % =============================================================================
 
